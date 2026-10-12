@@ -13,10 +13,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 028ead1913d65c94990e0f97797e47c5, type: 2}
     - target: {fileID: 3313198425457318427, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3313198425457318427, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -60,6 +56,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: P_Building_Stable_Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 7492034063236311726, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -7155212964530852140, guid: 001c93240640dc443b55a7a750766fc9, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

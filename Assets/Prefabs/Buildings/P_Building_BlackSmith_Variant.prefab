@@ -13,10 +13,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 74cdb9a1929e073438287748f54746d8, type: 2}
     - target: {fileID: 3313198425457318427, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3313198425457318427, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -59,6 +55,22 @@ PrefabInstance:
     - target: {fileID: 5596620059620638422, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
       propertyPath: m_Name
       value: P_Building_BlackSmith_Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 7492034063236311726, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
+      propertyPath: m_Size.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7492034063236311726, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
+      propertyPath: m_Size.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7492034063236311726, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 7588958294073218311, guid: 36792036136afa34e82d3a7c9d3cf9c3, type: 3}
+    - target: {fileID: 7492034063236311726, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

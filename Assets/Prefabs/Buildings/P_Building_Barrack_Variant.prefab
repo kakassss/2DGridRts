@@ -9,14 +9,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3313198425457318427, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3313198425457318427, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3313198425457318427, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -60,6 +52,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: P_Building_Barrack_Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 7492034063236311726, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -8433369218299230057, guid: ddc887ab95ed06b4b97178eb775ec4cb, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
