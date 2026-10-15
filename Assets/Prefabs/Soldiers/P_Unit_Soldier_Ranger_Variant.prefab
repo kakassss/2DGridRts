@@ -8,9 +8,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1901826797448862173, guid: d8f73c82cb089be418f6a780f89fd9db, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -4192527944100273411, guid: 2a1880fd9bccde74c9f11a49a8c003f6, type: 3}
     - target: {fileID: 4424891019192669481, guid: d8f73c82cb089be418f6a780f89fd9db, type: 3}
       propertyPath: m_Name
-      value: P_Unit_Soldier_Main
+      value: P_Unit_Soldier_Ranger_Variant
       objectReference: {fileID: 0}
     - target: {fileID: 5995216351202179307, guid: d8f73c82cb089be418f6a780f89fd9db, type: 3}
       propertyPath: m_LocalPosition.x

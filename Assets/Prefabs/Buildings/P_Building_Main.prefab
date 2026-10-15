@@ -119,6 +119,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: P_HealthBar_Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 1676559870495799432, guid: 244f11dc9f4c69343971420f0371d11a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6536705732895840003, guid: 244f11dc9f4c69343971420f0371d11a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
