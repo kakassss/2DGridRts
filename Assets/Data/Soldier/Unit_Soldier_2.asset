@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 54f9e3a1bc64465a9559876a98cfdcd1, type: 3}
-  m_Name: Unit_Soldier_Fighter
+  m_Name: Unit_Soldier_2
   m_EditorClassIdentifier: Assembly-CSharp::SoldierDataSo
-  displayName: Fighter
-  icon: {fileID: 8833611500742087220, guid: 8766738938f20a945a42365f0cd1f839, type: 3}
-  prefab: {fileID: 469293394303864897, guid: 6bac85ba60ffa654db56061989a2d8a9, type: 3}
-  maxHealth: 10
-  damage: 1
-  moveSpeed: 9.23
+  displayName: Ranger
+  icon: {fileID: -4192527944100273411, guid: 2a1880fd9bccde74c9f11a49a8c003f6, type: 3}
+  prefab: {fileID: 469293394303864897, guid: 4d669626900ab464194a5fd2cc180457, type: 3}
+  maxHealth: 100
+  damage: 5
+  moveSpeed: 7
   attackInterval: 0.5
-  attackRange: 1
+  attackRange: 3
