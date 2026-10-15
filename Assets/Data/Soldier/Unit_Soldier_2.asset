@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54f9e3a1bc64465a9559876a98cfdcd1, type: 3}
   m_Name: Unit_Soldier_2
   m_EditorClassIdentifier: Assembly-CSharp::SoldierDataSo
-  displayName: Ranger
-  icon: {fileID: -4192527944100273411, guid: 2a1880fd9bccde74c9f11a49a8c003f6, type: 3}
+  displayName: Soldier2
+  icon: {fileID: 21300000, guid: 9f63fbf58297daf489940230803f7f62, type: 3}
   prefab: {fileID: 469293394303864897, guid: 4d669626900ab464194a5fd2cc180457, type: 3}
   maxHealth: 100
   damage: 5

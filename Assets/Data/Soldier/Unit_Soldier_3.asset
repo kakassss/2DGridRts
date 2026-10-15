@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54f9e3a1bc64465a9559876a98cfdcd1, type: 3}
   m_Name: Unit_Soldier_3
   m_EditorClassIdentifier: Assembly-CSharp::SoldierDataSo
-  displayName: Tank
-  icon: {fileID: 8315311977721844990, guid: 894b708e85ff38e4eac02a2973c8402b, type: 3}
+  displayName: Soldier3
+  icon: {fileID: 21300000, guid: a1ed30f8b1a45554fa6ae2254975f0ce, type: 3}
   prefab: {fileID: 469293394303864897, guid: fa185b4dca652484fb87d39e26f253c4, type: 3}
   maxHealth: 100
   damage: 2
