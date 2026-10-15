@@ -47,9 +47,7 @@ public class GridManager : IGrid
 
         if (!ReferenceEquals(_grid[x, y].Occupant, occupant))
         {
-            if (_grid[x, y].Occupant != null)
-                Debug.LogWarning($"Başkasının kaydı silinmeye çalışıldı: ({x},{y})");
-            return;
+            if (_grid[x, y].Occupant != null) return;
         }
 
         _grid[x, y].Occupant = null;

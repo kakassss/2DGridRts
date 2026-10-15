@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b512294f50ef44dbaf47245b2ab2cfd6, type: 3}
+  m_Name: Building_Barrack_Data
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDataSO
+  buildingPrefab: {fileID: 4580509100458626173, guid: 8b0c08555a2405a4285023a000884222, type: 3}
+  size: {x: 4, y: 4}
+  maxHealth: 100
+  displayName: Barrack
+  icon: {fileID: -8433369218299230057, guid: ddc887ab95ed06b4b97178eb775ec4cb, type: 3}
+  producibleSoldiers:
+  - {fileID: 11400000, guid: c1ed8ede74dbea34097bb7b284314f98, type: 2}
+  - {fileID: 11400000, guid: 57c3693151f4a514c94c22c0f84d110c, type: 2}
+  - {fileID: 11400000, guid: ecea252b5d309e34ab9391d993c9af46, type: 2}
