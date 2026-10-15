@@ -49,9 +49,4 @@ public class SoldierView : MonoBehaviour, IMovable, IDamageable, IAttacker
     }
 
     public void SetCell(Vector2Int cell) => Cell = cell;
-
-    public void Dead()
-    {
-        
-    }
 }

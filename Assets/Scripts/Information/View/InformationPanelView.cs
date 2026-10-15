@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Zenject;
 
@@ -11,7 +10,7 @@ public class InformationPanelView : MonoBehaviour
     [SerializeField] private Image _iconImage;
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private Transform _productionContainer;
-    [FormerlySerializedAs("_productionButtonPrefab")] [SerializeField] private ProductionUnitView productionUnitViewPrefab;
+    [SerializeField] private ProductionUnitView productionUnitViewPrefab;
 
     private SelectionService _selectionService;
     private SoldierProductionService _soldierService;

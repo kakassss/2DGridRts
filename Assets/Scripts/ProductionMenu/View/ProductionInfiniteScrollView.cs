@@ -6,17 +6,20 @@ using Zenject;
 [RequireComponent(typeof(RectTransform))]
 public class ProductionInfiniteScrollView : MonoBehaviour, IScrollHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    [Header("Settings")]
     [SerializeField, Min(1)] private int _columns = 2;
     [SerializeField] private float _spacing = 10f;
     [SerializeField] private float _itemAspect = 1f;
     [SerializeField] private float _wheelSpeed = 600f;
     [SerializeField] private float _damping = 5f;
 
+    [Header("References")]
+    [SerializeField] private RectTransform rectTransform;
+    [SerializeField] private Canvas canvas;
+    
     private ObjectPool<ProductItemView> _pool;
     private ProductDataSO _productList;
     
-    private RectTransform _rectTransform;
-    private Canvas _canvas;
     private Vector2 _lastSize;
     private float _offset;
     private float _velocity;
@@ -34,8 +37,8 @@ public class ProductionInfiniteScrollView : MonoBehaviour, IScrollHandler, IBegi
 
     private void Start()
     {
-        _rectTransform = (RectTransform)transform;
-        _canvas = GetComponentInParent<Canvas>().rootCanvas;
+        rectTransform = (RectTransform)transform;
+        canvas = canvas.rootCanvas;
 
         RebuildItems();
         Layout();
@@ -45,7 +48,7 @@ public class ProductionInfiniteScrollView : MonoBehaviour, IScrollHandler, IBegi
     {
         bool dirty = false;
 
-        if (_rectTransform.rect.size != _lastSize)
+        if (rectTransform.rect.size != _lastSize)
         {
             RebuildItems();
             dirty = true;
@@ -75,7 +78,7 @@ public class ProductionInfiniteScrollView : MonoBehaviour, IScrollHandler, IBegi
 
     public void OnDrag(PointerEventData eventData)
     {
-        float delta = eventData.delta.y / _canvas.scaleFactor;
+        float delta = eventData.delta.y / canvas.scaleFactor;
         _offset += delta;
 
         float instant = delta / Mathf.Max(Time.unscaledDeltaTime, 0.0001f);
@@ -98,7 +101,7 @@ public class ProductionInfiniteScrollView : MonoBehaviour, IScrollHandler, IBegi
         var products = _productList.Buildings;
         if (products.Length == 0) return;
 
-        Vector2 area = _rectTransform.rect.size;
+        Vector2 area = rectTransform.rect.size;
         float itemW = (area.x - _spacing * (_columns + 1)) / _columns;
         float rowH = itemW * _itemAspect + _spacing;
 
@@ -135,7 +138,7 @@ public class ProductionInfiniteScrollView : MonoBehaviour, IScrollHandler, IBegi
     {
         if (_rects.Count == 0) return;
 
-        Vector2 area = _rectTransform.rect.size;
+        Vector2 area = rectTransform.rect.size;
         _lastSize = area;
 
         float itemW = (area.x - _spacing * (_columns + 1)) / _columns;

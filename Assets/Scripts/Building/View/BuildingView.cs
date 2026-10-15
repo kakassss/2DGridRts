@@ -9,7 +9,6 @@ public class BuildingView : MonoBehaviour, ISoldierProducer, IDamageable
     public BuildingDataSO buildingDataSO;
 
     private readonly HealthModel _health = new HealthModel();
-
     public event Action<IDamageable> Died;
 
     public string DisplayName => buildingDataSO.DisplayName;
@@ -18,7 +17,6 @@ public class BuildingView : MonoBehaviour, ISoldierProducer, IDamageable
 
     public Vector2Int OriginCell { get; private set; }
     public Vector2Int Size => buildingDataSO.Size;
-
     public int CurrentHealth => _health.Current;
     public int MaxHealth => _health.Max;
     public bool IsDead => _health.IsDead;
@@ -40,10 +38,5 @@ public class BuildingView : MonoBehaviour, ISoldierProducer, IDamageable
 
         if (died)
             Died?.Invoke(this);
-    }
-
-    public void Dead()
-    {
-        
     }
 }

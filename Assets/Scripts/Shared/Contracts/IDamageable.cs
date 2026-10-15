@@ -8,5 +8,4 @@ public interface IDamageable : ISelectable
     event Action<IDamageable> Died;
 
     void TakeDamage(int amount);
-    void Dead();
 }
