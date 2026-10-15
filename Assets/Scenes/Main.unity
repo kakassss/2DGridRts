@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &176650740 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7084028408062229408, guid: 4029cfb984e478f48afb2544aa8f085e, type: 3}
+  m_PrefabInstance: {fileID: 1714678909}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &561316797
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,13 +416,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7084028408062229408, guid: 4029cfb984e478f48afb2544aa8f085e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1714678913}
   m_SourcePrefab: {fileID: 100100000, guid: 4029cfb984e478f48afb2544aa8f085e, type: 3}
 --- !u!20 &1714678910 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 886622934969481120, guid: 4029cfb984e478f48afb2544aa8f085e, type: 3}
   m_PrefabInstance: {fileID: 1714678909}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1714678913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 176650740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6bc4f3383b938e40af0e9fa433fb769, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameBoardCameraView
+  config: {fileID: 11400000, guid: ada1437689ffefb46960892312b1ff65, type: 2}
+  margin: 0.5
+  camera: {fileID: 1714678910}
 --- !u!1001 &2069431990
 PrefabInstance:
   m_ObjectHideFlags: 0
