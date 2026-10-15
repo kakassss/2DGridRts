@@ -1,10 +1,14 @@
 using Zenject;
+using Rts2D.Combat.Manager;
 
-public class CombatInstaller : MonoInstaller
+namespace Rts2D.Combat.Installer
 {
-    public override void InstallBindings()
+    public class CombatInstaller : MonoInstaller
     {
-        Container.Bind<DestroyManager>().AsSingle();
-        Container.BindInterfacesAndSelfTo<AttackManager>().AsSingle().NonLazy();
+        public override void InstallBindings()
+        {
+            Container.Bind<DestroyManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<AttackManager>().AsSingle().NonLazy();
+        }
     }
 }

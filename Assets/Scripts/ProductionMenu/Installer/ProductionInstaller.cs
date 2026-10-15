@@ -1,9 +1,13 @@
 using Zenject;
+using Rts2D.ProductionMenu.Manager;
 
-public class ProductionInstaller : MonoInstaller
+namespace Rts2D.ProductionMenu.Installer
 {
-    public override void InstallBindings()
+    public class ProductionInstaller : MonoInstaller
     {
-        Container.Bind<ProductSelectionService>().AsSingle().NonLazy();
+        public override void InstallBindings()
+        {
+            Container.Bind<ProductSelectionService>().AsSingle().NonLazy();
+        }
     }
 }

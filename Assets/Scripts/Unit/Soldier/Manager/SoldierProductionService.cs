@@ -1,9 +1,14 @@
 ﻿using System;
+using Rts2D.Shared.Contracts;
+using Rts2D.Unit.Soldier.DataSO;
 
-public class SoldierProductionService
+namespace Rts2D.Unit.Soldier.Manager
 {
-    public event Action<SoldierDataSo, ISelectable> ProduceRequested;
+    public class SoldierProductionService
+    {
+        public event Action<SoldierDataSo, ISelectable> ProduceRequested;
 
-    public void Request(SoldierDataSo soldier, ISelectable producer)
-        => ProduceRequested?.Invoke(soldier, producer);
+        public void Request(SoldierDataSo soldier, ISelectable producer)
+            => ProduceRequested?.Invoke(soldier, producer);
+    }
 }

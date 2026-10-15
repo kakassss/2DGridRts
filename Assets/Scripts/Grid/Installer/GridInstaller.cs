@@ -1,10 +1,15 @@
 using Zenject;
+using Rts2D.Grid.Manager;
+using Rts2D.Test;
 
-public class GridInstaller : MonoInstaller
+namespace Rts2D.Grid.Installer
 {
-    public override void InstallBindings()
+    public class GridInstaller : MonoInstaller
     {
-        Container.BindInterfacesAndSelfTo<GridManager>().AsSingle().NonLazy();
-        Container.Bind<MouseInput>().AsSingle().NonLazy();
+        public override void InstallBindings()
+        {
+            Container.BindInterfacesAndSelfTo<GridManager>().AsSingle().NonLazy();
+            Container.Bind<MouseInput>().AsSingle().NonLazy();
+        }
     }
 }

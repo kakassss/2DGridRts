@@ -1,42 +1,49 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Rts2D.Building.DataSO;
+using Rts2D.Health.Model;
+using Rts2D.Health.View;
+using Rts2D.Shared.Contracts;
+using Rts2D.Unit.Soldier.DataSO;
+using Rts2D.Unit.Soldier.Manager;
 
-public class BuildingView : MonoBehaviour, ISoldierProducer, IDamageable
+namespace Rts2D.Building.View
 {
-    [SerializeField] private HealthBarView healthBar;
-
-    public BuildingDataSO buildingDataSO;
-
-    private readonly HealthModel _health = new HealthModel();
-    public event Action<IDamageable> Died;
-
-    public string DisplayName => buildingDataSO.DisplayName;
-    public Sprite Icon => buildingDataSO.Icon;
-    public IReadOnlyList<SoldierDataSo> Producibles => buildingDataSO.ProducibleSoldiers;
-
-    public Vector2Int OriginCell { get; private set; }
-    public Vector2Int Size => buildingDataSO.Size;
-    public int CurrentHealth => _health.Current;
-    public int MaxHealth => _health.Max;
-    public bool IsDead => _health.IsDead;
-
-    public void Initialize(BuildingDataSO data, Vector2Int originCell)
+    public class BuildingView : MonoBehaviour, ISoldierProducer, IDamageable
     {
-        buildingDataSO = data;
-        OriginCell = originCell;
-        _health.Reset(data.MaxHealth);
+        public event Action<IDamageable> Died;
 
-        healthBar.Setup(data.Size.x * 0.8f, data.Size.y);
-        healthBar.SetHealth(_health.Current, _health.Max);
-    }
+        [SerializeField] private HealthBarView healthBar;
+        [SerializeField] private BuildingDataSO buildingDataSO;
 
-    public void TakeDamage(int amount)
-    {
-        bool died = _health.Take(amount);
-        healthBar.SetHealth(_health.Current, _health.Max);
+        private readonly HealthModel _health = new HealthModel();
 
-        if (died)
-            Died?.Invoke(this);
+        public string DisplayName => buildingDataSO.DisplayName;
+        public Sprite Icon => buildingDataSO.Icon;
+        public IReadOnlyList<SoldierDataSo> Producibles => buildingDataSO.ProducibleSoldiers;
+        public Vector2Int OriginCell { get; private set; }
+        public Vector2Int Size => buildingDataSO.Size;
+        public bool IsDead => _health.IsDead;
+
+
+        public void Initialize(BuildingDataSO data, Vector2Int originCell)
+        {
+            buildingDataSO = data;
+            OriginCell = originCell;
+            _health.Reset(data.MaxHealth);
+
+            healthBar.Setup(data.Size.x * 0.8f, data.Size.y);
+            healthBar.SetHealth(_health.Current, _health.Max);
+        }
+
+        public void TakeDamage(int amount)
+        {
+            bool died = _health.Take(amount);
+            healthBar.SetHealth(_health.Current, _health.Max);
+
+            if (died)
+                Died?.Invoke(this);
+        }
     }
 }

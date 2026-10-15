@@ -1,9 +1,13 @@
 using Zenject;
+using Rts2D.Placement.Manager;
 
-public class PlacementInstaller : MonoInstaller
+namespace Rts2D.Placement.Installer
 {
-    public override void InstallBindings()
+    public class PlacementInstaller : MonoInstaller
     {
-        Container.BindInterfacesAndSelfTo<PlacementManager>().AsSingle().NonLazy();
+        public override void InstallBindings()
+        {
+            Container.BindInterfacesAndSelfTo<PlacementManager>().AsSingle().NonLazy();
+        }
     }
 }

@@ -1,8 +1,11 @@
 using UnityEngine;
 
-//Something that can be shown as an item in a product list (menu / information panel)
-public interface IProduct
+namespace Rts2D.Shared.Contracts
 {
-    string DisplayName { get; }
-    Sprite Icon { get; }
+    //Something that can be shown as an item in a product list (menu / information panel)
+    public interface IProduct
+    {
+        string DisplayName { get; }
+        Sprite Icon { get; }
+    }
 }

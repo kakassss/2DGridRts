@@ -2,42 +2,47 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
+using Rts2D.Building.DataSO;
+using Rts2D.ProductionMenu.Manager;
 
-public class ProductItemView : MonoBehaviour
+namespace Rts2D.ProductionMenu.View
 {
-    [SerializeField] private Button button;
-    [SerializeField] private Image iconImage;
-    [SerializeField] private TextMeshProUGUI nameText;
-
-    private ProductSelectionService _service;
-    private BuildingDataSO _data;
-
-    [Inject]
-    private void Construct(ProductSelectionService service)
+    public class ProductItemView : MonoBehaviour
     {
-        _service = service;
-    }
+        [SerializeField] private Button button;
+        [SerializeField] private Image iconImage;
+        [SerializeField] private TextMeshProUGUI nameText;
 
-    private void Awake()
-    {
-        button.onClick.AddListener(HandleClick);
-    }
+        private ProductSelectionService _service;
+        private BuildingDataSO _data;
 
-    private void OnDestroy()
-    {
-        button.onClick.RemoveListener(HandleClick);
-    }
+        [Inject]
+        private void Construct(ProductSelectionService service)
+        {
+            _service = service;
+        }
 
-    public void Bind(BuildingDataSO data)
-    {
-        _data = data;
-        iconImage.sprite = data.Icon;
-        nameText.text = data.DisplayName;
-    }
+        private void Awake()
+        {
+            button.onClick.AddListener(HandleClick);
+        }
 
-    private void HandleClick()
-    {
-        if (_data != null)
-            _service.Select(_data);
+        private void OnDestroy()
+        {
+            button.onClick.RemoveListener(HandleClick);
+        }
+
+        public void Bind(BuildingDataSO data)
+        {
+            _data = data;
+            iconImage.sprite = data.Icon;
+            nameText.text = data.DisplayName;
+        }
+
+        private void HandleClick()
+        {
+            if (_data != null)
+                _service.Select(_data);
+        }
     }
 }

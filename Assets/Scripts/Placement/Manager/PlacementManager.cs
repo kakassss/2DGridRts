@@ -4,162 +4,190 @@ using UnityEngine.InputSystem;
 using Zenject;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using Rts2D.Building.DataSO;
+using Rts2D.Building.View;
+using Rts2D.Combat.Manager;
+using Rts2D.GameConfig.DataSO;
+using Rts2D.Grid.Manager;
+using Rts2D.ProductionMenu.Manager;
+using Rts2D.Test;
 
-public static class BuildingNeighbors
+namespace Rts2D.Placement.Manager
 {
-    public static void Find(Vector2Int origin, Vector2Int size, List<Vector2Int> gridNeighbors)
+    public static class BuildingNeighbors
     {
-        gridNeighbors.Clear();
-
-        for (int x = 0; x < size.x; x++)
+        public static void Find(Vector2Int origin, Vector2Int size, List<Vector2Int> gridNeighbors)
         {
-            for (int y = 0; y < size.y; y++)
+            gridNeighbors.Clear();
+
+            for (int x = 0; x < size.x; x++)
             {
-                gridNeighbors.Add(new Vector2Int(origin.x + x, origin.y + y));
+                for (int y = 0; y < size.y; y++)
+                {
+                    gridNeighbors.Add(new Vector2Int(origin.x + x, origin.y + y));
+                }
             }
         }
     }
-}
-public class PlacementManager : ITickable, IInitializable, IDisposable
-{
-    private readonly ProductSelectionService _service;
-    private readonly GameConfigSO _gameConfigSo;
-    private readonly GridManager _gridManager;
-    private readonly MouseInput _mouseInput;
-    private readonly DestroyManager _destroyManager;
-    private readonly IInstantiator _instantiator;
 
-    private readonly List<Vector2Int> _cellNeighbors = new List<Vector2Int>();
-
-    private BuildingDataSO _currentData;
-    private BuildingView _ghostBuilding;
-    private SpriteRenderer _ghostRenderer;
-    private Vector2Int _currentOriginCell;
-    private bool _canPlace;
-
-    public bool IsPlacing => _ghostBuilding != null;
-
-    public PlacementManager(GridManager gridManager, MouseInput mouseInput,
-        GameConfigSO gameConfigSo, ProductSelectionService service, DestroyManager destroyManager, IInstantiator instantiator)
+    public class PlacementManager : ITickable, IInitializable, IDisposable
     {
-        _gridManager = gridManager;
-        _mouseInput = mouseInput;
-        _gameConfigSo = gameConfigSo;
-        _service = service;
-        _destroyManager = destroyManager;
-        _instantiator = instantiator;
-    }
+        #region Fields
 
-    public void Initialize()
-    {
-        _service.ProductSelected += StartPlacement;  
-    } 
-    public void Dispose()
-    {
-        _service.ProductSelected -= StartPlacement;
-        if (_ghostBuilding != null) UnityEngine.Object.Destroy(_ghostBuilding);
-    }
+        private readonly ProductSelectionService _service;
+        private readonly GameConfigSO _gameConfigSo;
+        private readonly GridManager _gridManager;
+        private readonly MouseInput _mouseInput;
+        private readonly DestroyManager _destroyManager;
+        private readonly IInstantiator _instantiator;
 
-    public void Tick()
-    {
-        if (_ghostBuilding == null)
-            return;
+        private readonly List<Vector2Int> _cellNeighbors = new List<Vector2Int>();
 
-        if (Keyboard.current.escapeKey.wasPressedThisFrame ||
-            Mouse.current.rightButton.wasPressedThisFrame)
+        private BuildingDataSO _currentData;
+        private BuildingView _ghostBuilding;
+        private SpriteRenderer _ghostRenderer;
+        private Vector2Int _currentOriginCell;
+        private bool _canPlace;
+
+        #endregion
+
+        #region Lifecycle
+
+        public PlacementManager(GridManager gridManager, MouseInput mouseInput,
+            GameConfigSO gameConfigSo, ProductSelectionService service, DestroyManager destroyManager, IInstantiator instantiator)
         {
-            CancelPlacement();
-            return;
+            _gridManager = gridManager;
+            _mouseInput = mouseInput;
+            _gameConfigSo = gameConfigSo;
+            _service = service;
+            _destroyManager = destroyManager;
+            _instantiator = instantiator;
         }
 
-        UpdateGhost();
+        public void Initialize()
+        {
+            _service.ProductSelected += StartPlacement;
+        }
 
-        if (Mouse.current.leftButton.wasPressedThisFrame && !IsPointerOverUI())
-            TryPlace();
-    }
+        public void Dispose()
+        {
+            _service.ProductSelected -= StartPlacement;
+            if (_ghostBuilding != null) UnityEngine.Object.Destroy(_ghostBuilding);
+        }
 
-    private void StartPlacement(BuildingDataSO data)
-    {
-        if (_ghostBuilding != null)
+        public void Tick()
+        {
+            if (_ghostBuilding == null)
+                return;
+
+            if (Keyboard.current.escapeKey.wasPressedThisFrame ||
+                Mouse.current.rightButton.wasPressedThisFrame)
+            {
+                CancelPlacement();
+                return;
+            }
+
+            UpdateGhost();
+
+            if (Mouse.current.leftButton.wasPressedThisFrame && !IsPointerOverUI())
+                TryPlace();
+        }
+
+        #endregion
+
+        #region Public API
+
+        public bool IsPlacing => _ghostBuilding != null;
+
+        #endregion
+
+        #region Internals
+
+        private void StartPlacement(BuildingDataSO data)
+        {
+            if (_ghostBuilding != null)
+                UnityEngine.Object.Destroy(_ghostBuilding);
+
+            _currentData = data;
+            _ghostBuilding = _instantiator.InstantiatePrefabForComponent<BuildingView>(data.BuildingPrefab);
+            _ghostRenderer = _ghostBuilding.GetComponent<SpriteRenderer>();
+        }
+
+        private void CancelPlacement()
+        {
             UnityEngine.Object.Destroy(_ghostBuilding);
-
-        _currentData = data;
-        _ghostBuilding = _instantiator.InstantiatePrefabForComponent<BuildingView>(data.BuildingPrefab);
-        _ghostRenderer = _ghostBuilding.GetComponent<SpriteRenderer>();
-    }
-
-    private void CancelPlacement()
-    {
-        UnityEngine.Object.Destroy(_ghostBuilding);
-        _ghostBuilding = null;
-        _ghostRenderer = null;
-    }
-
-    private void UpdateGhost()
-    {
-        Vector2Int size = _currentData.Size;
-
-        _currentOriginCell = GetBuildingOrigin(_mouseInput.GetMouseInput(), size);
-        _canPlace = CanPlace(_currentOriginCell, size);
-
-        _ghostBuilding.transform.position = GetBuildingCenter(_currentOriginCell, size);
-        _ghostRenderer.color = _canPlace ? _gameConfigSo.ValidPlacementColor : _gameConfigSo.InvalidPlacementColor;
-    }
-
-    private void TryPlace()
-    {
-        if (!_canPlace)
-            return;
-
-        var view = _ghostBuilding;
-        if (view == null)
-        {
-            Debug.LogError($"{_ghostBuilding.name} prefab'ında BuildingView yok.");
-            return;
+            _ghostBuilding = null;
+            _ghostRenderer = null;
         }
 
-        view.Initialize(_currentData, _currentOriginCell);
-
-        BuildingNeighbors.Find(_currentOriginCell, _currentData.Size, _cellNeighbors);
-        foreach (Vector2Int cell in _cellNeighbors)
-            _gridManager.SetOccupant(cell.x, cell.y, view);
-
-        _ghostRenderer.color = Color.white;
-        _ghostBuilding = null;
-        _ghostRenderer = null;
-        
-        _destroyManager.Track(view);
-    }
-
-    private bool CanPlace(Vector2Int origin, Vector2Int size)
-    {
-        BuildingNeighbors.Find(origin, size, _cellNeighbors);
-
-        foreach (Vector2Int cell in _cellNeighbors)
+        private void UpdateGhost()
         {
-            if (!_gridManager.InBounds(cell.x, cell.y)) return false;
-            if (_gridManager.GetPositionIsOccupied(cell.x, cell.y)) return false;
+            Vector2Int size = _currentData.Size;
+
+            _currentOriginCell = GetBuildingOrigin(_mouseInput.GetMouseInput(), size);
+            _canPlace = CanPlace(_currentOriginCell, size);
+
+            _ghostBuilding.transform.position = GetBuildingCenter(_currentOriginCell, size);
+            _ghostRenderer.color = _canPlace ? _gameConfigSo.ValidPlacementColor : _gameConfigSo.InvalidPlacementColor;
         }
-        return true;
-    }
 
-    private Vector2Int GetBuildingOrigin(Vector3 mouseWorld, Vector2Int size)
-    {
-        float cellSize = _gameConfigSo.CellSize;
-        int x = Mathf.FloorToInt(mouseWorld.x / cellSize - size.x / 2f + 0.5f);
-        int y = Mathf.FloorToInt(mouseWorld.y / cellSize - size.y / 2f + 0.5f);
-        return new Vector2Int(x, y);
-    }
+        private void TryPlace()
+        {
+            if (!_canPlace)
+                return;
 
-    private Vector3 GetBuildingCenter(Vector2Int origin, Vector2Int size)
-    {
-        float cellSize = _gameConfigSo.CellSize;
-        return new Vector3((origin.x + size.x / 2f) * cellSize,
-                           (origin.y + size.y / 2f) * cellSize, 0f);
-    }
+            var view = _ghostBuilding;
+            if (view == null)
+            {
+                Debug.LogError($"{_ghostBuilding.name} prefab'ında BuildingView yok.");
+                return;
+            }
 
-    private static bool IsPointerOverUI()
-    {
-        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+            view.Initialize(_currentData, _currentOriginCell);
+
+            BuildingNeighbors.Find(_currentOriginCell, _currentData.Size, _cellNeighbors);
+            foreach (Vector2Int cell in _cellNeighbors)
+                _gridManager.SetOccupant(cell.x, cell.y, view);
+
+            _ghostRenderer.color = Color.white;
+            _ghostBuilding = null;
+            _ghostRenderer = null;
+
+            _destroyManager.Track(view);
+        }
+
+        private bool CanPlace(Vector2Int origin, Vector2Int size)
+        {
+            BuildingNeighbors.Find(origin, size, _cellNeighbors);
+
+            foreach (Vector2Int cell in _cellNeighbors)
+            {
+                if (!_gridManager.InBounds(cell.x, cell.y)) return false;
+                if (_gridManager.GetPositionIsOccupied(cell.x, cell.y)) return false;
+            }
+            return true;
+        }
+
+        private Vector2Int GetBuildingOrigin(Vector3 mouseWorld, Vector2Int size)
+        {
+            float cellSize = _gameConfigSo.CellSize;
+            int x = Mathf.FloorToInt(mouseWorld.x / cellSize - size.x / 2f + 0.5f);
+            int y = Mathf.FloorToInt(mouseWorld.y / cellSize - size.y / 2f + 0.5f);
+            return new Vector2Int(x, y);
+        }
+
+        private Vector3 GetBuildingCenter(Vector2Int origin, Vector2Int size)
+        {
+            float cellSize = _gameConfigSo.CellSize;
+            return new Vector3((origin.x + size.x / 2f) * cellSize,
+                               (origin.y + size.y / 2f) * cellSize, 0f);
+        }
+
+        private static bool IsPointerOverUI()
+        {
+            return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+        }
+
+        #endregion
     }
 }

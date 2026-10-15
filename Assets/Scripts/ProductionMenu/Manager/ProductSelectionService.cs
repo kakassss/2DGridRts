@@ -1,8 +1,12 @@
 using System;
+using Rts2D.Building.DataSO;
 
-public class ProductSelectionService
+namespace Rts2D.ProductionMenu.Manager
 {
-    public event Action<BuildingDataSO> ProductSelected;
+    public class ProductSelectionService
+    {
+        public event Action<BuildingDataSO> ProductSelected;
 
-    public void Select(BuildingDataSO data) => ProductSelected?.Invoke(data);
+        public void Select(BuildingDataSO data) => ProductSelected?.Invoke(data);
+    }
 }

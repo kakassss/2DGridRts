@@ -1,7 +1,10 @@
 using UnityEngine;
 
-public interface IGrid
+namespace Rts2D.Grid.Manager
 {
-    public Vector3 GetWorldPosition(int x, int y);
-    public void GetXYPosition(Vector3 worldPosition, out int x, out int y);
+    public interface IGrid
+    {
+        public Vector3 GetWorldPosition(int x, int y);
+        public void GetXYPosition(Vector3 worldPosition, out int x, out int y);
+    }
 }

@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 
-public interface ISoldierProducer
+namespace Rts2D.Unit.Soldier.Manager
 {
-    Vector2Int OriginCell { get; }
-    Vector2Int Size { get; }
+    public interface ISoldierProducer
+    {
+        Vector2Int OriginCell { get; }
+        Vector2Int Size { get; }
+    }
 }

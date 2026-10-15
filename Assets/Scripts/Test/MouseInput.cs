@@ -1,60 +1,64 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
+using Rts2D.Grid.Manager;
 
-public class MouseInput
+namespace Rts2D.Test
 {
-    private GridManager _gridManager;
-    
-    [Inject]
-    private void Construct(GridManager gridManager)
+    public class MouseInput
     {
-        _gridManager = gridManager;
-    }
-    
-    public Vector3 GetMouseInput()
-    {
-        Vector2 mousePosition = Mouse.current.position.ReadValue();
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-        worldPosition.z = 0f;
+        private GridManager _gridManager;
 
-        return worldPosition;
-    }
-
-    
-    public bool TryGetMouseClickPosition(out Vector3 position)
-    {
-        position = Vector3.zero;
-
-        if (Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame)
-            return false;
-
-        _gridManager.GetXYPosition(GetMouseInput(), out int x, out int y);
-
-        if (!_gridManager.InBounds(x, y))
+        [Inject]
+        private void Construct(GridManager gridManager)
         {
-            Debug.Log("Mouse input is out of bounds");
-            return false;
+            _gridManager = gridManager;
         }
 
-        position = _gridManager.GetWorldPosition(x, y);
-        return true;
-    }
-
-    public bool TryGetMousePosOnGrid(out Vector3 position)
-    {
-        position = Vector3.zero;
-        
-        _gridManager.GetXYPosition(GetMouseInput(), out int x, out int y);
-
-        if (!_gridManager.InBounds(x, y))
+        public Vector3 GetMouseInput()
         {
-            Debug.Log("Mouse input is out of bounds");
-            return false;
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+            worldPosition.z = 0f;
+
+            return worldPosition;
         }
 
-        position = _gridManager.GetWorldPosition(x, y);
-        return true;
+
+        public bool TryGetMouseClickPosition(out Vector3 position)
+        {
+            position = Vector3.zero;
+
+            if (Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame)
+                return false;
+
+            _gridManager.GetXYPosition(GetMouseInput(), out int x, out int y);
+
+            if (!_gridManager.InBounds(x, y))
+            {
+                Debug.Log("Mouse input is out of bounds");
+                return false;
+            }
+
+            position = _gridManager.GetWorldPosition(x, y);
+            return true;
+        }
+
+        public bool TryGetMousePosOnGrid(out Vector3 position)
+        {
+            position = Vector3.zero;
+
+            _gridManager.GetXYPosition(GetMouseInput(), out int x, out int y);
+
+            if (!_gridManager.InBounds(x, y))
+            {
+                Debug.Log("Mouse input is out of bounds");
+                return false;
+            }
+
+            position = _gridManager.GetWorldPosition(x, y);
+            return true;
+        }
+
     }
-    
 }

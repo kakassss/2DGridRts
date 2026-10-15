@@ -1,10 +1,14 @@
 using Zenject;
+using Rts2D.Selection.Manager;
 
-public class SelectionInstaller : MonoInstaller
+namespace Rts2D.Selection.Installer
 {
-   public override void InstallBindings()
-   {
-      Container.Bind<SelectionService>().AsSingle().NonLazy();
-      Container.BindInterfacesAndSelfTo<SelectionManager>().AsSingle().NonLazy();
-   }
+    public class SelectionInstaller : MonoInstaller
+    {
+       public override void InstallBindings()
+       {
+          Container.Bind<SelectionService>().AsSingle().NonLazy();
+          Container.BindInterfacesAndSelfTo<SelectionManager>().AsSingle().NonLazy();
+       }
+    }
 }

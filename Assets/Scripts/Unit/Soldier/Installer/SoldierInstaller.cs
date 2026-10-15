@@ -1,20 +1,27 @@
 using UnityEngine;
 using Zenject;
+using Rts2D.Grid.Manager;
+using Rts2D.Move.Manager;
+using Rts2D.Unit.Soldier.DataSO;
+using Rts2D.Unit.Soldier.Manager;
 
-public class SoldierInstaller : MonoInstaller
+namespace Rts2D.Unit.Soldier.Installer
 {
-    [SerializeField] private Transform _soldierContainer;
-    [SerializeField] private SoldierListSO _soldierList;
-
-    public override void InstallBindings()
+    public class SoldierInstaller : MonoInstaller
     {
-        Container.BindInstance(_soldierList);
-        
-        Container.Bind<SoldierProductionService>().AsSingle();
-        Container.Bind<SoldierPoolManager>().AsSingle().WithArguments(_soldierContainer);
-        Container.BindInterfacesAndSelfTo<SoldierSpawnManager>().AsSingle().NonLazy();
-        
-        Container.Bind<GridPathfinderManager>().AsSingle();
-        Container.BindInterfacesAndSelfTo<MoveManager>().AsSingle().NonLazy();
+        [SerializeField] private Transform _soldierContainer;
+        [SerializeField] private SoldierListSO _soldierList;
+
+        public override void InstallBindings()
+        {
+            Container.BindInstance(_soldierList);
+
+            Container.Bind<SoldierProductionService>().AsSingle();
+            Container.Bind<SoldierPoolManager>().AsSingle().WithArguments(_soldierContainer);
+            Container.BindInterfacesAndSelfTo<SoldierSpawnManager>().AsSingle().NonLazy();
+
+            Container.Bind<GridPathfinderManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<MoveManager>().AsSingle().NonLazy();
+        }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System;
 
-public interface IDamageable : ISelectable
+namespace Rts2D.Shared.Contracts
 {
-    int CurrentHealth { get; }
-    int MaxHealth { get; }
-    bool IsDead { get; }
-    event Action<IDamageable> Died;
-
-    void TakeDamage(int amount);
+    public interface IDamageable : ISelectable
+    {
+        bool IsDead { get; }
+        event Action<IDamageable> Died;
+        void TakeDamage(int amount);
+    }
 }

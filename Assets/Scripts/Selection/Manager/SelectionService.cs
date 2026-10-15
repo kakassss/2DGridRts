@@ -1,21 +1,25 @@
 using System;
+using Rts2D.Shared.Contracts;
 
-public class SelectionService
+namespace Rts2D.Selection.Manager
 {
-    public event Action<ISelectable> Selected;
-    public event Action Cleared;
-
-    public ISelectable Current { get; private set; }
-
-    public void Select(ISelectable selectable)
+    public class SelectionService
     {
-        Current = selectable;
-        Selected?.Invoke(selectable);
-    }
+        public event Action<ISelectable> Selected;
+        public event Action Cleared;
 
-    public void Clear()
-    {
-        Current = null;
-        Cleared?.Invoke();
+        public ISelectable Current { get; private set; }
+
+        public void Select(ISelectable selectable)
+        {
+            Current = selectable;
+            Selected?.Invoke(selectable);
+        }
+
+        public void Clear()
+        {
+            Current = null;
+            Cleared?.Invoke();
+        }
     }
 }
