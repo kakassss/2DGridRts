@@ -36,7 +36,7 @@ ScriptedImporter:
     spriteMeshType: 0
     alignment: 0
     spritePivot: {x: 0.5, y: 0.5}
-    spritePixelsToUnits: 32
+    spritePixelsToUnits: 16
     spriteBorder: {x: 0, y: 0, z: 0, w: 0}
     spriteGenerateFallbackPhysicsShape: 0
     generateCubemap: 6
@@ -85,7 +85,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
     generateIndividualEvents: 1
-    generateSpriteAtlas: 1
+    generateSpriteAtlas: 0
   asepriteImporterSettings:
     fileImportMode: 0
     importHiddenLayers: 0
@@ -100,9 +100,9 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
     generateIndividualEvents: 1
-    generateSpriteAtlas: 1
+    generateSpriteAtlas: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639274526973855792
+  platformSettingsDirtyTick: 639276880385231614
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -184,7 +184,7 @@ ScriptedImporter:
     layerType: 0
     blendMode: 0
     cells:
-    - name: grid
+    - name: T2D_Grid
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
