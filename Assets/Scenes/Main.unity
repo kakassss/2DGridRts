@@ -130,10 +130,11 @@ GameObject:
   - component: {fileID: 16536290}
   - component: {fileID: 16536289}
   - component: {fileID: 16536291}
-  - component: {fileID: 16536292}
   - component: {fileID: 16536293}
   - component: {fileID: 16536295}
   - component: {fileID: 16536296}
+  - component: {fileID: 16536297}
+  - component: {fileID: 16536298}
   - component: {fileID: 16536294}
   m_Layer: 0
   m_Name: '[Context]'
@@ -161,6 +162,8 @@ MonoBehaviour:
   - {fileID: 16536293}
   - {fileID: 16536295}
   - {fileID: 16536296}
+  - {fileID: 16536297}
+  - {fileID: 16536298}
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -205,18 +208,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09c2c564c3cafa7418643b7c292fca2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridInstaller
---- !u!114 &16536292
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 16536287}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f9f08f5e3abc58419bc4504c360f55f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BuildingInstaller
 --- !u!114 &16536293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -271,6 +262,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90c803f3bde7fe3478dfbd2b1f5f68da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SelectionInstaller
+--- !u!114 &16536297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 16536287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ffe3397ad4a04244951192bcb511c1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombatInstaller
+--- !u!114 &16536298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 16536287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3c2dccf207926948aa6f86f2e1ae982, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SoldierInstaller
+  _soldierContainer: {fileID: 16536290}
+  _soldierList: {fileID: 11400000, guid: a50b1e6b6bd3cba4f98155d0ee545336, type: 2}
 --- !u!1 &197351686
 GameObject:
   m_ObjectHideFlags: 0
@@ -1562,7 +1579,7 @@ MonoBehaviour:
   _iconImage: {fileID: 1325567129}
   _nameText: {fileID: 1429620673}
   _productionContainer: {fileID: 899020644}
-  _productionButtonPrefab: {fileID: 5646402000756770523, guid: 69f81f93a29c82240998814ac266afc9, type: 3}
+  productionUnitViewPrefab: {fileID: 5646402000756770523, guid: 69f81f93a29c82240998814ac266afc9, type: 3}
 --- !u!1 &1429620669
 GameObject:
   m_ObjectHideFlags: 0
