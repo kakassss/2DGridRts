@@ -1,0 +1,72 @@
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using Zenject;
+
+public class SelectionManager : ITickable
+{
+    private readonly GridManager _gridManager;
+    private readonly MouseInput _mouseInput;
+    private readonly SelectionService _selectionService;
+    private readonly PlacementManager _placement;
+    private readonly MoveManager _move;
+    private readonly AttackManager _attack;
+
+    public SelectionManager(GridManager gridManager, MouseInput mouseInput,
+        SelectionService selectionService, PlacementManager placement,
+        MoveManager move, AttackManager attack)
+    {
+        _gridManager = gridManager;
+        _mouseInput = mouseInput;
+        _selectionService = selectionService;
+        _placement = placement;
+        _move = move;
+        _attack = attack;
+    }
+
+    public void Tick()
+    {
+        if (_placement.IsPlacing) return;
+        if (Mouse.current == null) return;
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+            HandleLeftClick();
+        else if (Mouse.current.rightButton.wasPressedThisFrame)
+            HandleRightClick();
+    }
+
+    // Sol tık: hücredeki bina ya da askeri seç, boşsa seçimi temizle
+    private void HandleLeftClick()
+    {
+        GetClickedCell(out int x, out int y);
+        ISelectable selected = _gridManager.GetOccupant(x, y);
+
+        if (selected != null) _selectionService.Select(selected);
+        else _selectionService.Clear();
+    }
+
+    // Sağ tık: seçili birim hareket edebiliyorsa saldır ya da yürü
+    private void HandleRightClick()
+    {
+        if (_selectionService.Current is not IMovable movable) return;
+
+        GetClickedCell(out int x, out int y);
+        ISelectable clicked = _gridManager.GetOccupant(x, y);
+
+        if (clicked is IDamageable target && !ReferenceEquals(clicked, movable))
+        {
+            _attack.Attack(movable, target);
+        }
+        else
+        {
+            _attack.Cancel(movable); // yeni hareket emri saldırıyı iptal eder
+            _move.MoveTo(movable, new Vector2Int(x, y));
+        }
+    }
+
+    private void GetClickedCell(out int x, out int y)
+    {
+        _gridManager.GetXYPosition(_mouseInput.GetMouseInput(), out x, out y);
+    }
+}

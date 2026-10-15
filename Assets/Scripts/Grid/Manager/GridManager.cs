@@ -1,50 +1,95 @@
 using UnityEngine;
 
+public class GridNode
+{
+    public bool IsOccupied;
+    public ISelectable Occupant;
+
+    public GridNode(bool isOccupied)
+    {
+        IsOccupied = isOccupied;
+    }
+}
+
 public class GridManager : IGrid
 {
-    private Vector2Int[,] _grid;
-    private GridDataSO _gridDataSo;
-    
-    public GridManager(GridDataSO gridDataSO)
+    private GridNode[,] _grid;
+    private readonly GameConfigSO _gameConfigSo;
+
+    public float CellSize => _gameConfigSo.CellSize;
+
+    public GridManager(GameConfigSO gameConfigSo)
     {
-        _gridDataSo = gridDataSO;
-        
+        _gameConfigSo = gameConfigSo;
         CreateGrid();
     }
-    
+
     private void CreateGrid()
     {
-        _grid = new Vector2Int[_gridDataSo.Width, _gridDataSo.Height];
-        
-        for (int i = 0; i < _gridDataSo.Width; i++)
-        {
-            for (int j = 0; j < _gridDataSo.Height; j++)
-            {
-                _grid[i, j] = new Vector2Int(i,j) * _gridDataSo.Size;
-                //Debug.Log("Grid " + _grid[i,j]);
-            }
-        }
+        _grid = new GridNode[_gameConfigSo.GridWidth, _gameConfigSo.GridHeight];
+
+        for (int i = 0; i < _gameConfigSo.GridWidth; i++)
+            for (int j = 0; j < _gameConfigSo.GridHeight; j++)
+                _grid[i, j] = new GridNode(false);
     }
-    
+
+    public void SetOccupant(int x, int y, ISelectable occupant)
+    {
+        if (!InBounds(x, y)) return;
+        _grid[x, y].Occupant = occupant;
+        _grid[x, y].IsOccupied = occupant != null;
+    }
+
+    /// <summary>Hücreyi sadece occupant hâlâ o ise boşaltır. Başkasının kaydını asla silmez.</summary>
+    public void ClearOccupant(int x, int y, ISelectable occupant)
+    {
+        if (!InBounds(x, y)) return;
+
+        if (!ReferenceEquals(_grid[x, y].Occupant, occupant))
+        {
+            if (_grid[x, y].Occupant != null)
+                Debug.LogWarning($"Başkasının kaydı silinmeye çalışıldı: ({x},{y})");
+            return;
+        }
+
+        _grid[x, y].Occupant = null;
+        _grid[x, y].IsOccupied = false;
+    }
+
+    public ISelectable GetOccupant(int x, int y)
+    {
+        return InBounds(x, y) ? _grid[x, y].Occupant : null;
+    }
+
+    /// <summary>Hedef doluysa false döner ve hiçbir şey değişmez.</summary>
+    public bool TryMoveOccupant(Vector2Int from, Vector2Int to, ISelectable occupant)
+    {
+        if (!InBounds(to.x, to.y) || GetPositionIsOccupied(to.x, to.y))
+            return false;
+
+        ClearOccupant(from.x, from.y, occupant);
+        SetOccupant(to.x, to.y, occupant);
+        return true;
+    }
+
     public Vector3 GetWorldPosition(int x, int y)
     {
-        return new Vector3(x, y, 0) * _gridDataSo.Size;
+        return new Vector3(x, y, 0) * _gameConfigSo.CellSize;
     }
-    
+
     public void GetXYPosition(Vector3 worldPosition, out int x, out int y)
     {
-        x = Mathf.FloorToInt(worldPosition.x / _gridDataSo.Size);
-        y = Mathf.FloorToInt(worldPosition.y / _gridDataSo.Size);
+        x = Mathf.FloorToInt(worldPosition.x / _gameConfigSo.CellSize);
+        y = Mathf.FloorToInt(worldPosition.y / _gameConfigSo.CellSize);
     }
-    
-    public bool InBounds(Vector3 worldPosition)
-    {
-        GetXYPosition(worldPosition,out int x, out int y);
-        return x >= 0 && x < _gridDataSo.Width && y >= 0 && y < _gridDataSo.Height;
-    }
-    
+
     public bool InBounds(int x, int y)
     {
-        return x >= 0 && x < _gridDataSo.Width && y >= 0 && y < _gridDataSo.Height;
+        return x >= 0 && x < _gameConfigSo.GridWidth && y >= 0 && y < _gameConfigSo.GridHeight;
+    }
+
+    public bool GetPositionIsOccupied(int x, int y)
+    {
+        return !InBounds(x, y) || _grid[x, y].IsOccupied;
     }
 }

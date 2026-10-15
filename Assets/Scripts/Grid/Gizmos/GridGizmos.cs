@@ -1,20 +1,24 @@
 using UnityEngine;
-using Zenject;
 
 public class GridGizmos : MonoBehaviour
 {
-    [SerializeField] private GridDataSO gridDataSO;
+    [SerializeField] private GameConfigSO _gameConfigSO;
+    
+    private void SetAreaPosition()
+    {
+        transform.position = new Vector3(_gameConfigSO.GridWidth / 2f * -1, _gameConfigSO.GridWidth / 2f * -1);
+    }
     
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
 
-        float size = gridDataSO.Size;
-        float width = gridDataSO.Width * size;
-        float height = gridDataSO.Height * size;
+        float size = _gameConfigSO.CellSize;
+        float width = _gameConfigSO.GridWidth * size;
+        float height = _gameConfigSO.GridHeight * size;
 
         // Dikey çizgiler
-        for (int x = 0; x <= gridDataSO.Width; x++)
+        for (int x = 0; x <= _gameConfigSO.GridWidth; x++)
         {
             Vector3 start = transform.position + new Vector3(x * size, 0, 0);
             Vector3 end = start + new Vector3(0, height, 0);
@@ -23,7 +27,7 @@ public class GridGizmos : MonoBehaviour
         }
 
         // Yatay çizgiler
-        for (int y = 0; y <= gridDataSO.Height; y++)
+        for (int y = 0; y <= _gameConfigSO.GridHeight; y++)
         {
             Vector3 start = transform.position + new Vector3(0, y * size, 0);
 
@@ -31,5 +35,7 @@ public class GridGizmos : MonoBehaviour
 
             Gizmos.DrawLine(start, end);
         }
+        
+        //SetAreaPosition();
     }
 }

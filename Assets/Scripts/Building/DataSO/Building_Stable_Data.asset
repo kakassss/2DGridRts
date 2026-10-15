@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b512294f50ef44dbaf47245b2ab2cfd6, type: 3}
+  m_Name: Building_Stable_Data
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDataSO
+  buildingPrefab: {fileID: 4020727048450387020, guid: b6b3b0163c45e5741aa83057af2d9ccf, type: 3}
+  size: {x: 3, y: 3}
+  maxHealth: 100
+  displayName: Stable
+  icon: {fileID: -7155212964530852140, guid: 001c93240640dc443b55a7a750766fc9, type: 3}

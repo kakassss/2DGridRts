@@ -1,12 +1,10 @@
-using UnityEngine;
 using Zenject;
 
 public class GridInstaller : MonoInstaller
 {
-    [SerializeField] private GridDataSO gridDataSO;
-    
     public override void InstallBindings()
     {
-        Container.BindInterfacesAndSelfTo<GridManager>().AsSingle().WithArguments(gridDataSO).NonLazy();
+        Container.BindInterfacesAndSelfTo<GridManager>().AsSingle().NonLazy();
+        Container.Bind<MouseInput>().AsSingle().NonLazy();
     }
 }

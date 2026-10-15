@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b512294f50ef44dbaf47245b2ab2cfd6, type: 3}
+  m_Name: Building_Castle_Data
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDataSO
+  buildingPrefab: {fileID: 4020727048450387020, guid: ac02aec24b0bc0945b803ce36124be81, type: 3}
+  size: {x: 5, y: 5}
+  maxHealth: 250
+  displayName: Castle
+  icon: {fileID: 9167788710304866403, guid: b5132750467fadc4cb9e7ecf72191334, type: 3}
