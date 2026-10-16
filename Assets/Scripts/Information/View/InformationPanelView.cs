@@ -56,7 +56,7 @@ namespace Rts2D.Information.View
             _iconImage.sprite = selectable.Icon;
             _nameText.text = selectable.DisplayName;
 
-            IReadOnlyList<SoldierDataSo> producibles = selectable.Producibles;
+            IReadOnlyList<IProduct> producibles = selectable.Producibles;
 
             // Gereken kadar buton oluştur
             while (_buttons.Count < producibles.Count)
@@ -85,7 +85,7 @@ namespace Rts2D.Information.View
         }
 
         // Butona basılınca burası çalışır, Request'i çağıran yer burası
-        private void OnProduceClicked(SoldierDataSo soldier)
+        private void OnProduceClicked(IProduct soldier)
         {
             if (_current == null) return;
             _soldierService.Request(soldier, _current);

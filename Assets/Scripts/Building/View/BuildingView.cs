@@ -21,7 +21,7 @@ namespace Rts2D.Building.View
 
         public string DisplayName => buildingDataSO.DisplayName;
         public Sprite Icon => buildingDataSO.Icon;
-        public IReadOnlyList<SoldierDataSo> Producibles => buildingDataSO.ProducibleSoldiers;
+        public IReadOnlyList<IProduct> Producibles => buildingDataSO.Producibles;
         public Vector2Int OriginCell { get; private set; }
         public Vector2Int Size => buildingDataSO.Size;
         public bool IsDead => _health.IsDead;

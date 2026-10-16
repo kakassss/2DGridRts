@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using Rts2D.Shared.Contracts;
+using UnityEngine;
 using Rts2D.Unit.Soldier.View;
 
 namespace Rts2D.Unit.Soldier.DataSO
 {
     [CreateAssetMenu(menuName = "SoldierDataSo", fileName = "Data/SoldierDataSo")]
-    public class SoldierDataSo : ScriptableObject
+    public class SoldierDataSo : ScriptableObject, IProduct
     {
         [SerializeField] private string displayName;
         [SerializeField] private Sprite icon;

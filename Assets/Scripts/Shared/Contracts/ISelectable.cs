@@ -11,6 +11,6 @@ namespace Rts2D.Shared.Contracts
         Sprite Icon { get; }
 
         /// <summary>Bu seçilebilirin üretebildiği askerler. Üretim yoksa boş liste.</summary>
-        IReadOnlyList<SoldierDataSo> Producibles { get; }
+        IReadOnlyList<IProduct> Producibles { get; }
     }
 }

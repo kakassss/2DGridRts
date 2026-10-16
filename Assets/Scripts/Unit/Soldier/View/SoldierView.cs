@@ -14,14 +14,14 @@ namespace Rts2D.Unit.Soldier.View
 
         [SerializeField] private HealthBarView healthBar;
 
-        private static readonly IReadOnlyList<SoldierDataSo> NoProducibles = Array.Empty<SoldierDataSo>();
+        private static readonly IReadOnlyList<IProduct> NoProducibles = Array.Empty<SoldierDataSo>();
         private readonly HealthModel _health = new HealthModel();
 
         public SoldierDataSo Data { get; private set; }
         public Vector2Int Cell { get; private set; }
         public string DisplayName => Data.DisplayName;
         public Sprite Icon => Data.Icon;
-        public IReadOnlyList<SoldierDataSo> Producibles => NoProducibles;
+        public IReadOnlyList<IProduct> Producibles => NoProducibles;
         public Queue<Vector2Int> Path { get; } = new Queue<Vector2Int>();
         public Vector2Int Destination { get; set; }
         public GameObject GameObject => gameObject;

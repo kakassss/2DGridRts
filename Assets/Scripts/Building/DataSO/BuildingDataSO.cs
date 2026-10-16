@@ -16,7 +16,7 @@ namespace Rts2D.Building.DataSO
         [SerializeField] private Sprite icon;
         [SerializeField] private List<SoldierDataSo> producibleSoldiers = new List<SoldierDataSo>();
 
-        public IReadOnlyList<SoldierDataSo> ProducibleSoldiers => producibleSoldiers;
+        public IReadOnlyList<IProduct> Producibles  => producibleSoldiers;
         public string DisplayName => displayName;
         public Sprite Icon => icon;
         public Vector2Int Size => size;

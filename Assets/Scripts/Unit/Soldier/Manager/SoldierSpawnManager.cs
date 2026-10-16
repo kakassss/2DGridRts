@@ -44,8 +44,9 @@ namespace Rts2D.Unit.Soldier.Manager
             _service.ProduceRequested -= OnProduceRequested;   
         }
 
-        private void OnProduceRequested(SoldierDataSo data, ISelectable producer)
+        private void OnProduceRequested(IProduct product, ISelectable producer)
         {
+            if (product is not SoldierDataSo data) return;
             if (producer is not ISoldierProducer building) return;
 
             if (!TryFindCellAroundBuilding(building, out Vector2Int cell))

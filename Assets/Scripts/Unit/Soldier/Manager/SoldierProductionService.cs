@@ -6,9 +6,9 @@ namespace Rts2D.Unit.Soldier.Manager
 {
     public class SoldierProductionService
     {
-        public event Action<SoldierDataSo, ISelectable> ProduceRequested;
+        public event Action<IProduct, ISelectable> ProduceRequested;
 
-        public void Request(SoldierDataSo soldier, ISelectable producer)
-            => ProduceRequested?.Invoke(soldier, producer);
+        public void Request(IProduct product, ISelectable producer)
+            => ProduceRequested?.Invoke(product, producer);
     }
 }

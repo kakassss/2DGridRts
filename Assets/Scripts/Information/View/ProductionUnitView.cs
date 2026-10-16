@@ -1,4 +1,5 @@
 using System;
+using Rts2D.Shared.Contracts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,13 +13,13 @@ namespace Rts2D.Information.View
         [SerializeField] private Image _iconImage;
         [SerializeField] private TextMeshProUGUI _nameText;
 
-        private SoldierDataSo _data;
-        private Action<SoldierDataSo> _onClicked;
+        private IProduct _data;
+        private Action<IProduct> _onClicked;
 
         private void Awake() => _button.onClick.AddListener(HandleClick);
         private void OnDestroy() => _button.onClick.RemoveListener(HandleClick);
 
-        public void Bind(SoldierDataSo data, Action<SoldierDataSo> onClicked)
+        public void Bind(IProduct data, Action<IProduct> onClicked)
         {
             _data = data;
             _onClicked = onClicked;
