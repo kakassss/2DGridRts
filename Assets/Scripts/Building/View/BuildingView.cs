@@ -25,6 +25,8 @@ namespace Rts2D.Building.View
         public Vector2Int OriginCell { get; private set; }
         public Vector2Int Size => buildingDataSO.Size;
         public bool IsDead => _health.IsDead;
+        public Vector2Int MinCell => OriginCell;
+        public Vector2Int MaxCell => OriginCell + Size - Vector2Int.one;
 
 
         public void Initialize(BuildingDataSO data, Vector2Int originCell)

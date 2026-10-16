@@ -1,39 +1,22 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using Zenject;
-using System.Collections.Generic;
-using UnityEngine.EventSystems;
 using Rts2D.Building.DataSO;
 using Rts2D.Building.View;
 using Rts2D.Combat.Manager;
 using Rts2D.GameConfig.DataSO;
 using Rts2D.Grid.Manager;
+using Rts2D.Grid.Utils;
 using Rts2D.ProductionMenu.Manager;
 using Rts2D.Test;
 
 namespace Rts2D.Placement.Manager
 {
-    public static class BuildingNeighbors
-    {
-        public static void Find(Vector2Int origin, Vector2Int size, List<Vector2Int> gridNeighbors)
-        {
-            gridNeighbors.Clear();
-
-            for (int x = 0; x < size.x; x++)
-            {
-                for (int y = 0; y < size.y; y++)
-                {
-                    gridNeighbors.Add(new Vector2Int(origin.x + x, origin.y + y));
-                }
-            }
-        }
-    }
-
     public class PlacementManager : ITickable, IInitializable, IDisposable
     {
-        #region Fields
-
         private readonly ProductSelectionService _service;
         private readonly GameConfigSO _gameConfigSo;
         private readonly GridManager _gridManager;
@@ -41,7 +24,7 @@ namespace Rts2D.Placement.Manager
         private readonly DestroyManager _destroyManager;
         private readonly IInstantiator _instantiator;
 
-        private readonly List<Vector2Int> _cellNeighbors = new List<Vector2Int>();
+        private readonly List<Vector2Int> _footprintCells = new List<Vector2Int>();
 
         private BuildingDataSO _currentData;
         private BuildingView _ghostBuilding;
@@ -49,12 +32,11 @@ namespace Rts2D.Placement.Manager
         private Vector2Int _currentOriginCell;
         private bool _canPlace;
 
-        #endregion
-
-        #region Lifecycle
+        public bool IsPlacing => _ghostBuilding != null;
 
         public PlacementManager(GridManager gridManager, MouseInput mouseInput,
-            GameConfigSO gameConfigSo, ProductSelectionService service, DestroyManager destroyManager, IInstantiator instantiator)
+            GameConfigSO gameConfigSo, ProductSelectionService service,
+            DestroyManager destroyManager, IInstantiator instantiator)
         {
             _gridManager = gridManager;
             _mouseInput = mouseInput;
@@ -72,18 +54,18 @@ namespace Rts2D.Placement.Manager
         public void Dispose()
         {
             _service.ProductSelected -= StartPlacement;
-            if (_ghostBuilding != null) UnityEngine.Object.Destroy(_ghostBuilding);
+            DestroyGhost();
         }
 
         public void Tick()
         {
-            if (_ghostBuilding == null)
-                return;
+            if (_ghostBuilding == null) return;
+            if (Keyboard.current == null || Mouse.current == null) return;
 
             if (Keyboard.current.escapeKey.wasPressedThisFrame ||
                 Mouse.current.rightButton.wasPressedThisFrame)
             {
-                CancelPlacement();
+                DestroyGhost();
                 return;
             }
 
@@ -93,29 +75,20 @@ namespace Rts2D.Placement.Manager
                 TryPlace();
         }
 
-        #endregion
-
-        #region Public API
-
-        public bool IsPlacing => _ghostBuilding != null;
-
-        #endregion
-
-        #region Internals
-
         private void StartPlacement(BuildingDataSO data)
         {
-            if (_ghostBuilding != null)
-                UnityEngine.Object.Destroy(_ghostBuilding);
+            DestroyGhost();
 
             _currentData = data;
             _ghostBuilding = _instantiator.InstantiatePrefabForComponent<BuildingView>(data.BuildingPrefab);
             _ghostRenderer = _ghostBuilding.GetComponent<SpriteRenderer>();
         }
 
-        private void CancelPlacement()
+        private void DestroyGhost()
         {
-            UnityEngine.Object.Destroy(_ghostBuilding);
+            if (_ghostBuilding != null)
+                UnityEngine.Object.Destroy(_ghostBuilding.gameObject);
+
             _ghostBuilding = null;
             _ghostRenderer = null;
         }
@@ -124,70 +97,49 @@ namespace Rts2D.Placement.Manager
         {
             Vector2Int size = _currentData.Size;
 
-            _currentOriginCell = GetBuildingOrigin(_mouseInput.GetMouseInput(), size);
+            _currentOriginCell = _gridManager.GetBuildingOrigin(_mouseInput.GetMouseInput(), size);
             _canPlace = CanPlace(_currentOriginCell, size);
 
-            _ghostBuilding.transform.position = GetBuildingCenter(_currentOriginCell, size);
-            _ghostRenderer.color = _canPlace ? _gameConfigSo.ValidPlacementColor : _gameConfigSo.InvalidPlacementColor;
+            _ghostBuilding.transform.position = _gridManager.GetBuildingCenter(_currentOriginCell, size);
+            _ghostRenderer.color = _canPlace
+                ? _gameConfigSo.ValidPlacementColor
+                : _gameConfigSo.InvalidPlacementColor;
         }
 
         private void TryPlace()
         {
-            if (!_canPlace)
-                return;
+            if (!_canPlace) return;
 
-            var view = _ghostBuilding;
-            if (view == null)
-            {
-                Debug.LogError($"{_ghostBuilding.name} prefab'ında BuildingView yok.");
-                return;
-            }
-
+            BuildingView view = _ghostBuilding;
             view.Initialize(_currentData, _currentOriginCell);
 
-            BuildingNeighbors.Find(_currentOriginCell, _currentData.Size, _cellNeighbors);
-            foreach (Vector2Int cell in _cellNeighbors)
+            GridCellUtils.FillRect(_currentOriginCell, _currentData.Size, _footprintCells);
+            foreach (Vector2Int cell in _footprintCells)
                 _gridManager.SetOccupant(cell.x, cell.y, view);
 
             _ghostRenderer.color = Color.white;
+            _destroyManager.Track(view);
+
+            // Ghost artık gerçek bina, referansı bırak (yok etme)
             _ghostBuilding = null;
             _ghostRenderer = null;
-
-            _destroyManager.Track(view);
         }
 
+        /// <summary>Sınır dışı hücreler GetPositionIsOccupied ile dolu sayılır, ayrı kontrol gerekmez.</summary>
         private bool CanPlace(Vector2Int origin, Vector2Int size)
         {
-            BuildingNeighbors.Find(origin, size, _cellNeighbors);
+            GridCellUtils.FillRect(origin, size, _footprintCells);
 
-            foreach (Vector2Int cell in _cellNeighbors)
-            {
-                if (!_gridManager.InBounds(cell.x, cell.y)) return false;
-                if (_gridManager.GetPositionIsOccupied(cell.x, cell.y)) return false;
-            }
+            foreach (Vector2Int cell in _footprintCells)
+                if (_gridManager.GetPositionIsOccupied(cell.x, cell.y))
+                    return false;
+
             return true;
         }
 
-        private Vector2Int GetBuildingOrigin(Vector3 mouseWorld, Vector2Int size)
-        {
-            float cellSize = _gameConfigSo.CellSize;
-            int x = Mathf.FloorToInt(mouseWorld.x / cellSize - size.x / 2f + 0.5f);
-            int y = Mathf.FloorToInt(mouseWorld.y / cellSize - size.y / 2f + 0.5f);
-            return new Vector2Int(x, y);
-        }
-
-        private Vector3 GetBuildingCenter(Vector2Int origin, Vector2Int size)
-        {
-            float cellSize = _gameConfigSo.CellSize;
-            return new Vector3((origin.x + size.x / 2f) * cellSize,
-                               (origin.y + size.y / 2f) * cellSize, 0f);
-        }
-
-        private static bool IsPointerOverUI()
+        private bool IsPointerOverUI()
         {
             return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
         }
-
-        #endregion
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Rts2D.Shared.Contracts
 {
-    public interface IDamageable : ISelectable
+    public interface IDamageable : ISelectable,IOccupant
     {
         bool IsDead { get; }
         event Action<IDamageable> Died;

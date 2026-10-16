@@ -73,7 +73,7 @@ namespace Rts2D.Grid.Manager
             SetOccupant(to.x, to.y, occupant);
             return true;
         }
-
+    
         public Vector3 GetWorldPosition(int x, int y)
         {
             return new Vector3(x, y, 0) * _gameConfigSo.CellSize;
@@ -93,6 +93,23 @@ namespace Rts2D.Grid.Manager
         public bool GetPositionIsOccupied(int x, int y)
         {
             return !InBounds(x, y) || _grid[x, y].IsOccupied;
+        }
+        
+        /// <summary>Fare binanın ortasına gelecek şekilde sol alt hücreyi döndürür.</summary>
+        public Vector2Int GetBuildingOrigin(Vector3 worldPosition, Vector2Int size)
+        {
+            int x = Mathf.FloorToInt(worldPosition.x / CellSize - size.x / 2f + 0.5f);
+            int y = Mathf.FloorToInt(worldPosition.y / CellSize - size.y / 2f + 0.5f);
+            return new Vector2Int(x, y);
+        }
+
+        /// <summary>Footprint'in dünya merkezi (sprite pivot'u Center ise).</summary>
+        public Vector3 GetBuildingCenter(Vector2Int origin, Vector2Int size)
+        {
+            return new Vector3(
+                (origin.x + size.x / 2f) * CellSize,
+                (origin.y + size.y / 2f) * CellSize,
+                0f);
         }
     }
 }

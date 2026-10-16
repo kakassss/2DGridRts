@@ -29,6 +29,8 @@ namespace Rts2D.Unit.Soldier.View
         public bool IsDead => _health.IsDead;
         public int Damage => Data.Damage;
         public float AttackInterval => Data.AttackInterval;
+        public Vector2Int MinCell => Cell;
+        public Vector2Int MaxCell => Cell;
 
         public void Initialize(SoldierDataSo data, Vector2Int cell, Vector3 worldPosition)
         {

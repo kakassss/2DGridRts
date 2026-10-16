@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-using Rts2D.Building.View;
-using Rts2D.Grid.Manager;
+using Rts2D.Grid.Util;
 using Rts2D.Move.Manager;
 using Rts2D.Shared.Contracts;
 
@@ -10,109 +9,35 @@ namespace Rts2D.Combat.Manager
 {
     public class AttackManager : ITickable
     {
-        #region Nested Types
-
         private class AttackOrder
         {
             public IMovable Unit;
             public IAttacker Attacker;
             public IDamageable Target;
             public float NextAttackTime;
-            public Vector2Int LastTargetCell;
+            public Vector2Int LastTargetCell = new Vector2Int(int.MinValue, int.MinValue);
         }
 
-        #endregion
-
-        #region Fields
-
         private readonly MoveManager _move;
-        private readonly GridManager _grid;
+        private readonly ApproachCellFinderService _cellFinder;
         private readonly List<AttackOrder> _orders = new List<AttackOrder>();
 
         // Döngü sırasında biriken vuruşlar, döngü bitince uygulanır
         private readonly List<(IDamageable target, int damage)> _pendingHits
             = new List<(IDamageable, int)>();
 
-        #endregion
-
-        #region Lifecycle
-
-        public AttackManager(MoveManager move, GridManager grid)
+        public AttackManager(MoveManager move, ApproachCellFinderService cellFinder)
         {
             _move = move;
-            _grid = grid;
+            _cellFinder = cellFinder;
         }
-
-        public void Tick()
-        {
-            // 1) Emirleri işle. Bu döngüde TakeDamage çağrılmaz.
-            for (int i = _orders.Count - 1; i >= 0; i--)
-            {
-                AttackOrder attackOrder = _orders[i];
-
-                if (attackOrder.Target.IsDead || !attackOrder.Unit.GameObject.activeSelf)
-                {
-                    _orders.RemoveAt(i);
-                    continue;
-                }
-
-                if (IsAdjacent(attackOrder.Unit.Cell, attackOrder.Target))
-                {
-                    // Hedef yürüyorsa vurma, takibe devam et (aşağıdaki yaklaşma koduna düş)
-                    if (!IsMoving(attackOrder.Target))
-                    {
-                        _move.Stop(attackOrder.Unit);
-
-                        if (Time.time >= attackOrder.NextAttackTime)
-                        {
-                            _pendingHits.Add((attackOrder.Target, attackOrder.Attacker.Damage));
-                            attackOrder.NextAttackTime = Time.time + attackOrder.Attacker.AttackInterval;
-                        }
-                        continue;
-                    }
-                }
-
-                // Bitişik değil: yol bittiyse ya da hedef yer değiştirdiyse yeniden yaklaş
-                GetBounds(attackOrder.Target, out Vector2Int targetMin, out _);
-                bool targetMoved = targetMin != attackOrder.LastTargetCell;
-
-                if (attackOrder.Unit.Path.Count == 0 || targetMoved)
-                {
-                    attackOrder.LastTargetCell = targetMin;
-
-                    if (TryFindAdjacentCell(attackOrder.Unit.Cell, attackOrder.Target, out Vector2Int cell))
-                        _move.MoveTo(attackOrder.Unit, cell);
-                    else if (attackOrder.Unit.Path.Count == 0)
-                        _orders.RemoveAt(i); // ulaşılamaz
-                }
-            }
-
-            // 2) Döngü bitti: hasarları uygula
-            for (int i = 0; i < _pendingHits.Count; i++)
-            {
-                (IDamageable target, int damage) = _pendingHits[i];
-                if (!target.IsDead)
-                    target.TakeDamage(damage);
-            }
-            _pendingHits.Clear();
-        }
-
-        #endregion
-
-        #region Public API
 
         public void Attack(IMovable unit, IDamageable target)
         {
             if (unit is not IAttacker attacker || target == null || target.IsDead) return;
 
-            _orders.RemoveAll(o => o.Unit == unit);
-            _orders.Add(new AttackOrder
-            {
-                Unit = unit,
-                Attacker = attacker,
-                Target = target,
-                LastTargetCell = new Vector2Int(int.MinValue, int.MinValue)
-            });
+            Cancel(unit);
+            _orders.Add(new AttackOrder { Unit = unit, Attacker = attacker, Target = target });
         }
 
         public void Cancel(IMovable unit) => _orders.RemoveAll(o => o.Unit == unit);
@@ -120,68 +45,71 @@ namespace Rts2D.Combat.Manager
         /// <summary>Ölen hedefi kovalayan tüm emirleri siler.</summary>
         public void CancelTargeting(IDamageable dead) => _orders.RemoveAll(o => o.Target == dead);
 
-        #endregion
-
-        #region Internals
-
-        private static void GetBounds(IDamageable t, out Vector2Int min, out Vector2Int max)
+        public void Tick()
         {
-            switch (t)
+            for (int i = _orders.Count - 1; i >= 0; i--)
             {
-                case BuildingView buildingView:
-                    min = buildingView.OriginCell;
-                    max = buildingView.OriginCell + buildingView.Size - Vector2Int.one;
-                    break;
-                case IMovable m:
-                    min = max = m.Cell;
-                    break;
-                default:
-                    min = max = Vector2Int.zero;
-                    break;
+                if (!ProcessOrder(_orders[i]))
+                    _orders.RemoveAt(i);
             }
+
+            ApplyPendingHits(); // döngü bitti, ölüm zinciri güvenle çalışabilir
         }
 
-        /// <summary>Hücrenin hedef footprint'ine Manhattan mesafesi (içindeyse 0).</summary>
-        private static int DistanceTo(Vector2Int cell, IDamageable target)
+        /// <summary>Emri bir adım ilerletir. Emir bittiyse false döner.</summary>
+        private bool ProcessOrder(AttackOrder order)
         {
-            GetBounds(target, out Vector2Int min, out Vector2Int max);
-            int dx = Mathf.Max(min.x - cell.x, 0, cell.x - max.x);
-            int dy = Mathf.Max(min.y - cell.y, 0, cell.y - max.y);
-            return dx + dy;
+            if (order.Target.IsDead || !order.Unit.GameObject.activeSelf)
+                return false;
+
+            bool adjacent = OccupantGeometry.IsAdjacent(order.Unit.Cell, order.Target);
+
+            if (adjacent && !IsMoving(order.Target))
+            {
+                _move.Stop(order.Unit);
+                TryQueueHit(order);
+                return true;
+            }
+
+            return ChaseTarget(order);
         }
 
-        /// <summary>Hücre, hedefin footprint'ine 4 yönde bitişik mi?</summary>
-        private bool IsAdjacent(Vector2Int cell, IDamageable target)
+        private void TryQueueHit(AttackOrder order)
         {
-            return DistanceTo(cell, target) == 1;
+            if (Time.time < order.NextAttackTime) return;
+
+            _pendingHits.Add((order.Target, order.Attacker.Damage));
+            order.NextAttackTime = Time.time + order.Attacker.AttackInterval;
+        }
+
+        /// <summary>Yol bittiyse ya da hedef yer değiştirdiyse yeniden yaklaşır. Ulaşılamazsa false.</summary>
+        private bool ChaseTarget(AttackOrder order)
+        {
+            bool targetMoved = order.Target.MinCell != order.LastTargetCell;
+            if (order.Unit.Path.Count > 0 && !targetMoved) return true;
+
+            order.LastTargetCell = order.Target.MinCell;
+
+            if (_cellFinder.TryFind(order.Unit.Cell, order.Target, out Vector2Int cell))
+            {
+                _move.MoveTo(order.Unit, cell);
+                return true;
+            }
+
+            return order.Unit.Path.Count > 0; // yolu varsa devam, yoksa ulaşılamaz
+        }
+
+        private void ApplyPendingHits()
+        {
+            foreach ((IDamageable target, int damage) in _pendingHits)
+            {
+                if (!target.IsDead)
+                    target.TakeDamage(damage);
+            }
+            _pendingHits.Clear();
         }
 
         private static bool IsMoving(IDamageable target)
-            => target is IMovable m && m.Path.Count > 0;
-
-        /// <summary>Hedefe bitişik, askere en yakın boş hücreyi bulur.</summary>
-        private bool TryFindAdjacentCell(Vector2Int from, IDamageable target, out Vector2Int result)
-        {
-            GetBounds(target, out Vector2Int min, out Vector2Int max);
-
-            int best = int.MaxValue;
-            result = default;
-            bool found = false;
-
-            for (int x = min.x - 1; x <= max.x + 1; x++)
-            {
-                for (int y = min.y - 1; y <= max.y + 1; y++)
-                {
-                    if (!_grid.InBounds(x, y) || _grid.GetPositionIsOccupied(x, y)) continue;
-                    if (!IsAdjacent(new Vector2Int(x, y), target)) continue;
-
-                    int dist = Mathf.Abs(x - from.x) + Mathf.Abs(y - from.y);
-                    if (dist < best) { best = dist; result = new Vector2Int(x, y); found = true; }
-                }
-            }
-            return found;
-        }
-
-        #endregion
+            => target is IMovable movable && movable.Path.Count > 0;
     }
 }
