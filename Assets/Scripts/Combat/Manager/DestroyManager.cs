@@ -1,35 +1,28 @@
-﻿using UnityEngine;
-using Rts2D.Building.View;
+﻿using System.Collections.Generic;
 using Rts2D.Grid.Manager;
-using Rts2D.Move.Manager;
 using Rts2D.Selection.Manager;
 using Rts2D.Shared.Contracts;
-using Rts2D.Unit.Soldier.Manager;
-using Rts2D.Unit.Soldier.View;
 
 namespace Rts2D.Combat.Manager
 {
     public class DestroyManager
     {
         private readonly GridManager _grid;
-        private readonly SoldierPoolManager _soldierPools;
-        private readonly MoveManager _move;
         private readonly AttackManager _attack;
         private readonly SelectionService _selection;
+        private readonly List<IDespawnHandler> _despawners;
 
-        public DestroyManager(GridManager grid, SoldierPoolManager soldierPools,
-            MoveManager move, AttackManager attack, SelectionService selection)
+        public DestroyManager(GridManager grid, AttackManager attack,
+            SelectionService selection, List<IDespawnHandler> despawners)
         {
             _grid = grid;
-            _soldierPools = soldierPools;
-            _move = move;
             _attack = attack;
             _selection = selection;
+            _despawners = despawners;
         }
 
         public void Track(IDamageable damageable)
         {
-            damageable.Died -= OnDied;
             damageable.Died += OnDied;
         }
 
@@ -38,30 +31,19 @@ namespace Rts2D.Combat.Manager
             dead.Died -= OnDied;
 
             _attack.CancelTargeting(dead);
+            if (dead is IMovable movable) _attack.Cancel(movable);
 
             if (_selection.Current == dead)
                 _selection.Clear();
 
-            switch (dead)
+            _grid.RemoveOccupant(dead);
+
+            foreach (IDespawnHandler despawner in _despawners)
             {
-                case SoldierView soldier:
-                    _attack.Cancel(soldier);
-                    _move.Stop(soldier);
-                    _soldierPools.Despawn(soldier);
-                    break;
-
-                case BuildingView building:
-                    ClearBuildingCells(building);
-                    Object.Destroy(building.gameObject);
-                    break;
+                if (!despawner.CanHandle(dead)) continue;
+                despawner.Despawn(dead);
+                return;
             }
-        }
-
-        private void ClearBuildingCells(BuildingView b)
-        {
-            for (int x = 0; x < b.Size.x; x++)
-            for (int y = 0; y < b.Size.y; y++)
-                _grid.ClearOccupant(b.OriginCell.x + x, b.OriginCell.y + y, b);
         }
     }
 }

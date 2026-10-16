@@ -2,9 +2,9 @@
 using UnityEngine;
 using Zenject;
 using Rts2D.Grid.Manager;
-using Rts2D.ObjectPool.Manager;
 using Rts2D.Unit.Soldier.DataSO;
 using Rts2D.Unit.Soldier.View;
+using Rts2D.ObjectPool;
 
 namespace Rts2D.Unit.Soldier.Manager
 {
@@ -39,9 +39,10 @@ namespace Rts2D.Unit.Soldier.Manager
             return pool.Spawn();
         }
 
+        
         public void Despawn(SoldierView soldier)
         {
-            _grid.ClearOccupant(soldier.Cell.x, soldier.Cell.y, soldier);
+            _grid.RemoveOccupant(soldier);
 
             if (_pools.TryGetValue(soldier.Data, out var pool))
                 pool.Despawn(soldier);
