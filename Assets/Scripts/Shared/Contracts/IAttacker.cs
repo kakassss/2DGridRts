@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rts2D.Shared.Contracts
 {
-    /// <summary>Saldırı yapabilen her şey (menzil + hasar + konum).</summary>
+    /// <summary>Anything that can attack (damage + attack interval + position).</summary>
     public interface IAttacker
     {
         int Damage { get; }

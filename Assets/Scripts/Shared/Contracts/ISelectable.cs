@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace Rts2D.Shared.Contracts
 {
-    /// <summary>Information panelinde gösterilebilen her şey (bina, asker).</summary>
+    /// <summary>Anything that can be shown in the information panel (building, soldier).</summary>
     public interface ISelectable
     {
         string DisplayName { get; }
         Sprite Icon { get; }
 
-        /// <summary>Bu seçilebilirin üretebildiği askerler. Üretim yoksa boş liste.</summary>
+        /// <summary>Soldiers this selectable can produce. Empty list if it produces nothing.</summary>
         IReadOnlyList<IProduct> Producibles { get; }
     }
 }

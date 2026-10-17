@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rts2D.Shared.Contracts
 {
-    /// <summary>Grid üzerinde dikdörtgen bir alan kaplayan her şey.</summary>
+    /// <summary>Anything that covers a rectangular area on the grid.</summary>
     public interface IOccupant
     {
         Vector2Int MinCell { get; }

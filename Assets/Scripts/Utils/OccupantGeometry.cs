@@ -5,7 +5,7 @@ namespace Rts2D.Grid.Util
 {
     public static class OccupantGeometry
     {
-        /// <summary>Hücrenin footprint'e Manhattan mesafesi (içindeyse 0).</summary>
+        /// <summary>Manhattan distance from the cell to the footprint (0 if inside).</summary>
         public static int DistanceTo(Vector2Int cell, IOccupant target)
         {
             int dx = Mathf.Max(target.MinCell.x - cell.x, 0, cell.x - target.MaxCell.x);

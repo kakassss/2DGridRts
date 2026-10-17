@@ -44,7 +44,7 @@ namespace Rts2D.Selection.Manager
                 HandleRightClick();
         }
 
-        // Sol tık: hücredeki bina ya da askeri seç, boşsa seçimi temizle
+        // Left click: select the building or soldier in the cell, clear the selection if empty
         private void HandleLeftClick()
         {
             GetClickedCell(out int x, out int y);
@@ -54,7 +54,7 @@ namespace Rts2D.Selection.Manager
             else _selectionService.Clear();
         }
 
-        // Sağ tık: seçili birim hareket edebiliyorsa saldır ya da yürü
+        // Right click: if the selected unit can move, attack or walk
         private void HandleRightClick()
         {
             if (_selectionService.Current is not IMovable movable) return;
@@ -68,7 +68,7 @@ namespace Rts2D.Selection.Manager
             }
             else
             {
-                _attack.Cancel(movable); // yeni hareket emri saldırıyı iptal eder
+                _attack.Cancel(movable); // a new move order cancels the attack
                 _move.MoveTo(movable, new Vector2Int(x, y));
             }
         }

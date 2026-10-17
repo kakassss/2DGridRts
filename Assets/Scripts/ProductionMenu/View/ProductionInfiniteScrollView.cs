@@ -113,8 +113,8 @@ namespace Rts2D.ProductionMenu.View
         #region Internals
 
         /// <summary>
-        /// Alanı dolduracak kadar obje üretir (havuzdan). Veri, ScriptableObject listesinden
-        /// döngüsel olarak bağlanır: 3 ürün varsa 12 slotta A B C A B C ...
+        /// Spawns enough items (from the pool) to fill the area. Data comes from the ScriptableObject list
+        /// and is bound cyclically: with 3 products, 12 slots show A B C A B C ...
         /// </summary>
         private void RebuildItems()
         {
@@ -128,7 +128,7 @@ namespace Rts2D.ProductionMenu.View
             int neededRows = Mathf.CeilToInt(area.y / rowHeight) + 2;
             int total = neededRows * _columns;
 
-            // Döngüde sıra bozulmasın: ürün sayısının katına tamamla
+            // Keep the cycle order intact: round up to a multiple of the product count
             total = Mathf.CeilToInt(total / (float)products.Length) * products.Length;
 
             while (_views.Count < total)

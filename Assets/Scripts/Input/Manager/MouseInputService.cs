@@ -3,14 +3,14 @@ using UnityEngine.InputSystem;
 
 namespace Rts2D.InputHandling.Service
 {
-    /// <summary>Farenin dünya konumunu verir.</summary>
+    /// <summary>Provides the mouse position in world space.</summary>
     public class MouseInputService
     {
         private readonly Camera _camera;
 
-        public MouseInputService()
+        public MouseInputService(Camera camera)
         {
-            _camera = Camera.main; // her çağrıda Camera.main aramamak için önbelleğe alınır
+            _camera = camera;
         }
 
         public Vector3 GetWorldPosition()

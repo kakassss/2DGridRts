@@ -15,7 +15,7 @@ namespace Rts2D.Grid.Manager
 
         public GridPathfinderManager(GridManager grid) => _grid = grid;
 
-        /// <summary>Başlangıç hariç, hedef dahil hücre listesi. Yol yoksa null.</summary>
+        /// <summary>Cells from start (exclusive) to target (inclusive). Null if there is no path.</summary>
         public List<Vector2Int> FindPath(Vector2Int start, Vector2Int target)
         {
             if (start == target) return new List<Vector2Int>();

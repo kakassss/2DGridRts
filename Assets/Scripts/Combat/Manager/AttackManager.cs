@@ -22,7 +22,7 @@ namespace Rts2D.Combat.Manager
         private readonly ApproachCellFinderService _cellFinder;
         private readonly List<AttackOrder> _orders = new List<AttackOrder>();
 
-        // Döngü sırasında biriken vuruşlar, döngü bitince uygulanır
+        // Hits collected during the loop; applied once the loop has finished
         private readonly List<(IDamageable target, int damage)> _pendingHits
             = new List<(IDamageable, int)>();
 
@@ -42,7 +42,7 @@ namespace Rts2D.Combat.Manager
 
         public void Cancel(IMovable unit) => _orders.RemoveAll(o => o.Unit == unit);
 
-        /// <summary>Ölen hedefi kovalayan tüm emirleri siler.</summary>
+        /// <summary>Removes every order that is chasing the dead target.</summary>
         public void CancelTargeting(IDamageable dead) => _orders.RemoveAll(o => o.Target == dead);
 
         public void Tick()
@@ -53,10 +53,10 @@ namespace Rts2D.Combat.Manager
                     _orders.RemoveAt(i);
             }
 
-            ApplyPendingHits(); // döngü bitti, ölüm zinciri güvenle çalışabilir
+            ApplyPendingHits(); // loop finished, so the death chain can safely run
         }
 
-        /// <summary>Emri bir adım ilerletir. Emir bittiyse false döner.</summary>
+        /// <summary>Advances the order by one step. Returns false when the order is finished.</summary>
         private bool ProcessOrder(AttackOrder order)
         {
             if (order.Target.IsDead || !order.Unit.GameObject.activeSelf)
@@ -82,7 +82,7 @@ namespace Rts2D.Combat.Manager
             order.NextAttackTime = Time.time + order.Attacker.AttackInterval;
         }
 
-        /// <summary>Yol bittiyse ya da hedef yer değiştirdiyse yeniden yaklaşır. Ulaşılamazsa false.</summary>
+        /// <summary>Re-approaches when the path ended or the target moved. Returns false if unreachable.</summary>
         private bool ChaseTarget(AttackOrder order)
         {
             bool targetMoved = order.Target.MinCell != order.LastTargetCell;
@@ -96,7 +96,7 @@ namespace Rts2D.Combat.Manager
                 return true;
             }
 
-            return order.Unit.Path.Count > 0; // yolu varsa devam, yoksa ulaşılamaz
+            return order.Unit.Path.Count > 0; // keep going if a path exists, otherwise unreachable
         }
 
         private void ApplyPendingHits()

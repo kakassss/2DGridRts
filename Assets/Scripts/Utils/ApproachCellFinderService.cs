@@ -4,7 +4,7 @@ using Rts2D.Shared.Contracts;
 
 namespace Rts2D.Grid.Util
 {
-    /// <summary>Bir hedefe bitişik, boş ve en yakın hücreyi bulur.</summary>
+    /// <summary>Finds the nearest free cell adjacent to a target.</summary>
     public class ApproachCellFinderService
     {
         private readonly GridManager _grid;
@@ -22,7 +22,7 @@ namespace Rts2D.Grid.Util
                 for (int y = target.MinCell.y - 1; y <= target.MaxCell.y + 1; y++)
                 {
                     var cell = new Vector2Int(x, y);
-                    if (_grid.IsOccupied(x, y)) continue; // sınır dışı da dolu sayılır
+                    if (_grid.IsOccupied(x, y)) continue; // out-of-bounds counts as occupied
                     if (!OccupantGeometry.IsAdjacent(cell, target)) continue;
 
                     int dist = Mathf.Abs(x - from.x) + Mathf.Abs(y - from.y);

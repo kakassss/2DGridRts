@@ -27,9 +27,9 @@ namespace Rts2D.Grid.Manager
                     _cells[x, y] = new GridCell();
         }
 
-        // ---------- Kayıt (yaz / sil / taşı) ----------
+        // ---------- Registration (place / remove / move) ----------
 
-        /// <summary>Varlığın kapladığı tüm hücrelere kendini yazar.</summary>
+        /// <summary>Writes the occupant into every cell it covers.</summary>
         public void PlaceOccupant(IOccupant occupant)
         {
             for (int x = occupant.MinCell.x; x <= occupant.MaxCell.x; x++)
@@ -37,7 +37,7 @@ namespace Rts2D.Grid.Manager
                     SetOccupant(x, y, occupant);
         }
 
-        /// <summary>Varlığın kapladığı hücreleri boşaltır. Sadece kendi kaydını siler.</summary>
+        /// <summary>Frees the cells the occupant covers. Only removes its own entries.</summary>
         public void RemoveOccupant(IOccupant occupant)
         {
             for (int x = occupant.MinCell.x; x <= occupant.MaxCell.x; x++)
@@ -45,7 +45,7 @@ namespace Rts2D.Grid.Manager
                     ClearOccupant(x, y, occupant);
         }
 
-        /// <summary>Hedef doluysa false döner ve hiçbir şey değişmez.</summary>
+        /// <summary>Returns false and changes nothing if the target cell is occupied.</summary>
         public bool TryMoveOccupant(Vector2Int from, Vector2Int to, IOccupant occupant)
         {
             if (IsOccupied(to.x, to.y))
@@ -56,7 +56,7 @@ namespace Rts2D.Grid.Manager
             return true;
         }
 
-        // ---------- Sorgular ----------
+        // ---------- Queries ----------
 
         public IOccupant GetOccupant(int x, int y)
             => InBounds(x, y) ? _cells[x, y].Occupant : null;
@@ -64,11 +64,11 @@ namespace Rts2D.Grid.Manager
         public bool InBounds(int x, int y)
             => x >= 0 && x < _gameConfigSo.GridWidth && y >= 0 && y < _gameConfigSo.GridHeight;
 
-        /// <summary>Sınır dışı hücreler dolu sayılır.</summary>
+        /// <summary>Cells outside the grid count as occupied.</summary>
         public bool IsOccupied(int x, int y)
             => !InBounds(x, y) || _cells[x, y].IsOccupied;
 
-        /// <summary>Verilen dikdörtgen alandaki tüm hücreler boş ve sınır içinde mi?</summary>
+        /// <summary>Are all cells of the given rectangle free and inside the grid?</summary>
         public bool IsAreaFree(Vector2Int origin, Vector2Int size)
         {
             for (int x = origin.x; x < origin.x + size.x; x++)
@@ -79,7 +79,7 @@ namespace Rts2D.Grid.Manager
             return true;
         }
 
-        // ---------- Koordinat dönüşümleri ----------
+        // ---------- Coordinate conversions ----------
 
         public void GetXYPosition(Vector3 worldPosition, out int x, out int y)
         {
@@ -87,13 +87,13 @@ namespace Rts2D.Grid.Manager
             y = Mathf.FloorToInt(worldPosition.y / CellSize);
         }
 
-        /// <summary>Hücrenin dünya merkezi.</summary>
+        /// <summary>World-space center of the cell.</summary>
         public Vector3 GetCellCenter(Vector2Int cell)
             => new Vector3((cell.x + 0.5f) * CellSize, (cell.y + 0.5f) * CellSize, 0f);
 
         /// <summary>
-        /// Fare binanın ortasına gelecek şekilde sol alt hücreyi döndürür.
-        /// Merkez, boyuta göre hücre ortasına (tek) ya da hücre köşesine (çift) en yakın noktaya oturur.
+        /// Returns the bottom-left cell so that the mouse sits at the middle of the building.
+        /// The center snaps to a cell middle (odd size) or to a cell corner (even size).
         /// </summary>
         public Vector2Int GetBuildingOrigin(Vector3 worldPosition, Vector2Int size)
         {
@@ -102,14 +102,14 @@ namespace Rts2D.Grid.Manager
             return new Vector2Int(x, y);
         }
 
-        /// <summary>Footprint'in dünya merkezi (sprite pivot'u Center ise).</summary>
+        /// <summary>World-space center of the footprint (assuming a Center sprite pivot).</summary>
         public Vector3 GetBuildingCenter(Vector2Int origin, Vector2Int size)
             => new Vector3(
                 (origin.x + size.x / 2f) * CellSize,
                 (origin.y + size.y / 2f) * CellSize,
                 0f);
 
-        // ---------- İç yazma (dışarıya kapalı) ----------
+        // ---------- Internal writes (not exposed) ----------
 
         private void SetOccupant(int x, int y, IOccupant occupant)
         {

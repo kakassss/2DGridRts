@@ -26,7 +26,7 @@ namespace Rts2D.Move.Manager
             if (path == null || path.Count == 0) return;
 
             unit.Path.Clear();
-            EnqueueCurrentCellIfOffCenter(unit); // yarım kalan adımı bitir
+            EnqueueCurrentCellIfOffCenter(unit); // finish the half-completed step
             foreach (Vector2Int c in path) unit.Path.Enqueue(c);
             unit.Destination = target;
 
@@ -36,7 +36,7 @@ namespace Rts2D.Move.Manager
         public void Stop(IMovable unit)
         {
             unit.Path.Clear();
-            EnqueueCurrentCellIfOffCenter(unit); // merkeze oturana kadar hareket etsin
+            EnqueueCurrentCellIfOffCenter(unit); // keep moving until it settles on the cell center
 
             if (unit.Path.Count == 0)
                 _moving.Remove(unit);
@@ -58,7 +58,7 @@ namespace Rts2D.Move.Manager
 
                 Vector2Int nextCell = u.Path.Peek();
 
-                // Yeni hücreyi devral (kendi hücresi zaten devralınmış)
+                // Take over the new cell (its own cell is already owned)
                 if (nextCell != u.Cell)
                 {
                     if (!_grid.TryMoveOccupant(u.Cell, nextCell, u))
@@ -94,7 +94,7 @@ namespace Rts2D.Move.Manager
                 u.Path.Enqueue(c);
         }
 
-        /// <summary>Birim kendi hücresinin merkezinde değilse, önce oraya varması için hücresini kuyruğa koyar.</summary>
+        /// <summary>If the unit is not at the center of its own cell, queues that cell first so it gets there.</summary>
         private void EnqueueCurrentCellIfOffCenter(IMovable u)
         {
             Vector3 center = _grid.GetCellCenter(u.Cell);

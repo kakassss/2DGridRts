@@ -1,5 +1,6 @@
 using UnityEngine;
 using Zenject;
+using Rts2D.GameCamera.Manager;
 using Rts2D.GameConfig.DataSO;
 using Rts2D.Pooling;
 using Rts2D.ProductionMenu.DataSO;
@@ -22,10 +23,13 @@ namespace Rts2D.GameConfig.Installer
         [Header("Scene References")]
         [SerializeField] private Transform poolContainer;
         [SerializeField] private Camera mainCamera;
+
         public override void InstallBindings()
         {
             Container.BindInstance(catalog);
             Container.BindInstance(configSo);
+            Container.BindInstance(mainCamera);
+            Container.BindInterfacesTo<CameraFitManager>().AsSingle().NonLazy();
 
             Container.Bind<ObjectPool<ProductItemView>>()
                 .AsSingle().WithArguments(productItemPrefab, poolContainer, productItemPoolSize);

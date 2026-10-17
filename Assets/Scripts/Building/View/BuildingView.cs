@@ -67,7 +67,7 @@ namespace Rts2D.Building.View
             _spawnMarker.position = new Vector3(center.x, center.y, _spawnMarker.position.z);
         }
 
-        /// <summary>Görsele renk uygular (yerleştirme önizlemesinde geçerli/geçersiz göstermek için).</summary>
+        /// <summary>Tints the sprite (used by the placement preview to show valid / invalid).</summary>
         public void SetTint(Color color)
         {
             _spriteRenderer.color = color;

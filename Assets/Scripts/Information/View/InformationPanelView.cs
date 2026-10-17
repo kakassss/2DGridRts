@@ -49,7 +49,7 @@ namespace Rts2D.Information.View
 
         private void Show(ISelectable selectable)
         {
-            _current = selectable; // Request'e gönderilecek üretici bina
+            _current = selectable; // the producer building that is sent along with the request
 
             _root.SetActive(true);
             _iconImage.sprite = selectable.Icon;
@@ -57,7 +57,7 @@ namespace Rts2D.Information.View
 
             IReadOnlyList<IProduct> producibles = selectable.Producibles;
 
-            // Gereken kadar buton oluştur
+            // Create as many buttons as needed
             while (_buttons.Count < producibles.Count)
             {
                 ProductionUnitView unitView = _instantiator
@@ -66,7 +66,7 @@ namespace Rts2D.Information.View
                 _buttons.Add(unitView);
             }
 
-            // Kullanılanları aç ve bağla, fazlasını gizle
+            // Enable and bind the used ones, hide the rest
             for (int i = 0; i < _buttons.Count; i++)
             {
                 bool active = i < producibles.Count;
@@ -83,7 +83,7 @@ namespace Rts2D.Information.View
             _root.SetActive(false);
         }
 
-        // Butona basılınca burası çalışır, Request'i çağıran yer burası
+        // Runs when a button is clicked; this is where Request is called
         private void OnProduceClicked(IProduct soldier)
         {
             if (_current == null) return;

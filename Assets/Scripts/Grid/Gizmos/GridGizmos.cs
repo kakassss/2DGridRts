@@ -14,15 +14,15 @@ namespace Rts2D.Grid.Gizmos
 
         private void OnDrawGizmos()
         {
-            // NOT: Bu dosyanın namespace'i "Rts2D.Grid.Gizmos" olduğu için basit "Gizmos" adı
-            // doğrudan namespace'e bağlanıyor; bu yüzden UnityEngine.Gizmos tam nitelikli yazıldı.
+            // NOTE: This file's namespace is "Rts2D.Grid.Gizmos", so the plain name "Gizmos"
+            // resolves to the namespace itself; that is why UnityEngine.Gizmos is fully qualified.
             UnityEngine.Gizmos.color = Color.green;
 
             float size = _gameConfigSO.CellSize;
             float width = _gameConfigSO.GridWidth * size;
             float height = _gameConfigSO.GridHeight * size;
 
-            // Dikey çizgiler
+            // Vertical lines
             for (int x = 0; x <= _gameConfigSO.GridWidth; x++)
             {
                 Vector3 start = transform.position + new Vector3(x * size, 0, 0);
@@ -31,7 +31,7 @@ namespace Rts2D.Grid.Gizmos
                 UnityEngine.Gizmos.DrawLine(start, end);
             }
 
-            // Yatay çizgiler
+            // Horizontal lines
             for (int y = 0; y <= _gameConfigSO.GridHeight; y++)
             {
                 Vector3 start = transform.position + new Vector3(0, y * size, 0);

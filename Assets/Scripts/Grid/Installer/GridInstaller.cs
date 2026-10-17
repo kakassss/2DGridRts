@@ -7,7 +7,7 @@ namespace Rts2D.Grid.Installer
     {
         public override void InstallBindings()
         {
-            Container.BindInterfacesAndSelfTo<GridManager>().AsSingle().NonLazy();
+            Container.Bind<GridManager>().AsSingle().NonLazy();
         }
     }
 }
