@@ -105,7 +105,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d32ac4c658fce4587d02682a2e402b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildingView
-  healthBar: {fileID: 2657886321397018632}
+  _spriteRenderer: {fileID: 7492034063236311726}
+  _healthBar: {fileID: 2657886321397018632}
   buildingDataSO: {fileID: 11400000, guid: 74379068da3bdc7419d581aa8e7b8f59, type: 2}
 --- !u!1001 &91434152273152255
 PrefabInstance:
