@@ -13,6 +13,7 @@ namespace Rts2D.Building.View
     {
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private HealthBarView _healthBar;
+        [SerializeField] private Transform _spawnMarker;
 
         private readonly HealthModel _health = new HealthModel();
 
@@ -29,6 +30,8 @@ namespace Rts2D.Building.View
 
         public Vector2Int MinCell => OriginCell;
         public Vector2Int MaxCell => OriginCell + Size - Vector2Int.one;
+        public bool CanProduceSoldiers => buildingDataSO.CanProduceSoldiers;
+        public Vector2Int SpawnCell => OriginCell + buildingDataSO.SpawnOffset;
 
         public bool IsDead => _health.IsDead;
 
@@ -40,6 +43,7 @@ namespace Rts2D.Building.View
 
             _healthBar.Setup(data.Size.x * 0.8f, data.Size.y);
             _healthBar.SetHealth(_health.Current, _health.Max);
+            PlaceSpawnMarker();
         }
 
         public void TakeDamage(int amount)
@@ -49,6 +53,18 @@ namespace Rts2D.Building.View
 
             if (died)
                 Died?.Invoke(this);
+        }
+
+        /// <summary>Moves the optional marker onto the spawn cell (cell size is 1 world unit).</summary>
+        private void PlaceSpawnMarker()
+        {
+            if (_spawnMarker == null) return;
+
+            _spawnMarker.gameObject.SetActive(CanProduceSoldiers);
+            if (!CanProduceSoldiers) return;
+
+            Vector2 center = (Vector2)SpawnCell + new Vector2(0.5f, 0.5f);
+            _spawnMarker.position = new Vector3(center.x, center.y, _spawnMarker.position.z);
         }
 
         /// <summary>Görsele renk uygular (yerleştirme önizlemesinde geçerli/geçersiz göstermek için).</summary>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using Zenject;
 using Rts2D.Combat.Manager;
@@ -44,11 +44,11 @@ namespace Rts2D.Unit.Soldier.Manager
         private void OnProduceRequested(IProduct product, ISelectable producer)
         {
             if (product is not SoldierDataSo data) return;
-            if (producer is not ISoldierProducer building) return;
+            if (producer is not ISoldierProducer { CanProduceSoldiers: true } building) return;
 
-            if (!_cellFinder.TryFind(building, out Vector2Int cell))
+            if (!_cellFinder.TryFindNear(building.SpawnCell, out Vector2Int cell))
             {
-                Debug.LogWarning("Binanın çevresinde boş hücre yok.");
+                Debug.LogWarning("No free cell near the spawn point.");
                 return;
             }
 
