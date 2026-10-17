@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Unit_Soldier_3
   m_EditorClassIdentifier: Assembly-CSharp::SoldierDataSo
   displayName: Soldier3
-  icon: {fileID: 21300000, guid: a1ed30f8b1a45554fa6ae2254975f0ce, type: 3}
+  icon: {fileID: 21300000, guid: 00efe2f91cf171c4891294db68ad9645, type: 3}
   prefab: {fileID: 469293394303864897, guid: fa185b4dca652484fb87d39e26f253c4, type: 3}
   maxHealth: 10
   damage: 2
