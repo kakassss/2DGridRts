@@ -5,6 +5,7 @@ using Rts2D.GameConfig.DataSO;
 using Rts2D.Pooling;
 using Rts2D.ProductionMenu.DataSO;
 using Rts2D.ProductionMenu.View;
+using Rts2D.ScreenSettings.Manager;
 
 namespace Rts2D.GameConfig.Installer
 {
@@ -30,6 +31,7 @@ namespace Rts2D.GameConfig.Installer
             Container.BindInstance(configSo);
             Container.BindInstance(mainCamera);
             Container.BindInterfacesTo<CameraFitManager>().AsSingle().NonLazy();
+            Container.Bind<ResolutionManager>().AsSingle();
 
             Container.Bind<ObjectPool<ProductItemView>>()
                 .AsSingle().WithArguments(productItemPrefab, poolContainer, productItemPoolSize);
