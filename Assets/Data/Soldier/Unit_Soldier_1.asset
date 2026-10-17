@@ -15,8 +15,7 @@ MonoBehaviour:
   displayName: Soldier1
   icon: {fileID: 21300000, guid: 5aa2b7e06ff7ac547b03c178a729b751, type: 3}
   prefab: {fileID: 469293394303864897, guid: 6bac85ba60ffa654db56061989a2d8a9, type: 3}
-  maxHealth: 100
+  maxHealth: 10
   damage: 10
   moveSpeed: 5
-  attackInterval: 0.5
-  attackRange: 1
+  attackInterval: 1
