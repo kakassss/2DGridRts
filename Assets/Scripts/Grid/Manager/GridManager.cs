@@ -8,7 +8,7 @@ namespace Rts2D.Grid.Manager
     {
         private class GridCell
         {
-            public ISelectable Occupant;
+            public IOccupant Occupant;
             public bool IsOccupied => Occupant != null;
         }
 
@@ -30,7 +30,7 @@ namespace Rts2D.Grid.Manager
         // ---------- Kayıt (yaz / sil / taşı) ----------
 
         /// <summary>Varlığın kapladığı tüm hücrelere kendini yazar.</summary>
-        public void PlaceOccupant(IGridOccupant occupant)
+        public void PlaceOccupant(IOccupant occupant)
         {
             for (int x = occupant.MinCell.x; x <= occupant.MaxCell.x; x++)
                 for (int y = occupant.MinCell.y; y <= occupant.MaxCell.y; y++)
@@ -38,7 +38,7 @@ namespace Rts2D.Grid.Manager
         }
 
         /// <summary>Varlığın kapladığı hücreleri boşaltır. Sadece kendi kaydını siler.</summary>
-        public void RemoveOccupant(IGridOccupant occupant)
+        public void RemoveOccupant(IOccupant occupant)
         {
             for (int x = occupant.MinCell.x; x <= occupant.MaxCell.x; x++)
                 for (int y = occupant.MinCell.y; y <= occupant.MaxCell.y; y++)
@@ -46,7 +46,7 @@ namespace Rts2D.Grid.Manager
         }
 
         /// <summary>Hedef doluysa false döner ve hiçbir şey değişmez.</summary>
-        public bool TryMoveOccupant(Vector2Int from, Vector2Int to, ISelectable occupant)
+        public bool TryMoveOccupant(Vector2Int from, Vector2Int to, IOccupant occupant)
         {
             if (IsOccupied(to.x, to.y))
                 return false;
@@ -58,7 +58,7 @@ namespace Rts2D.Grid.Manager
 
         // ---------- Sorgular ----------
 
-        public ISelectable GetOccupant(int x, int y)
+        public IOccupant GetOccupant(int x, int y)
             => InBounds(x, y) ? _cells[x, y].Occupant : null;
 
         public bool InBounds(int x, int y)
@@ -111,13 +111,13 @@ namespace Rts2D.Grid.Manager
 
         // ---------- İç yazma (dışarıya kapalı) ----------
 
-        private void SetOccupant(int x, int y, ISelectable occupant)
+        private void SetOccupant(int x, int y, IOccupant occupant)
         {
             if (!InBounds(x, y)) return;
             _cells[x, y].Occupant = occupant;
         }
 
-        private void ClearOccupant(int x, int y, ISelectable occupant)
+        private void ClearOccupant(int x, int y, IOccupant occupant)
         {
             if (!InBounds(x, y)) return;
             if (!ReferenceEquals(_cells[x, y].Occupant, occupant)) return;

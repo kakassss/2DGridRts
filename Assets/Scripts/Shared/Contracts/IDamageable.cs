@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
 namespace Rts2D.Shared.Contracts
 {
-    public interface IDamageable : IGridOccupant
+    public interface IDamageable : ISelectable, IOccupant
     {
         bool IsDead { get; }
         event Action<IDamageable> Died;

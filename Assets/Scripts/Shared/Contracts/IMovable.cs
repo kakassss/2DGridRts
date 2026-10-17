@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Rts2D.Shared.Contracts
 {
-    public interface IMovable : ISelectable
+    public interface IMovable : ISelectable, IOccupant
     {
         GameObject GameObject { get; }   // aktif mi kontrolü ve transform için
         Vector2Int Cell { get; }

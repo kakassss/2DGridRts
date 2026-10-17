@@ -48,9 +48,9 @@ namespace Rts2D.Selection.Manager
         private void HandleLeftClick()
         {
             GetClickedCell(out int x, out int y);
-            ISelectable selected = _gridManager.GetOccupant(x, y);
+            IOccupant occupant = _gridManager.GetOccupant(x, y);
 
-            if (selected != null) _selectionService.Select(selected);
+            if (occupant is ISelectable selected) _selectionService.Select(selected);
             else _selectionService.Clear();
         }
 
@@ -60,7 +60,7 @@ namespace Rts2D.Selection.Manager
             if (_selectionService.Current is not IMovable movable) return;
 
             GetClickedCell(out int x, out int y);
-            ISelectable clicked = _gridManager.GetOccupant(x, y);
+            IOccupant clicked = _gridManager.GetOccupant(x, y);
 
             if (clicked is IDamageable target && !ReferenceEquals(clicked, movable))
             {

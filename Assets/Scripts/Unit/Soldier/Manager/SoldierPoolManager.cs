@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 using Rts2D.Grid.Manager;
 using Rts2D.Unit.Soldier.DataSO;
 using Rts2D.Unit.Soldier.View;
-using Rts2D.ObjectPool;
+using Rts2D.Pooling;
 
 namespace Rts2D.Unit.Soldier.Manager
 {
