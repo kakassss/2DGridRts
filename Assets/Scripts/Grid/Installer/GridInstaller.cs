@@ -1,12 +1,13 @@
-using UnityEngine;
 using Zenject;
+using Rts2D.Grid.Manager;
 
-public class GridInstaller : MonoInstaller
+namespace Rts2D.Grid.Installer
 {
-    [SerializeField] private GridDataSO gridDataSO;
-    
-    public override void InstallBindings()
+    public class GridInstaller : MonoInstaller
     {
-        Container.BindInterfacesAndSelfTo<GridManager>().AsSingle().WithArguments(gridDataSO).NonLazy();
+        public override void InstallBindings()
+        {
+            Container.Bind<GridManager>().AsSingle().NonLazy();
+        }
     }
 }

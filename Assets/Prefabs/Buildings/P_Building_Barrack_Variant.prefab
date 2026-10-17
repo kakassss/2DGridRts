@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4182030433045438745, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
+      propertyPath: _healthBar
+      value: 
+      objectReference: {fileID: 6811122959207293586}
+    - target: {fileID: -4182030433045438745, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
+      propertyPath: _spriteRenderer
+      value: 
+      objectReference: {fileID: 2134214678750984244}
     - target: {fileID: 3313198425457318427, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -61,3 +69,19 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
+--- !u!212 &2134214678750984244 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 7492034063236311726, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
+  m_PrefabInstance: {fileID: 8820103849528513178}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6811122959207293586 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2657886321397018632, guid: 55858fda8c4c68240b548d96780f5eef, type: 3}
+  m_PrefabInstance: {fileID: 8820103849528513178}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0eb5d300dd945bd904018baee05cfd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthBarView
