@@ -19,7 +19,7 @@ namespace Rts2D.Grid.Manager
         public List<Vector2Int> FindPath(Vector2Int start, Vector2Int target)
         {
             if (start == target) return new List<Vector2Int>();
-            if (!_grid.InBounds(target.x, target.y) || _grid.GetPositionIsOccupied(target.x, target.y))
+            if (!_grid.InBounds(target.x, target.y) || _grid.IsOccupied(target.x, target.y))
                 return null;
 
             var open = new List<Vector2Int> { start };
@@ -41,7 +41,7 @@ namespace Rts2D.Grid.Manager
                 foreach (Vector2Int dir in Directions)
                 {
                     Vector2Int next = current + dir;
-                    if (!_grid.InBounds(next.x, next.y) || _grid.GetPositionIsOccupied(next.x, next.y))
+                    if (!_grid.InBounds(next.x, next.y) || _grid.IsOccupied(next.x, next.y))
                         continue;
 
                     int newG = g[current] + 1;

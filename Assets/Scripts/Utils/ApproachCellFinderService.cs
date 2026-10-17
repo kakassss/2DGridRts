@@ -22,7 +22,7 @@ namespace Rts2D.Grid.Util
                 for (int y = target.MinCell.y - 1; y <= target.MaxCell.y + 1; y++)
                 {
                     var cell = new Vector2Int(x, y);
-                    if (_grid.GetPositionIsOccupied(x, y)) continue; // sınır dışı da dolu sayılır
+                    if (_grid.IsOccupied(x, y)) continue; // sınır dışı da dolu sayılır
                     if (!OccupantGeometry.IsAdjacent(cell, target)) continue;
 
                     int dist = Mathf.Abs(x - from.x) + Mathf.Abs(y - from.y);

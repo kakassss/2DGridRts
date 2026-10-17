@@ -14,7 +14,7 @@ namespace Rts2D.Building.DataSO
         [SerializeField, Min(1)] private int maxHealth = 50;
         [SerializeField] private string displayName = "Building";
         [SerializeField] private Sprite icon;
-        [SerializeField] private List<SoldierDataSo> producibleSoldiers = new List<SoldierDataSo>();
+        [SerializeField] private List<SoldierDataSo> producibleSoldiers;
 
         public IReadOnlyList<IProduct> Producibles  => producibleSoldiers;
         public string DisplayName => displayName;

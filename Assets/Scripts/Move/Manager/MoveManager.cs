@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-using Rts2D.GameConfig.DataSO;
 using Rts2D.Grid.Manager;
 using Rts2D.Shared.Contracts;
 
@@ -13,14 +12,12 @@ namespace Rts2D.Move.Manager
 
         private readonly GridManager _grid;
         private readonly GridPathfinderManager _gridPathfinderManager;
-        private readonly GameConfigSO _config;
         private readonly List<IMovable> _moving = new List<IMovable>();
 
-        public MoveManager(GridManager grid, GridPathfinderManager gridPathfinderManager, GameConfigSO config)
+        public MoveManager(GridManager grid, GridPathfinderManager gridPathfinderManager)
         {
             _grid = grid;
             _gridPathfinderManager = gridPathfinderManager;
-            _config = config;
         }
 
         public void MoveTo(IMovable unit, Vector2Int target)
@@ -73,7 +70,7 @@ namespace Rts2D.Move.Manager
                 }
 
                 Transform t = u.GameObject.transform;
-                Vector3 targetPos = CellCenter(nextCell);
+                Vector3 targetPos = _grid.GetCellCenter(nextCell);
                 t.position = Vector3.MoveTowards(t.position, targetPos, u.MoveSpeed * Time.deltaTime);
 
                 if ((t.position - targetPos).sqrMagnitude < ArriveSqrDistance)
@@ -100,15 +97,9 @@ namespace Rts2D.Move.Manager
         /// <summary>Birim kendi hücresinin merkezinde değilse, önce oraya varması için hücresini kuyruğa koyar.</summary>
         private void EnqueueCurrentCellIfOffCenter(IMovable u)
         {
-            Vector3 center = CellCenter(u.Cell);
+            Vector3 center = _grid.GetCellCenter(u.Cell);
             if ((u.GameObject.transform.position - center).sqrMagnitude > ArriveSqrDistance)
                 u.Path.Enqueue(u.Cell);
-        }
-
-        private Vector3 CellCenter(Vector2Int c)
-        {
-            float s = _config.CellSize;
-            return new Vector3((c.x + 0.5f) * s, (c.y + 0.5f) * s, 0f);
         }
     }
 }

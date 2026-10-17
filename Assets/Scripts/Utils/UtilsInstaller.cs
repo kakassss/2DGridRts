@@ -7,6 +7,7 @@ namespace Rts2D.Grid.Util
         public override void InstallBindings()
         {
             Container.Bind<ApproachCellFinderService>().AsSingle().NonLazy();
+            Container.Bind<SurroundingCellFinder>().AsSingle().NonLazy();
         }
     }
 }

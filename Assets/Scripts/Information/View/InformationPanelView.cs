@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using Zenject;
 using Rts2D.Selection.Manager;
 using Rts2D.Shared.Contracts;
-using Rts2D.Unit.Soldier.DataSO;
 using Rts2D.Unit.Soldier.Manager;
 
 namespace Rts2D.Information.View

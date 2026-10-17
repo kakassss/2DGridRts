@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+﻿using Rts2D.Shared.Contracts;
 
 namespace Rts2D.Unit.Soldier.Manager
 {
-    public interface ISoldierProducer
+    /// <summary>Asker üretebilen, grid'de alan kaplayan yapı.</summary>
+    public interface ISoldierProducer : IOccupant
     {
-        Vector2Int OriginCell { get; }
-        Vector2Int Size { get; }
+        
     }
 }

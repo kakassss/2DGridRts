@@ -3,7 +3,6 @@ using Rts2D.Shared.Contracts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Rts2D.Unit.Soldier.DataSO;
 
 namespace Rts2D.Information.View
 {

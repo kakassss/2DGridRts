@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Rts2D.Unit.Soldier.DataSO;
 
 namespace Rts2D.Shared.Contracts
 {

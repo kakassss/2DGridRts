@@ -14,6 +14,8 @@ namespace Rts2D.Grid.Util
         }
 
         public static bool IsAdjacent(Vector2Int cell, IOccupant target)
-            => DistanceTo(cell, target) == 1;
+        {
+            return DistanceTo(cell, target) == 1;
+        }
     }
 }

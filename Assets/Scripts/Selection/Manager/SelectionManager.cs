@@ -4,28 +4,28 @@ using UnityEngine.InputSystem;
 using Zenject;
 using Rts2D.Combat.Manager;
 using Rts2D.Grid.Manager;
+using Rts2D.InputHandling.Service;
 using Rts2D.Move.Manager;
 using Rts2D.Placement.Manager;
 using Rts2D.Shared.Contracts;
-using Rts2D.Test;
 
 namespace Rts2D.Selection.Manager
 {
     public class SelectionManager : ITickable
     {
         private readonly GridManager _gridManager;
-        private readonly MouseInput _mouseInput;
+        private readonly MouseInputService _mouseInputService;
         private readonly SelectionService _selectionService;
         private readonly PlacementManager _placement;
         private readonly MoveManager _move;
         private readonly AttackManager _attack;
 
-        public SelectionManager(GridManager gridManager, MouseInput mouseInput,
+        public SelectionManager(GridManager gridManager, MouseInputService mouseInputService,
             SelectionService selectionService, PlacementManager placement,
             MoveManager move, AttackManager attack)
         {
             _gridManager = gridManager;
-            _mouseInput = mouseInput;
+            _mouseInputService = mouseInputService;
             _selectionService = selectionService;
             _placement = placement;
             _move = move;
@@ -75,7 +75,7 @@ namespace Rts2D.Selection.Manager
 
         private void GetClickedCell(out int x, out int y)
         {
-            _gridManager.GetXYPosition(_mouseInput.GetMouseInput(), out x, out y);
+            _gridManager.GetXYPosition(_mouseInputService.GetWorldPosition(), out x, out y);
         }
     }
 }
