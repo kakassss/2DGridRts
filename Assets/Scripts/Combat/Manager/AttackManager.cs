@@ -66,7 +66,13 @@ namespace Rts2D.Combat.Manager
 
             if (adjacent && !IsMoving(order.Target))
             {
-                _move.Stop(order.Unit);
+                // Never attack mid-movement: finish the current step first, hit only once settled
+                if (!_move.IsSettled(order.Unit))
+                {
+                    _move.Stop(order.Unit);
+                    return true;
+                }
+
                 TryQueueHit(order);
                 return true;
             }

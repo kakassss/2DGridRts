@@ -44,6 +44,15 @@ namespace Rts2D.Move.Manager
                 _moving.Add(unit);
         }
 
+        /// <summary>True when the unit has no pending path and stands exactly on its cell center.</summary>
+        public bool IsSettled(IMovable unit)
+        {
+            if (unit.Path.Count > 0) return false;
+
+            Vector3 center = _grid.GetCellCenter(unit.Cell);
+            return (unit.GameObject.transform.position - center).sqrMagnitude <= ArriveSqrDistance;
+        }
+
         public void Tick()
         {
             for (int i = _moving.Count - 1; i >= 0; i--)
