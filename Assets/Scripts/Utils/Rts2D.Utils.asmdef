@@ -1,0 +1,18 @@
+{
+    "name": "Rts2D.Utils",
+    "rootNamespace": "Rts2D.Grid.Util",
+    "references": [
+        "Rts2D.Shared",
+        "Rts2D.Grid",
+        "Zenject"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

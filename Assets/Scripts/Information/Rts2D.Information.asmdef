@@ -1,0 +1,20 @@
+{
+    "name": "Rts2D.Information",
+    "rootNamespace": "Rts2D.Information",
+    "references": [
+        "Rts2D.Shared",
+        "Rts2D.Gameplay",
+        "Zenject",
+        "Unity.TextMeshPro",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

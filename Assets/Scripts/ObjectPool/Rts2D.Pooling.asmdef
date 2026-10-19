@@ -1,0 +1,16 @@
+{
+    "name": "Rts2D.Pooling",
+    "rootNamespace": "Rts2D.Pooling",
+    "references": [
+        "Zenject"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

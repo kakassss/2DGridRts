@@ -1,0 +1,17 @@
+{
+    "name": "Rts2D.InputHandling",
+    "rootNamespace": "Rts2D.InputHandling",
+    "references": [
+        "Zenject",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

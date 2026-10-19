@@ -1,0 +1,14 @@
+{
+    "name": "Rts2D.GameConfig",
+    "rootNamespace": "Rts2D.GameConfig",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
