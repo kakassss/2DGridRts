@@ -23,7 +23,7 @@ namespace Rts2D.Unit.Soldier.Manager
         public void Despawn(IDamageable dead)
         {
             var soldier = (SoldierView)dead;
-            _move.Stop(soldier);
+            _move.Remove(soldier);
             _pools.Despawn(soldier);
         }
     }

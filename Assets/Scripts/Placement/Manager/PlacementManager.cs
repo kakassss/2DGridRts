@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using Zenject;
 using Rts2D.Building.DataSO;
+using Rts2D.Building.Manager;
 using Rts2D.Building.View;
 using Rts2D.Combat.Manager;
 using Rts2D.GameConfig.DataSO;
@@ -21,11 +21,9 @@ namespace Rts2D.Placement.Manager
         private readonly GridManager _gridManager;
         private readonly MouseInputService _mouseInputService;
         private readonly DestroyManager _destroyManager;
-        private readonly IInstantiator _instantiator;
-
-        private readonly List<Vector2Int> _footprintCells = new List<Vector2Int>();
-
-        private BuildingDataSO _currentData;
+        private readonly BuildingPoolManager _poolManager;
+        
+        private BuildingSO _current;
         private BuildingView _ghostBuilding;
         private Vector2Int _currentOriginCell;
         private bool _canPlace;
@@ -34,14 +32,14 @@ namespace Rts2D.Placement.Manager
 
         public PlacementManager(GridManager gridManager, MouseInputService mouseInputService,
             GameConfigSO gameConfigSo, ProductSelectionService service,
-            DestroyManager destroyManager, IInstantiator instantiator)
+            DestroyManager destroyManager, BuildingPoolManager poolManager)
         {
             _gridManager = gridManager;
             _mouseInputService = mouseInputService;
             _gameConfigSo = gameConfigSo;
             _service = service;
             _destroyManager = destroyManager;
-            _instantiator = instantiator;
+            _poolManager = poolManager;
         }
 
         public void Initialize()
@@ -52,7 +50,7 @@ namespace Rts2D.Placement.Manager
         public void Dispose()
         {
             _service.ProductSelected -= StartPlacement;
-            DestroyGhost();
+            _ghostBuilding = null; // the scene is closing, nothing to return to the pool
         }
 
         public void Tick()
@@ -71,25 +69,26 @@ namespace Rts2D.Placement.Manager
                 TryPlace();
         }
 
-        private void StartPlacement(BuildingDataSO data)
+        private void StartPlacement(BuildingSO data)
         {
             DestroyGhost();
 
-            _currentData = data;
-            _ghostBuilding = _instantiator.InstantiatePrefabForComponent<BuildingView>(data.BuildingPrefab);
+            _current = data;
+            _ghostBuilding = _poolManager.Spawn(data);
+            UpdateGhost(); // snap to the cursor right away, avoids a frame at the old position
         }
 
         private void DestroyGhost()
         {
-            if (_ghostBuilding != null)
-                UnityEngine.Object.Destroy(_ghostBuilding.gameObject);
+            if (_ghostBuilding == null) return;
 
+            _poolManager.Despawn(_ghostBuilding);
             _ghostBuilding = null;
         }
 
         private void UpdateGhost()
         {
-            Vector2Int size = _currentData.Size;
+            Vector2Int size = _current.Size;
 
             _currentOriginCell = _gridManager.GetBuildingOrigin(_mouseInputService.GetWorldPosition(), size);
             _canPlace = _gridManager.IsAreaFree(_currentOriginCell, size);
@@ -103,7 +102,7 @@ namespace Rts2D.Placement.Manager
             if (!_canPlace) return;
 
             BuildingView view = _ghostBuilding;
-            view.Initialize(_currentData, _currentOriginCell);
+            view.Initialize(_currentOriginCell);
             view.SetTint(Color.white);
 
             _gridManager.PlaceOccupant(view);
@@ -112,11 +111,11 @@ namespace Rts2D.Placement.Manager
             _ghostBuilding = null;
         }
         
-        private static bool WasCancelPressed()
+        private bool WasCancelPressed()
             => Keyboard.current.escapeKey.wasPressedThisFrame
             || Mouse.current.rightButton.wasPressedThisFrame;
 
-        private static bool IsPointerOverUI()
+        private bool IsPointerOverUI()
             => EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
     }
 }

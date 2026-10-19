@@ -5,8 +5,8 @@ namespace Rts2D.ProductionMenu.Manager
 {
     public class ProductSelectionService
     {
-        public event Action<BuildingDataSO> ProductSelected;
+        public event Action<BuildingSO> ProductSelected;
 
-        public void Select(BuildingDataSO data) => ProductSelected?.Invoke(data);
+        public void Select(BuildingSO data) => ProductSelected?.Invoke(data);
     }
 }

@@ -12,7 +12,6 @@ namespace Rts2D.GameConfig.Installer
     public class GameInstaller : MonoInstaller
     {
         [Header("Data")]
-        [SerializeField] private ProductDataSO catalog;
         [SerializeField] private GameConfigSO configSo;
 
         [Header("Prefabs")]
@@ -27,7 +26,6 @@ namespace Rts2D.GameConfig.Installer
 
         public override void InstallBindings()
         {
-            Container.BindInstance(catalog);
             Container.BindInstance(configSo);
             Container.BindInstance(mainCamera);
             Container.BindInterfacesTo<CameraFitManager>().AsSingle().NonLazy();

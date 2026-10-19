@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 using Rts2D.Grid.Manager;
@@ -42,6 +42,13 @@ namespace Rts2D.Move.Manager
                 _moving.Remove(unit);
             else if (!_moving.Contains(unit))
                 _moving.Add(unit);
+        }
+
+        /// <summary>Drops the unit from movement right away (used when it despawns).</summary>
+        public void Remove(IMovable unit)
+        {
+            unit.Path.Clear();
+            _moving.Remove(unit);
         }
 
         /// <summary>True when the unit has no pending path and stands exactly on its cell center.</summary>

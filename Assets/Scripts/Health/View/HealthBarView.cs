@@ -36,14 +36,14 @@ namespace Rts2D.Health.View
             background.color = backgroundColor;
             background.sortingOrder = sortingOrder;
             background.transform.localPosition = Vector3.zero;
-            background.transform.localScale = new Vector3(width, Height, 1f);
+            background.transform.localScale = new Vector3(_width, Height, 1f);
 
             fill.color = fillColor;
             fill.sortingOrder = sortingOrder + 1;
 
-            _fillPivot.localPosition = new Vector3(-width / 2f, 0f, 0f);
-            fill.transform.localPosition = new Vector3(width / 2f, 0f, 0f);
-            fill.transform.localScale = new Vector3(width, Height, 1f);
+            _fillPivot.localPosition = new Vector3(-_width / 2f, 0f, 0f);
+            fill.transform.localPosition = new Vector3(_width / 2f, 0f, 0f);
+            fill.transform.localScale = new Vector3(_width, Height, 1f);
         }
 
         public void SetHealth(int current, int max)

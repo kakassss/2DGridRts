@@ -14,7 +14,7 @@ namespace Rts2D.ProductionMenu.View
         [SerializeField] private TextMeshProUGUI nameText;
 
         private ProductSelectionService _service;
-        private BuildingDataSO _data;
+        private BuildingSO _data;
 
         [Inject]
         private void Construct(ProductSelectionService service)
@@ -32,7 +32,7 @@ namespace Rts2D.ProductionMenu.View
             button.onClick.RemoveListener(HandleClick);
         }
 
-        public void Bind(BuildingDataSO data)
+        public void Bind(BuildingSO data)
         {
             _data = data;
             iconImage.sprite = data.Icon;

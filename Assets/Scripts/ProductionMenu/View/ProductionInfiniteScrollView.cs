@@ -24,7 +24,7 @@ namespace Rts2D.ProductionMenu.View
         [SerializeField] private Canvas canvas;
 
         private ObjectPool<ProductItemView> _pool;
-        private ProductDataSO _productList;
+        private BuildingCatalogSO _productList;
 
         private Vector2 _lastSize;
         private float _offset;
@@ -39,7 +39,7 @@ namespace Rts2D.ProductionMenu.View
         #region Lifecycle
 
         [Inject]
-        private void Construct(ObjectPool<ProductItemView> pool, ProductDataSO productList)
+        private void Construct(ObjectPool<ProductItemView> pool, BuildingCatalogSO productList)
         {
             _pool = pool;
             _productList = productList;
@@ -119,7 +119,7 @@ namespace Rts2D.ProductionMenu.View
         private void RebuildItems()
         {
             var products = _productList.Buildings;
-            if (products.Length == 0) return;
+            if (products.Count == 0) return;
 
             Vector2 area = rectTransform.rect.size;
             float itemWidth = (area.x - _spacing * (_columns + 1)) / _columns;
@@ -129,7 +129,7 @@ namespace Rts2D.ProductionMenu.View
             int total = neededRows * _columns;
 
             // Keep the cycle order intact: round up to a multiple of the product count
-            total = Mathf.CeilToInt(total / (float)products.Length) * products.Length;
+            total = Mathf.CeilToInt(total / (float)products.Count) * products.Count;
 
             while (_views.Count < total)
             {
@@ -151,7 +151,7 @@ namespace Rts2D.ProductionMenu.View
             }
 
             for (int i = 0; i < _views.Count; i++)
-                _views[i].Bind(products[i % products.Length]);
+                _views[i].Bind(products[i % products.Count]);
         }
 
         private void Layout()

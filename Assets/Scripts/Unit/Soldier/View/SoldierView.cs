@@ -4,7 +4,7 @@ using UnityEngine;
 using Rts2D.Health.Model;
 using Rts2D.Health.View;
 using Rts2D.Shared.Contracts;
-using Rts2D.Unit.Soldier.DataSO;
+using Rts2D.Unit.Soldier.SO;
 
 namespace Rts2D.Unit.Soldier.View
 {
@@ -14,10 +14,10 @@ namespace Rts2D.Unit.Soldier.View
 
         [SerializeField] private HealthBarView healthBar;
 
-        private static readonly IReadOnlyList<IProduct> NoProducibles = Array.Empty<SoldierDataSo>();
+        private static readonly IReadOnlyList<IProduct> NoProducibles = Array.Empty<SoldierSO>();
         private readonly HealthModel _health = new HealthModel();
 
-        public SoldierDataSo Data { get; private set; }
+        public SoldierSO Data { get; private set; }
         public Vector2Int Cell { get; private set; }
         public string DisplayName => Data.DisplayName;
         public Sprite Icon => Data.Icon;
@@ -32,7 +32,7 @@ namespace Rts2D.Unit.Soldier.View
         public Vector2Int MinCell => Cell;
         public Vector2Int MaxCell => Cell;
 
-        public void Initialize(SoldierDataSo data, Vector2Int cell, Vector3 worldPosition)
+        public void Initialize(SoldierSO data, Vector2Int cell, Vector3 worldPosition)
         {
             Data = data;
             _health.Reset(data.MaxHealth);
@@ -53,6 +53,9 @@ namespace Rts2D.Unit.Soldier.View
                 Died?.Invoke(this);
         }
 
-        public void SetCell(Vector2Int cell) => Cell = cell;
+        public void SetCell(Vector2Int cell)
+        {
+            Cell = cell;
+        }
     }
 }
