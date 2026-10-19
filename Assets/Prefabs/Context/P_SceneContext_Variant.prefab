@@ -53,10 +53,6 @@ PrefabInstance:
       value: P_SceneContext_Variant
       objectReference: {fileID: 0}
     - target: {fileID: 5974028777283555153, guid: 189f45359b266fe48b88c7162d90882b, type: 3}
-      propertyPath: _monoInstallers.Array.size
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5974028777283555153, guid: 189f45359b266fe48b88c7162d90882b, type: 3}
       propertyPath: '_monoInstallers.Array.data[7]'
       value: 
       objectReference: {fileID: 5955288613141413183}
