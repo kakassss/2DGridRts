@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1343392821636285665}
   - component: {fileID: 7837416235962540797}
   - component: {fileID: 5181473720455865762}
+  - component: {fileID: 7037155306081387555}
   - component: {fileID: 8825808969659127325}
   - component: {fileID: 7471854002816149345}
   m_Layer: 0
@@ -37,7 +38,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 8645480853971924909}
+  - {fileID: 6170100736037281387}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5974028777283555153
@@ -63,6 +66,7 @@ MonoBehaviour:
   - {fileID: 8825808969659127325}
   - {fileID: 8825808969659127325}
   - {fileID: 5181473720455865762}
+  - {fileID: 7037155306081387555}
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -152,6 +156,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10b23c4a5d5743647aebf5009e092937, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputInstaller
+--- !u!114 &7037155306081387555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5406229268966065452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 227beaacaa00b4b429b72e746ad6b22d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Rts2D.Building.Installer.BuildingInstaller
+  buildingPoolParent: {fileID: 6170100736037281387}
+  buildingCatalog: {fileID: 11400000, guid: eb029bde44114c24a8889f4a7f07c871, type: 2}
 --- !u!114 &8825808969659127325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,8 +182,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3c2dccf207926948aa6f86f2e1ae982, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoldierInstaller
-  _soldierContainer: {fileID: 335455206665133895}
-  _soldierList: {fileID: 11400000, guid: a50b1e6b6bd3cba4f98155d0ee545336, type: 2}
+  soldierPoolParent: {fileID: 8645480853971924909}
+  soldierCatalog: {fileID: 11400000, guid: a50b1e6b6bd3cba4f98155d0ee545336, type: 2}
 --- !u!114 &7471854002816149345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,3 +202,65 @@ MonoBehaviour:
   productItemPoolSize: 12
   poolContainer: {fileID: 335455206665133895}
   mainCamera: {fileID: 0}
+--- !u!1 &8537140619739588253
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6170100736037281387}
+  m_Layer: 0
+  m_Name: Pool_Buildings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6170100736037281387
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8537140619739588253}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 335455206665133895}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8848491662643943372
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8645480853971924909}
+  m_Layer: 0
+  m_Name: Pool_Soldiers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8645480853971924909
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8848491662643943372}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 335455206665133895}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
