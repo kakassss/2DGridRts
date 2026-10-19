@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b512294f50ef44dbaf47245b2ab2cfd6, type: 3}
-  m_Name: Building_BlackSmith_Data
+  m_Name: Building_BlackSmith
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDataSO
-  buildingPrefab: {fileID: 4580509100458626173, guid: 67f653dcc5008c144a650ebf1fff6956, type: 3}
+  prefab: {fileID: 4580509100458626173, guid: 67f653dcc5008c144a650ebf1fff6956, type: 3}
   size: {x: 2, y: 2}
   maxHealth: 50
   displayName: BlackSmith
   icon: {fileID: 7588958294073218311, guid: 36792036136afa34e82d3a7c9d3cf9c3, type: 3}
   producibleSoldiers: []
+  canProduceSoldiers: 0
+  spawnOffset: {x: 0, y: -1}

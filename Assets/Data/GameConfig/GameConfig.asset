@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29227d4222a979c499588a867acc594c, type: 3}
-  m_Name: Data_GameConfig
+  m_Name: GameConfig
   m_EditorClassIdentifier: Assembly-CSharp::GameConfigSO
   gridWidth: 35
   gridHeight: 35
