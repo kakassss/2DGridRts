@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1722310898031455214, guid: 414626ca90c8e3e4bae0d1e7398c8fd4, type: 3}
       propertyPath: m_Name
-      value: P_Environment_Main
+      value: P_Environment_Variant
       objectReference: {fileID: 0}
     - target: {fileID: 2094836495961507801, guid: 414626ca90c8e3e4bae0d1e7398c8fd4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -53,7 +53,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 1444602158828975862, guid: 414626ca90c8e3e4bae0d1e7398c8fd4, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 414626ca90c8e3e4bae0d1e7398c8fd4, type: 3}
