@@ -11,17 +11,22 @@ namespace Rts2D.Health.View
         [SerializeField] private Color backgroundColor = new Color(0.1f, 0.1f, 0.1f, 1f);
         [SerializeField] private Color fillColor = Color.green;
         [SerializeField] private int sortingOrder = 100;
+        [SerializeField, Range(0.1f, 1f)] private float widthRatio = 0.8f;
 
+        // Bar thickness in world units
         private const float Height = 0.1f;
+
+        // Gap between the top of the owner and the bar, in world units
         private const float Padding = 0.1f;
 
         private Transform _fillPivot;
         private float _width;
         private bool _built;
 
-        public void Setup(float width, float ownerHeight)
+        /// <summary>Sizes the bar to its owner's size and places it just above the owner.</summary>
+        public void Setup(Vector2 ownerSize)
         {
-            _width = width;
+            _width = ownerSize.x * widthRatio;
 
             if (!_built)
             {
@@ -31,7 +36,7 @@ namespace Rts2D.Health.View
                 _built = true;
             }
 
-            transform.localPosition = new Vector3(0f, ownerHeight / 2f + Padding, 0f);
+            transform.localPosition = new Vector3(0f, ownerSize.y / 2f + Padding, 0f);
 
             background.color = backgroundColor;
             background.sortingOrder = sortingOrder;

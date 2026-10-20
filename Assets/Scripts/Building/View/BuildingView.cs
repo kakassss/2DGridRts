@@ -51,7 +51,7 @@ namespace Rts2D.Building.View
             SpawnCell = spawnCell;
             _health.Reset(Data.MaxHealth);
 
-            healthBar.Setup(Data.Size.x * 0.8f, Data.Size.y);
+            healthBar.Setup(Data.Size);
             healthBar.SetHealth(_health.Current, _health.Max);
             PlaceSpawnMarker(spawnCellCenter);
         }
