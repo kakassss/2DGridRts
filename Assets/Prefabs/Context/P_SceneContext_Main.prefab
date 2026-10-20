@@ -11,16 +11,16 @@ GameObject:
   - component: {fileID: 335455206665133895}
   - component: {fileID: 5974028777283555153}
   - component: {fileID: 5898042651529125201}
-  - component: {fileID: 7842177058465411005}
+  - component: {fileID: 7471854002816149345}
   - component: {fileID: 5231451793043378165}
   - component: {fileID: 3909610306429960144}
   - component: {fileID: 1343392821636285665}
   - component: {fileID: 7837416235962540797}
-  - component: {fileID: 5181473720455865762}
-  - component: {fileID: 561286700350669496}
-  - component: {fileID: 7037155306081387555}
   - component: {fileID: 8825808969659127325}
-  - component: {fileID: 7471854002816149345}
+  - component: {fileID: 5181473720455865762}
+  - component: {fileID: 7037155306081387555}
+  - component: {fileID: 561286700350669496}
+  - component: {fileID: 7842177058465411005}
   m_Layer: 0
   m_Name: P_SceneContext_Main
   m_TagString: Untagged
@@ -66,7 +66,6 @@ MonoBehaviour:
   - {fileID: 1343392821636285665}
   - {fileID: 7837416235962540797}
   - {fileID: 8825808969659127325}
-  - {fileID: 8825808969659127325}
   - {fileID: 5181473720455865762}
   - {fileID: 7037155306081387555}
   - {fileID: 7842177058465411005}
@@ -100,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09c2c564c3cafa7418643b7c292fca2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridInstaller
---- !u!114 &7842177058465411005
+--- !u!114 &7471854002816149345
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -109,9 +108,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 5406229268966065452}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f26ad38721045ee4f8bb1157d7846747, type: 3}
+  m_Script: {fileID: 11500000, guid: fa6db608edad65b4c9f36be7705567bb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Rts2D.Command::Rts2D.Command.Installer.CommandInstaller
+  m_EditorClassIdentifier: Assembly-CSharp::GameInstaller
+  configSo: {fileID: 11400000, guid: ada1437689ffefb46960892312b1ff65, type: 2}
+  productItemPrefab: {fileID: 3025617418095279892, guid: 5d0cc5a5d450e194184b52943b0f4019, type: 3}
+  productItemPoolSize: 12
+  poolContainer: {fileID: 335455206665133895}
+  mainCamera: {fileID: 0}
 --- !u!114 &5231451793043378165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,44 +164,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ffe3397ad4a04244951192bcb511c1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatInstaller
---- !u!114 &5181473720455865762
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5406229268966065452}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10b23c4a5d5743647aebf5009e092937, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InputInstaller
---- !u!114 &561286700350669496
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5406229268966065452}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a91a126954724424cbf37b942cd12ae3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Rts2D.Move::Rts2D.Move.Installer.MoveInstaller
---- !u!114 &7037155306081387555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5406229268966065452}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 227beaacaa00b4b429b72e746ad6b22d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Rts2D.Building.Installer.BuildingInstaller
-  buildingPoolParent: {fileID: 6170100736037281387}
-  buildingCatalog: {fileID: 11400000, guid: eb029bde44114c24a8889f4a7f07c871, type: 2}
 --- !u!114 &8825808969659127325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,7 +178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SoldierInstaller
   soldierPoolParent: {fileID: 8645480853971924909}
   soldierCatalog: {fileID: 11400000, guid: a50b1e6b6bd3cba4f98155d0ee545336, type: 2}
---- !u!114 &7471854002816149345
+--- !u!114 &5181473720455865762
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -221,14 +187,47 @@ MonoBehaviour:
   m_GameObject: {fileID: 5406229268966065452}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa6db608edad65b4c9f36be7705567bb, type: 3}
+  m_Script: {fileID: 11500000, guid: 10b23c4a5d5743647aebf5009e092937, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameInstaller
-  configSo: {fileID: 11400000, guid: ada1437689ffefb46960892312b1ff65, type: 2}
-  productItemPrefab: {fileID: 3025617418095279892, guid: 5d0cc5a5d450e194184b52943b0f4019, type: 3}
-  productItemPoolSize: 12
-  poolContainer: {fileID: 335455206665133895}
-  mainCamera: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::InputInstaller
+--- !u!114 &7037155306081387555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5406229268966065452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 227beaacaa00b4b429b72e746ad6b22d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Rts2D.Building.Installer.BuildingInstaller
+  buildingPoolParent: {fileID: 6170100736037281387}
+  buildingCatalog: {fileID: 11400000, guid: eb029bde44114c24a8889f4a7f07c871, type: 2}
+--- !u!114 &561286700350669496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5406229268966065452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a91a126954724424cbf37b942cd12ae3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Rts2D.Move::Rts2D.Move.Installer.MoveInstaller
+--- !u!114 &7842177058465411005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5406229268966065452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f26ad38721045ee4f8bb1157d7846747, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Rts2D.Command::Rts2D.Command.Installer.CommandInstaller
 --- !u!1 &8537140619739588253
 GameObject:
   m_ObjectHideFlags: 0
