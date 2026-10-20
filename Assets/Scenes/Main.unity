@@ -214,6 +214,10 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 1714678910}
+    - target: {fileID: 5229214722863447580, guid: c7199dc2d0bafbe42903bee79ff780b4, type: 3}
+      propertyPath: selectionBox
+      value: 
+      objectReference: {fileID: 860810142}
     - target: {fileID: 6814668655123555770, guid: c7199dc2d0bafbe42903bee79ff780b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -259,6 +263,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c7199dc2d0bafbe42903bee79ff780b4, type: 3}
+--- !u!114 &860810142 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3922984621901457607, guid: 1ec3ebc09b5d7824cb3cbf5065f7edef, type: 3}
+  m_PrefabInstance: {fileID: 884377205}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b5ba2ac906208b45bd3eb7b75547d5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Rts2D.Selection::Rts2D.Selection.View.SelectionBoxView
 --- !u!1001 &884377205
 PrefabInstance:
   m_ObjectHideFlags: 0
