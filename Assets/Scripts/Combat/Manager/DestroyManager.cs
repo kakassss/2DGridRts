@@ -10,14 +10,11 @@ namespace Rts2D.Combat.Manager
         public event Action<IDamageable> Destroyed;
 
         private readonly GridManager _grid;
-        private readonly AttackManager _attack;
         private readonly List<IDespawnHandler> _despawners;
 
-        public DestroyManager(GridManager grid, AttackManager attack,
-            List<IDespawnHandler> despawners)
+        public DestroyManager(GridManager grid, List<IDespawnHandler> despawners)
         {
             _grid = grid;
-            _attack = attack;
             _despawners = despawners;
         }
 
@@ -30,10 +27,8 @@ namespace Rts2D.Combat.Manager
         {
             dead.Died -= OnDied;
 
-            _attack.CancelTargeting(dead);
-            if (dead is IMovable movable) _attack.Cancel(movable);
-
-            Destroyed?.Invoke(dead); // e.g. selection clears itself if the dead one was selected
+            // Attack orders and the selection let go of it here, before it leaves the grid
+            Destroyed?.Invoke(dead);
 
             _grid.RemoveOccupant(dead);
 

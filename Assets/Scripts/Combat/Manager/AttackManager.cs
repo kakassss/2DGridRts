@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 using Rts2D.Utils;
@@ -11,7 +12,7 @@ namespace Rts2D.Combat.Manager
     /// Runs attack orders: the unit walks up to its target, then hits it every attack interval
     /// until the target dies, the order is cancelled, or the target can no longer be reached.
     /// </summary>
-    public class AttackManager : ITickable
+    public class AttackManager : ITickable, IInitializable, IDisposable
     {
         private enum OrderStatus
         {
@@ -35,6 +36,7 @@ namespace Rts2D.Combat.Manager
 
         private readonly MoveManager _move;
         private readonly ApproachCellFinderService _cellFinder;
+        private readonly IDamageableTracker _damageableTracker;
         private readonly List<AttackOrder> _orders = new List<AttackOrder>();
 
         // Reused buffer for the free cells around a target, so chasing does not allocate
@@ -44,11 +46,17 @@ namespace Rts2D.Combat.Manager
         private readonly List<(IDamageable target, int damage)> _pendingHits
             = new List<(IDamageable, int)>();
 
-        public AttackManager(MoveManager move, ApproachCellFinderService cellFinder)
+        public AttackManager(MoveManager move, ApproachCellFinderService cellFinder,
+            IDamageableTracker damageableTracker)
         {
             _move = move;
             _cellFinder = cellFinder;
+            _damageableTracker = damageableTracker;
         }
+
+        public void Initialize() => _damageableTracker.Destroyed += HandleDestroyed;
+
+        public void Dispose() => _damageableTracker.Destroyed -= HandleDestroyed;
 
         // ---------- Orders ----------
 
@@ -63,8 +71,9 @@ namespace Rts2D.Combat.Manager
 
         public void Cancel(IMovable unit) => _orders.RemoveAll(order => order.Unit == unit);
 
-        /// <summary>Removes every order that is chasing the dead target.</summary>
-        public void CancelTargeting(IDamageable dead) => _orders.RemoveAll(order => order.Target == dead);
+        /// <summary>A dead target ends every order chasing it; a dead unit's own order ends too.</summary>
+        private void HandleDestroyed(IDamageable dead)
+            => _orders.RemoveAll(order => order.Target == dead || ReferenceEquals(order.Unit, dead));
 
         public void Tick()
         {
