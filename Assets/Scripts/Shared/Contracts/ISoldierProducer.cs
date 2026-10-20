@@ -1,7 +1,6 @@
 using UnityEngine;
-using Rts2D.Shared.Contracts;
 
-namespace Rts2D.Unit.Soldier.Manager
+namespace Rts2D.Shared.Contracts
 {
     /// <summary>A grid-occupying structure that can produce soldiers.</summary>
     public interface ISoldierProducer : IOccupant

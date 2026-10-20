@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
-using Rts2D.Selection.Manager;
+using Rts2D.Shared.Selection;
 using Rts2D.Shared.Contracts;
 using Rts2D.Unit.Soldier.Manager;
 

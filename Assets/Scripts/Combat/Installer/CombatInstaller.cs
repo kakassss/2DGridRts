@@ -7,7 +7,7 @@ namespace Rts2D.Combat.Installer
     {
         public override void InstallBindings()
         {
-            Container.Bind<DestroyManager>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<DestroyManager>().AsSingle(); // also IDamageableTracker
             Container.BindInterfacesAndSelfTo<AttackManager>().AsSingle().NonLazy();
         }
     }

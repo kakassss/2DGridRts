@@ -1,5 +1,6 @@
 using Zenject;
 using Rts2D.Selection.Manager;
+using Rts2D.Shared.Selection;
 
 namespace Rts2D.Selection.Installer
 {

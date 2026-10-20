@@ -1,0 +1,21 @@
+{
+    "name": "Rts2D.Bootstrap",
+    "rootNamespace": "Rts2D.GameConfig",
+    "references": [
+        "Rts2D.GameConfig",
+        "Rts2D.GameCamera",
+        "Rts2D.ScreenSettings",
+        "Rts2D.Pooling",
+        "Rts2D.ProductionMenu",
+        "Zenject"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

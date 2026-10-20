@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using Zenject;
-using Rts2D.Combat.Manager;
 using Rts2D.Grid.Manager;
 using Rts2D.Grid.Util;
 using Rts2D.Shared.Contracts;
@@ -16,16 +15,16 @@ namespace Rts2D.Unit.Soldier.Manager
         private readonly SoldierPoolManager _pools;
         private readonly GridManager _grid;
         private readonly SurroundingCellFinder _cellFinder;
-        private readonly DestroyManager _destroyManager;
+        private readonly IDamageableTracker _tracker;
 
         public SoldierSpawnManager(SoldierProductionService service, SoldierPoolManager pools,
-            GridManager grid, SurroundingCellFinder cellFinder, DestroyManager destroyManager)
+            GridManager grid, SurroundingCellFinder cellFinder, IDamageableTracker tracker)
         {
             _service = service;
             _pools = pools;
             _grid = grid;
             _cellFinder = cellFinder;
-            _destroyManager = destroyManager;
+            _tracker = tracker;
         }
 
         public void Initialize()
@@ -52,7 +51,7 @@ namespace Rts2D.Unit.Soldier.Manager
             SoldierView soldier = _pools.Spawn(data);
             soldier.Initialize(data, cell, _grid.GetCellCenter(cell));
             _grid.PlaceOccupant(soldier);
-            _destroyManager.Track(soldier);
+            _tracker.Track(soldier);
         }
     }
 }

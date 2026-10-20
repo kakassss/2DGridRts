@@ -1,0 +1,20 @@
+{
+    "name": "Rts2D.Combat",
+    "rootNamespace": "Rts2D.Combat",
+    "references": [
+        "Rts2D.Shared",
+        "Rts2D.Grid",
+        "Rts2D.Utils",
+        "Rts2D.Move",
+        "Zenject"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -8,6 +8,7 @@ namespace Rts2D.Grid.Installer
         public override void InstallBindings()
         {
             Container.Bind<GridManager>().AsSingle().NonLazy();
+            Container.Bind<GridPathfinderManager>().AsSingle();
         }
     }
 }

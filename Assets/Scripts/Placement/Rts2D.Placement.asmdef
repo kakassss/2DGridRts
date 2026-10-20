@@ -1,0 +1,24 @@
+{
+    "name": "Rts2D.Placement",
+    "rootNamespace": "Rts2D.Placement",
+    "references": [
+        "Rts2D.Shared",
+        "Rts2D.Building",
+        "Rts2D.ProductionMenu",
+        "Rts2D.Grid",
+        "Rts2D.InputHandling",
+        "Rts2D.GameConfig",
+        "Zenject",
+        "Unity.InputSystem",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

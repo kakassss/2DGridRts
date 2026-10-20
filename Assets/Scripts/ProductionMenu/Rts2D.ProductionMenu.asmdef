@@ -1,19 +1,11 @@
 {
-    "name": "Rts2D.Gameplay",
-    "rootNamespace": "Rts2D",
+    "name": "Rts2D.ProductionMenu",
+    "rootNamespace": "Rts2D.ProductionMenu",
     "references": [
         "Rts2D.Shared",
-        "Rts2D.GameConfig",
-        "Rts2D.Grid",
-        "Rts2D.Utils",
-        "Rts2D.Health",
+        "Rts2D.Building",
         "Rts2D.Pooling",
-        "Rts2D.InputHandling",
-        "Rts2D.GameCamera",
-        "Rts2D.ScreenSettings",
-        "Rts2D.Move",
         "Zenject",
-        "Unity.InputSystem",
         "Unity.TextMeshPro",
         "UnityEngine.UI"
     ],

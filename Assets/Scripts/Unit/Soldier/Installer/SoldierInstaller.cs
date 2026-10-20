@@ -1,6 +1,5 @@
 using UnityEngine;
 using Zenject;
-using Rts2D.Grid.Manager;
 using Rts2D.Move.Manager;
 using Rts2D.Unit.Soldier.SO;
 using Rts2D.Unit.Soldier.Manager;
@@ -21,8 +20,7 @@ namespace Rts2D.Unit.Soldier.Installer
             Container.BindInterfacesAndSelfTo<SoldierSpawnManager>().AsSingle().NonLazy();
             Container.BindInterfacesTo<SoldierDespawnHandler>().AsSingle();
 
-            //TODO MOVE
-            Container.Bind<GridPathfinderManager>().AsSingle();
+            // Soldiers are the only movers, so movement is installed with them
             Container.BindInterfacesAndSelfTo<MoveManager>().AsSingle().NonLazy();
         }
     }

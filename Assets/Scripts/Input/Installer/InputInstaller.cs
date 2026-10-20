@@ -7,7 +7,8 @@ namespace Rts2D.InputHandling
     {
         public override void InstallBindings()
         {
-            Container.Bind<MouseInputService>().AsSingle().NonLazy();
+            Container.Bind<MouseInputService>().AsSingle();
+            Container.Bind<InteractionService>().AsSingle();
         }
     }
 

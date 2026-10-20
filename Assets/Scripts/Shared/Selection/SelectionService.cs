@@ -1,7 +1,7 @@
 using System;
 using Rts2D.Shared.Contracts;
 
-namespace Rts2D.Selection.Manager
+namespace Rts2D.Shared.Selection
 {
     public class SelectionService
     {

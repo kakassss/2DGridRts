@@ -6,8 +6,8 @@ using Rts2D.Combat.Manager;
 using Rts2D.Grid.Manager;
 using Rts2D.InputHandling.Service;
 using Rts2D.Move.Manager;
-using Rts2D.Placement.Manager;
 using Rts2D.Shared.Contracts;
+using Rts2D.Shared.Selection;
 
 namespace Rts2D.Selection.Manager
 {
@@ -16,25 +16,25 @@ namespace Rts2D.Selection.Manager
         private readonly GridManager _gridManager;
         private readonly MouseInputService _mouseInputService;
         private readonly SelectionService _selectionService;
-        private readonly PlacementManager _placement;
+        private readonly InteractionService _interaction;
         private readonly MoveManager _move;
         private readonly AttackManager _attack;
 
         public SelectionManager(GridManager gridManager, MouseInputService mouseInputService,
-            SelectionService selectionService, PlacementManager placement,
+            SelectionService selectionService, InteractionService interaction,
             MoveManager move, AttackManager attack)
         {
             _gridManager = gridManager;
             _mouseInputService = mouseInputService;
             _selectionService = selectionService;
-            _placement = placement;
+            _interaction = interaction;
             _move = move;
             _attack = attack;
         }
 
         public void Tick()
         {
-            if (_placement.IsPlacing) return;
+            if (_interaction.IsPlacing || _interaction.IsClickConsumed) return;
             if (Mouse.current == null) return;
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 

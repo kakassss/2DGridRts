@@ -3,7 +3,7 @@
     "rootNamespace": "Rts2D.Information",
     "references": [
         "Rts2D.Shared",
-        "Rts2D.Gameplay",
+        "Rts2D.Unit",
         "Zenject",
         "Unity.TextMeshPro",
         "UnityEngine.UI"

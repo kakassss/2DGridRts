@@ -4,7 +4,6 @@ using Zenject;
 using Rts2D.Building.DataSO;
 using Rts2D.Building.View;
 using Rts2D.Pooling;
-using Rts2D.ProductionMenu.DataSO;
 
 namespace Rts2D.Building.Manager
 {

@@ -6,11 +6,12 @@ using Zenject;
 using Rts2D.Building.DataSO;
 using Rts2D.Building.Manager;
 using Rts2D.Building.View;
-using Rts2D.Combat.Manager;
 using Rts2D.GameConfig.DataSO;
 using Rts2D.Grid.Manager;
 using Rts2D.InputHandling.Service;
 using Rts2D.ProductionMenu.Manager;
+using Rts2D.Shared.Contracts;
+using Rts2D.Shared.Selection;
 
 namespace Rts2D.Placement.Manager
 {
@@ -20,8 +21,10 @@ namespace Rts2D.Placement.Manager
         private readonly GameConfigSO _gameConfigSo;
         private readonly GridManager _gridManager;
         private readonly MouseInputService _mouseInputService;
-        private readonly DestroyManager _destroyManager;
+        private readonly IDamageableTracker _tracker;
         private readonly BuildingPoolManager _poolManager;
+        private readonly InteractionService _interaction;
+        private readonly SelectionService _selection;
         
         private BuildingSO _current;
         private BuildingView _ghostBuilding;
@@ -32,14 +35,17 @@ namespace Rts2D.Placement.Manager
 
         public PlacementManager(GridManager gridManager, MouseInputService mouseInputService,
             GameConfigSO gameConfigSo, ProductSelectionService service,
-            DestroyManager destroyManager, BuildingPoolManager poolManager)
+            IDamageableTracker tracker, BuildingPoolManager poolManager, InteractionService interaction,
+            SelectionService selection)
         {
             _gridManager = gridManager;
             _mouseInputService = mouseInputService;
             _gameConfigSo = gameConfigSo;
             _service = service;
-            _destroyManager = destroyManager;
+            _tracker = tracker;
             _poolManager = poolManager;
+            _interaction = interaction;
+            _selection = selection;
         }
 
         public void Initialize()
@@ -59,6 +65,7 @@ namespace Rts2D.Placement.Manager
 
             if (WasCancelPressed())
             {
+                _interaction.ConsumeClick(); // the cancelling right click must not become a move order
                 DestroyGhost();
                 return;
             }
@@ -66,7 +73,10 @@ namespace Rts2D.Placement.Manager
             UpdateGhost();
 
             if (Mouse.current.leftButton.wasPressedThisFrame && !IsPointerOverUI())
+            {
+                _interaction.ConsumeClick(); // the placing click must not also select
                 TryPlace();
+            }
         }
 
         private void StartPlacement(BuildingSO data)
@@ -75,6 +85,7 @@ namespace Rts2D.Placement.Manager
 
             _current = data;
             _ghostBuilding = _poolManager.Spawn(data);
+            _interaction.SetMode(InteractionMode.Placing);
             UpdateGhost(); // snap to the cursor right away, avoids a frame at the old position
         }
 
@@ -84,6 +95,7 @@ namespace Rts2D.Placement.Manager
 
             _poolManager.Despawn(_ghostBuilding);
             _ghostBuilding = null;
+            _interaction.SetMode(InteractionMode.Idle);
         }
 
         private void UpdateGhost()
@@ -106,9 +118,12 @@ namespace Rts2D.Placement.Manager
             view.SetTint(Color.white);
 
             _gridManager.PlaceOccupant(view);
-            _destroyManager.Track(view);
+            _tracker.Track(view);
 
             _ghostBuilding = null;
+            _interaction.SetMode(InteractionMode.Idle);
+
+            _selection.Select(view); // show the new building right away (e.g. Barracks production buttons)
         }
         
         private bool WasCancelPressed()

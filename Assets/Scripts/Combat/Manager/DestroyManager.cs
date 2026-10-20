@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Rts2D.Grid.Manager;
-using Rts2D.Selection.Manager;
 using Rts2D.Shared.Contracts;
+using Rts2D.Shared.Selection;
 
 namespace Rts2D.Combat.Manager
 {
-    public class DestroyManager
+    public class DestroyManager : IDamageableTracker
     {
         private readonly GridManager _grid;
         private readonly AttackManager _attack;
