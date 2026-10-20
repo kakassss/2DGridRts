@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 using Rts2D.Health.Model;
 using Rts2D.Health.View;
@@ -20,8 +19,6 @@ namespace Rts2D.Unit.Soldier.View
         public Vector2Int Cell { get; private set; }
         public string DisplayName => Data.DisplayName;
         public Sprite Icon => Data.Icon;
-        public Queue<Vector2Int> Path { get; } = new Queue<Vector2Int>();
-        public Vector2Int Destination { get; set; }
         public GameObject GameObject => gameObject;
         public float MoveSpeed => Data.MoveSpeed;
         public bool IsDead => _health.IsDead;
@@ -35,7 +32,6 @@ namespace Rts2D.Unit.Soldier.View
             Data = data;
             _health.Reset(data.MaxHealth);
             Cell = cell;
-            Path.Clear();
             transform.position = worldPosition;
 
             healthBar.Setup(0.8f, 1f);

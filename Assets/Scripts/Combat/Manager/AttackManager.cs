@@ -64,7 +64,7 @@ namespace Rts2D.Combat.Manager
 
             bool adjacent = OccupantGeometry.IsAdjacent(order.Unit.Cell, order.Target);
 
-            if (adjacent && !IsMoving(order.Target))
+            if (adjacent && !IsTargetMoving(order.Target))
             {
                 // Never attack mid-movement: finish the current step first, hit only once settled
                 if (!_move.IsSettled(order.Unit))
@@ -92,7 +92,7 @@ namespace Rts2D.Combat.Manager
         private bool ChaseTarget(AttackOrder order)
         {
             bool targetMoved = order.Target.MinCell != order.LastTargetCell;
-            if (order.Unit.Path.Count > 0 && !targetMoved) return true;
+            if (_move.IsMoving(order.Unit) && !targetMoved) return true;
 
             order.LastTargetCell = order.Target.MinCell;
 
@@ -102,7 +102,7 @@ namespace Rts2D.Combat.Manager
                 return true;
             }
 
-            return order.Unit.Path.Count > 0; // keep going if a path exists, otherwise unreachable
+            return _move.IsMoving(order.Unit); // keep going if a path exists, otherwise unreachable
         }
 
         private void ApplyPendingHits()
@@ -115,7 +115,7 @@ namespace Rts2D.Combat.Manager
             _pendingHits.Clear();
         }
 
-        private static bool IsMoving(IDamageable target)
-            => target is IMovable movable && movable.Path.Count > 0;
+        private bool IsTargetMoving(IDamageable target)
+            => target is IMovable movable && _move.IsMoving(movable);
     }
 }
