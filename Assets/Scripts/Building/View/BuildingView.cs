@@ -8,7 +8,7 @@ using Rts2D.Shared.Contracts;
 
 namespace Rts2D.Building.View
 {
-    public class BuildingView : MonoBehaviour, ISoldierProducer, IDamageable
+    public class BuildingView : MonoBehaviour, IProducer, IDamageable
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private HealthBarView healthBar;
@@ -27,7 +27,6 @@ namespace Rts2D.Building.View
         public Vector2Int Size => Data.Size;
         public Vector2Int MinCell => OriginCell;
         public Vector2Int MaxCell => OriginCell + Size - Vector2Int.one;
-        public bool CanProduceSoldiers => Data.CanProduceSoldiers;
         public Vector2Int SpawnCell { get; private set; }
 
         public bool IsDead => _health.IsDead;
@@ -71,8 +70,9 @@ namespace Rts2D.Building.View
         {
             if (spawnMarker == null) return;
 
-            spawnMarker.gameObject.SetActive(CanProduceSoldiers);
-            if (!CanProduceSoldiers) return;
+            bool producesSomething = Producibles.Count > 0;
+            spawnMarker.gameObject.SetActive(producesSomething);
+            if (!producesSomething) return;
 
             spawnMarker.position = new Vector3(spawnCellCenter.x, spawnCellCenter.y, spawnMarker.position.z);
         }

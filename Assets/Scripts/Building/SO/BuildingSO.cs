@@ -9,19 +9,16 @@ namespace Rts2D.Building.DataSO
     [CreateAssetMenu(menuName = "Rts2D/BuildingSO", fileName = "BuildingSO")]
     public class BuildingSO : ProductSO
     {
-        private static readonly IReadOnlyList<IProduct> NoProducibles = new List<IProduct>();
-
         [SerializeField] private BuildingView prefab;
         [SerializeField] private Vector2Int size = new Vector2Int(2, 2);
         [SerializeField, Min(1)] private int maxHealth = 50;
-        [SerializeField] private ProductSO[] producibleSoldiers;
 
         [Header("Production")]
-        [SerializeField] private bool canProduceSoldiers;
+        [Tooltip("Leave empty for buildings that produce nothing.")]
+        [SerializeField] private ProductSO[] producibleSoldiers;
         [SerializeField] private Vector2Int spawnOffset = new Vector2Int(0, -1);
 
-        public IReadOnlyList<IProduct> Producibles => canProduceSoldiers ? producibleSoldiers : NoProducibles;
-        public bool CanProduceSoldiers => canProduceSoldiers;
+        public IReadOnlyList<IProduct> Producibles => producibleSoldiers;
         public Vector2Int Size => size;
         public Vector2Int SpawnOffset => spawnOffset;
         public int MaxHealth => maxHealth;

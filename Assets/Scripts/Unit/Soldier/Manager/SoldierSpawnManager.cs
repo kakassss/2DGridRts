@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using Zenject;
 using Rts2D.Grid.Manager;
@@ -37,12 +38,12 @@ namespace Rts2D.Unit.Soldier.Manager
             _service.ProduceRequested -= OnProduceRequested;
         }
 
-        private void OnProduceRequested(IProduct product, ISelectable producer)
+        private void OnProduceRequested(IProduct product, IProducer producer)
         {
             if (product is not SoldierSO data) return;
-            if (producer is not ISoldierProducer { CanProduceSoldiers: true } building) return;
+            if (!producer.Producibles.Contains(product)) return; // this producer does not make that soldier
 
-            if (!_cellFinder.TryFindNear(building.SpawnCell, out Vector2Int cell)) return;
+            if (!_cellFinder.TryFindNear(producer.SpawnCell, out Vector2Int cell)) return;
 
             SoldierView soldier = _pools.Spawn(data);
             soldier.Initialize(data, cell, _grid.GetCellCenter(cell));

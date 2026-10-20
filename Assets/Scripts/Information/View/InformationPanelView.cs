@@ -21,7 +21,9 @@ namespace Rts2D.Information.View
         private SoldierProductionService _soldierService;
         private IInstantiator _instantiator;
 
-        private ISelectable _current;
+        private static readonly IReadOnlyList<IProduct> NoProducibles = new List<IProduct>();
+
+        private IProducer _currentProducer;
         private readonly List<ProductionUnitView> _buttons = new List<ProductionUnitView>();
         
         [Inject]
@@ -49,13 +51,17 @@ namespace Rts2D.Information.View
 
         private void Show(ISelectable selectable)
         {
-            _current = selectable; // the producer building that is sent along with the request
+            // Only producers (e.g. Barracks) get production buttons; it is sent along with the request
+            _currentProducer = selectable as IProducer;
 
             root.SetActive(true);
             iconImage.sprite = selectable.Icon;
             nameText.text = selectable.DisplayName;
 
-            IReadOnlyList<IProduct> producibles = selectable.Producibles;
+            // Buildings like Barracks list what they can produce; everything else shows no buttons
+            IReadOnlyList<IProduct> producibles = NoProducibles;
+            if (_currentProducer != null)
+                producibles = _currentProducer.Producibles;
 
             // Create as many buttons as needed
             while (_buttons.Count < producibles.Count)
@@ -79,15 +85,15 @@ namespace Rts2D.Information.View
 
         private void Hide()
         {
-            _current = null;
+            _currentProducer = null;
             root.SetActive(false);
         }
 
         // Runs when a button is clicked; this is where Request is called
         private void OnProduceClicked(IProduct soldier)
         {
-            if (_current == null) return;
-            _soldierService.Request(soldier, _current);
+            if (_currentProducer == null) return;
+            _soldierService.Request(soldier, _currentProducer);
         }
     }
 }
