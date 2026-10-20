@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 335455206665133895}
   - component: {fileID: 5974028777283555153}
   - component: {fileID: 5898042651529125201}
+  - component: {fileID: 7842177058465411005}
   - component: {fileID: 5231451793043378165}
   - component: {fileID: 3909610306429960144}
   - component: {fileID: 1343392821636285665}
@@ -67,6 +68,7 @@ MonoBehaviour:
   - {fileID: 8825808969659127325}
   - {fileID: 5181473720455865762}
   - {fileID: 7037155306081387555}
+  - {fileID: 7842177058465411005}
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -96,6 +98,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09c2c564c3cafa7418643b7c292fca2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridInstaller
+--- !u!114 &7842177058465411005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5406229268966065452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f26ad38721045ee4f8bb1157d7846747, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Rts2D.Command::Rts2D.Command.Installer.CommandInstaller
 --- !u!114 &5231451793043378165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,7 +210,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa6db608edad65b4c9f36be7705567bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameInstaller
-  catalog: {fileID: 11400000, guid: eb029bde44114c24a8889f4a7f07c871, type: 2}
   configSo: {fileID: 11400000, guid: ada1437689ffefb46960892312b1ff65, type: 2}
   productItemPrefab: {fileID: 3025617418095279892, guid: 5d0cc5a5d450e194184b52943b0f4019, type: 3}
   productItemPoolSize: 12
