@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using Zenject;
 using Rts2D.Building.SO;
@@ -58,7 +57,7 @@ namespace Rts2D.Placement.Manager
 
             _ghost.FollowCursor();
 
-            if (Mouse.current.leftButton.wasPressedThisFrame && !IsPointerOverUI())
+            if (Mouse.current.leftButton.wasPressedThisFrame && !_interaction.IsPointerOverUI())
             {
                 _interaction.ConsumeClick(); // the placing click must not also select
                 TryPlace();
@@ -96,8 +95,5 @@ namespace Rts2D.Placement.Manager
         private static bool WasCancelPressed()
             => Keyboard.current.escapeKey.wasPressedThisFrame
             || Mouse.current.rightButton.wasPressedThisFrame;
-
-        private static bool IsPointerOverUI()
-            => EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
     }
 }

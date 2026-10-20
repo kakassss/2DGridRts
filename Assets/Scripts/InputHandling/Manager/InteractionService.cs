@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Rts2D.InputHandling.Manager
 {
@@ -24,5 +25,15 @@ namespace Rts2D.InputHandling.Manager
 
         /// <summary>Marks this frame's mouse click as handled.</summary>
         public void ConsumeClick() => _consumedFrame = Time.frameCount;
+
+        /// <summary>
+        /// True if a click on the game world should be handled right now: the cursor is not over the UI,
+        /// no building is being placed, and no other system has used this frame's click yet.
+        /// </summary>
+        public bool CanUseWorldClick() => !IsPlacing && !IsClickConsumed && !IsPointerOverUI();
+
+        /// <summary>True while the cursor is over a UI element (menus, buttons).</summary>
+        public bool IsPointerOverUI()
+            => EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
     }
 }

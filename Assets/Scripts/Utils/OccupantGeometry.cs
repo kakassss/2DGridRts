@@ -12,10 +12,5 @@ namespace Rts2D.Utils
             int dy = Mathf.Max(target.MinCell.y - cell.y, 0, cell.y - target.MaxCell.y);
             return dx + dy;
         }
-
-        public static bool IsAdjacent(Vector2Int cell, IOccupant target)
-        {
-            return DistanceTo(cell, target) == 1;
-        }
     }
 }

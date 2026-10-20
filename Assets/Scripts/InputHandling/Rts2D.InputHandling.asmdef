@@ -3,7 +3,8 @@
     "rootNamespace": "Rts2D.InputHandling",
     "references": [
         "Zenject",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "UnityEngine.UI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

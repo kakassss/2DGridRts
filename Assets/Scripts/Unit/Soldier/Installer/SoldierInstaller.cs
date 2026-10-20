@@ -1,6 +1,5 @@
 using UnityEngine;
 using Zenject;
-using Rts2D.Move.Manager;
 using Rts2D.Unit.Soldier.SO;
 using Rts2D.Unit.Soldier.Manager;
 

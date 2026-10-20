@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using Zenject;
 using Rts2D.Combat.Manager;
@@ -38,8 +37,7 @@ namespace Rts2D.Command.Manager
         public void Tick()
         {
             if (Mouse.current == null || !Mouse.current.rightButton.wasPressedThisFrame) return;
-            if (_interaction.IsPlacing || _interaction.IsClickConsumed) return; // e.g. the click cancelled a placement
-            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+            if (!_interaction.CanUseWorldClick()) return; // e.g. over the UI, or the click cancelled a placement
 
             if (_selection.Current is not IMovable unit) return; // only units take orders
 

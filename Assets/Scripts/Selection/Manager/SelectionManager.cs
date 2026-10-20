@@ -1,5 +1,4 @@
 using System;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using Zenject;
 using Rts2D.Grid.Manager;
@@ -37,8 +36,7 @@ namespace Rts2D.Selection.Manager
         public void Tick()
         {
             if (Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame) return;
-            if (_interaction.IsPlacing || _interaction.IsClickConsumed) return;
-            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+            if (!_interaction.CanUseWorldClick()) return;
 
             _gridManager.GetXYPosition(_mouseInputService.GetWorldPosition(), out int x, out int y);
             IOccupant occupant = _gridManager.GetOccupant(x, y);
