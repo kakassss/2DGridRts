@@ -19,9 +19,6 @@ namespace Rts2D.Unit.Soldier.Installer
                 .WithArguments(soldierPoolParent, soldierCatalog);
             Container.BindInterfacesAndSelfTo<SoldierSpawnManager>().AsSingle().NonLazy();
             Container.BindInterfacesTo<SoldierDespawnHandler>().AsSingle();
-
-            // Soldiers are the only movers, so movement is installed with them
-            Container.BindInterfacesAndSelfTo<MoveManager>().AsSingle().NonLazy();
         }
     }
 }

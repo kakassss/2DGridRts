@@ -14,11 +14,14 @@ namespace Rts2D.Unit.Soldier.SO
 
         [Header("Attack")]
         [SerializeField, Min(0.1f)] private float attackInterval = 1f;
+        [Tooltip("In cells. 1 = melee, higher = ranged.")]
+        [SerializeField, Min(1)] private int attackRange = 1;
 
         public SoldierView Prefab => prefab;
         public int MaxHealth => maxHealth;
         public int Damage => damage;
         public float MoveSpeed => moveSpeed;
         public float AttackInterval => attackInterval;
+        public int AttackRange => attackRange;
     }
 }

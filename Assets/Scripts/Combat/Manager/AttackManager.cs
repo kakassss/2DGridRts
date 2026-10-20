@@ -9,7 +9,7 @@ using Rts2D.Shared.Contracts;
 namespace Rts2D.Combat.Manager
 {
     /// <summary>
-    /// Runs attack orders: the unit walks up to its target, then hits it every attack interval
+    /// Runs attack orders: the unit walks into attack range of its target, then hits it every attack interval
     /// until the target dies, the order is cancelled, or the target can no longer be reached.
     /// </summary>
     public class AttackManager : ITickable, IInitializable, IDisposable
@@ -92,7 +92,7 @@ namespace Rts2D.Combat.Manager
             if (order.Target.IsDead || !order.Unit.GameObject.activeSelf)
                 return OrderStatus.Finished;
 
-            if (IsNextToTarget(order) && !IsTargetMoving(order))
+            if (IsInRange(order) && !IsTargetMoving(order))
             {
                 HitWhenReady(order);
                 return OrderStatus.Active;
@@ -132,36 +132,36 @@ namespace Rts2D.Combat.Manager
         // ---------- Chasing ----------
 
         /// <summary>
-        /// Walks up to the target. Searches for a path only when the target changed cell or the unit stopped,
+        /// Walks into attack range. Searches for a path only when the target changed cell or the unit stopped,
         /// so an unchanged situation costs nothing. Finishes the order if the target cannot be reached.
         /// </summary>
         private OrderStatus ChaseTarget(AttackOrder order)
         {
             bool targetChangedCell = order.Target.MinCell != order.LastTargetCell;
-            bool isNextToTarget = IsNextToTarget(order);
+            bool isInRange = IsInRange(order);
 
-            // Nothing changed since the last search: keep walking, or keep waiting next to a passing target
-            if (!targetChangedCell && (_move.IsMoving(order.Unit) || isNextToTarget))
+            // Nothing changed since the last search: keep walking, or keep waiting for a passing target in range
+            if (!targetChangedCell && (_move.IsMoving(order.Unit) || isInRange))
                 return OrderStatus.Active;
 
             order.LastTargetCell = order.Target.MinCell;
 
-            if (TryWalkNextToTarget(order))
+            if (TryWalkIntoRange(order))
                 return OrderStatus.Active;
 
-            // Already next to a target that is still walking: wait for it to stop
-            if (isNextToTarget)
+            // Already in range of a target that is still walking: wait for it to stop
+            if (isInRange)
                 return OrderStatus.Active;
 
-            // No free cell next to the target can be reached: give up instead of searching every frame
+            // No free cell in range of the target can be reached: give up instead of searching every frame
             _move.Stop(order.Unit);
             return OrderStatus.Finished;
         }
 
-        /// <summary>Tries the free cells next to the target, nearest first, and walks to the first reachable one.</summary>
-        private bool TryWalkNextToTarget(AttackOrder order)
+        /// <summary>Tries the free cells in range of the target, nearest first, and walks to the first reachable one.</summary>
+        private bool TryWalkIntoRange(AttackOrder order)
         {
-            _cellFinder.FindCells(order.Unit.Cell, order.Target, _approachCells);
+            _cellFinder.FindCells(order.Unit.Cell, order.Target, order.Attacker.AttackRange, _approachCells);
 
             foreach (Vector2Int cell in _approachCells)
             {
@@ -173,8 +173,8 @@ namespace Rts2D.Combat.Manager
 
         // ---------- Queries ----------
 
-        private bool IsNextToTarget(AttackOrder order)
-            => OccupantGeometry.IsAdjacent(order.Unit.Cell, order.Target);
+        private bool IsInRange(AttackOrder order)
+            => OccupantGeometry.DistanceTo(order.Unit.Cell, order.Target) <= order.Attacker.AttackRange;
 
         private bool IsTargetMoving(AttackOrder order)
             => order.Target is IMovable movingTarget && _move.IsMoving(movingTarget);
