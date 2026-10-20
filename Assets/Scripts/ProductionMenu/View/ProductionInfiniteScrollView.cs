@@ -3,7 +3,7 @@ using Rts2D.Pooling;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
-using Rts2D.ProductionMenu.DataSO;
+using Rts2D.Building.DataSO;
 
 namespace Rts2D.ProductionMenu.View
 {

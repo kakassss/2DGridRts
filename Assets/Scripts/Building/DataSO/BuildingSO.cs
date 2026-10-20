@@ -2,21 +2,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using Rts2D.Building.View;
 using Rts2D.Shared.Contracts;
-using Rts2D.Unit.Soldier.SO;
+using Rts2D.Shared.Data;
 
 namespace Rts2D.Building.DataSO
 {
     [CreateAssetMenu(menuName = "Rts2D/BuildingSO", fileName = "BuildingSO")]
-    public class BuildingSO : ScriptableObject, IProduct
+    public class BuildingSO : ProductSO
     {
         private static readonly IReadOnlyList<IProduct> NoProducibles = new List<IProduct>();
 
         [SerializeField] private BuildingView prefab;
         [SerializeField] private Vector2Int size = new Vector2Int(2, 2);
         [SerializeField, Min(1)] private int maxHealth = 50;
-        [SerializeField] private string displayName = "Building";
-        [SerializeField] private Sprite icon;
-        [SerializeField] private SoldierSO[] producibleSoldiers;
+        [SerializeField] private ProductSO[] producibleSoldiers;
 
         [Header("Production")]
         [SerializeField] private bool canProduceSoldiers;
@@ -24,8 +22,6 @@ namespace Rts2D.Building.DataSO
 
         public IReadOnlyList<IProduct> Producibles => canProduceSoldiers ? producibleSoldiers : NoProducibles;
         public bool CanProduceSoldiers => canProduceSoldiers;
-        public string DisplayName => displayName;
-        public Sprite Icon => icon;
         public Vector2Int Size => size;
         public Vector2Int SpawnOffset => spawnOffset;
         public int MaxHealth => maxHealth;

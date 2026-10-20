@@ -5,7 +5,6 @@ using Rts2D.Health.Model;
 using Rts2D.Health.View;
 using UnityEngine;
 using Rts2D.Shared.Contracts;
-using Rts2D.Unit.Soldier.Manager;
 
 namespace Rts2D.Building.View
 {

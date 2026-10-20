@@ -1,7 +1,7 @@
 using UnityEngine;
 using Zenject;
 using Rts2D.Building.Manager;
-using Rts2D.ProductionMenu.DataSO;
+using Rts2D.Building.DataSO;
 
 namespace Rts2D.Building.Installer
 {

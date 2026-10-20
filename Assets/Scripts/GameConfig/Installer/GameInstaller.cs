@@ -3,7 +3,6 @@ using Zenject;
 using Rts2D.GameCamera.Manager;
 using Rts2D.GameConfig.DataSO;
 using Rts2D.Pooling;
-using Rts2D.ProductionMenu.DataSO;
 using Rts2D.ProductionMenu.View;
 using Rts2D.ScreenSettings.Manager;
 

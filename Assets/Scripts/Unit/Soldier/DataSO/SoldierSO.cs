@@ -1,14 +1,12 @@
-using Rts2D.Shared.Contracts;
+using Rts2D.Shared.Data;
 using UnityEngine;
 using Rts2D.Unit.Soldier.View;
 
 namespace Rts2D.Unit.Soldier.SO
 {
     [CreateAssetMenu(menuName = "Rts2D/SoldierSO", fileName = "SoldierSO")]
-    public class SoldierSO : ScriptableObject, IProduct
+    public class SoldierSO : ProductSO
     {
-        [SerializeField] private string displayName;
-        [SerializeField] private Sprite icon;
         [SerializeField] private SoldierView prefab;
         [SerializeField, Min(1)] private int maxHealth = 10;
         [SerializeField, Min(0)] private int damage = 10;
@@ -17,8 +15,6 @@ namespace Rts2D.Unit.Soldier.SO
         [Header("Attack")]
         [SerializeField, Min(0.1f)] private float attackInterval = 1f;
 
-        public string DisplayName => displayName;
-        public Sprite Icon => icon;
         public SoldierView Prefab => prefab;
         public int MaxHealth => maxHealth;
         public int Damage => damage;

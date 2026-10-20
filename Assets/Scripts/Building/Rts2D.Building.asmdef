@@ -1,0 +1,19 @@
+{
+    "name": "Rts2D.Building",
+    "rootNamespace": "Rts2D.Building",
+    "references": [
+        "Rts2D.Shared",
+        "Rts2D.Health",
+        "Rts2D.Pooling",
+        "Zenject"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
