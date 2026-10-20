@@ -30,7 +30,7 @@ namespace Rts2D.Building.View
         public Vector2Int MinCell => OriginCell;
         public Vector2Int MaxCell => OriginCell + Size - Vector2Int.one;
         public bool CanProduceSoldiers => Data.CanProduceSoldiers;
-        public Vector2Int SpawnCell => OriginCell + Data.SpawnOffset;
+        public Vector2Int SpawnCell { get; private set; }
 
         public bool IsDead => _health.IsDead;
 
@@ -44,15 +44,19 @@ namespace Rts2D.Building.View
                 _spawnMarker.gameObject.SetActive(false);
         }
 
-        /// <summary>Called when the ghost is actually placed on the grid.</summary>
-        public void Initialize(Vector2Int originCell)
+        /// <summary>
+        /// Called when the ghost is actually placed on the grid. The spawn cell is resolved by the
+        /// placement code because only the grid knows its bounds.
+        /// </summary>
+        public void Initialize(Vector2Int originCell, Vector2Int spawnCell, Vector3 spawnCellCenter)
         {
             OriginCell = originCell;
+            SpawnCell = spawnCell;
             _health.Reset(Data.MaxHealth);
 
             _healthBar.Setup(Data.Size.x * 0.8f, Data.Size.y);
             _healthBar.SetHealth(_health.Current, _health.Max);
-            PlaceSpawnMarker();
+            PlaceSpawnMarker(spawnCellCenter);
         }
 
         public void TakeDamage(int amount)
@@ -64,16 +68,15 @@ namespace Rts2D.Building.View
                 Died?.Invoke(this);
         }
 
-        /// <summary>Moves the optional marker onto the spawn cell (cell size is 1 world unit).</summary>
-        private void PlaceSpawnMarker()
+        /// <summary>Moves the optional marker onto the spawn cell.</summary>
+        private void PlaceSpawnMarker(Vector3 spawnCellCenter)
         {
             if (_spawnMarker == null) return;
 
             _spawnMarker.gameObject.SetActive(CanProduceSoldiers);
             if (!CanProduceSoldiers) return;
 
-            Vector2 center = SpawnCell + new Vector2(0.5f, 0.5f);
-            _spawnMarker.position = new Vector3(center.x, center.y, _spawnMarker.position.z);
+            _spawnMarker.position = new Vector3(spawnCellCenter.x, spawnCellCenter.y, _spawnMarker.position.z);
         }
 
         /// <summary>Tints the sprite (used by the placement preview to show valid / invalid).</summary>

@@ -114,7 +114,8 @@ namespace Rts2D.Placement.Manager
             if (!_canPlace) return;
 
             BuildingView view = _ghostBuilding;
-            view.Initialize(_currentOriginCell);
+            Vector2Int spawnCell = ResolveSpawnCell(_currentOriginCell, _current);
+            view.Initialize(_currentOriginCell, spawnCell, _gridManager.GetCellCenter(spawnCell));
             view.SetTint(Color.white);
 
             _gridManager.PlaceOccupant(view);
@@ -126,6 +127,36 @@ namespace Rts2D.Placement.Manager
             _selection.Select(view); // show the new building right away (e.g. Barracks production buttons)
         }
         
+        /// <summary>
+        /// The designated spawn cell (origin + SpawnOffset). If it falls outside the grid, it is moved
+        /// to the middle of another side of the building so the spawn point is always on the board.
+        /// </summary>
+        private Vector2Int ResolveSpawnCell(Vector2Int origin, BuildingSO data)
+        {
+            Vector2Int preferred = origin + data.SpawnOffset;
+            if (_gridManager.InBounds(preferred.x, preferred.y)) return preferred;
+
+            Vector2Int size = data.Size;
+            int midX = origin.x + size.x / 2;
+            int midY = origin.y + size.y / 2;
+
+            Vector2Int[] fallbacks =
+            {
+                new Vector2Int(midX, origin.y + size.y), // above
+                new Vector2Int(midX, origin.y - 1),      // below
+                new Vector2Int(origin.x - 1, midY),      // left
+                new Vector2Int(origin.x + size.x, midY)  // right
+            };
+
+            foreach (Vector2Int cell in fallbacks)
+            {
+                if (_gridManager.InBounds(cell.x, cell.y))
+                    return cell;
+            }
+
+            return preferred; // no side is on the board; the spawn search still finds the nearest free cell
+        }
+
         private bool WasCancelPressed()
             => Keyboard.current.escapeKey.wasPressedThisFrame
             || Mouse.current.rightButton.wasPressedThisFrame;
