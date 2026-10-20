@@ -23,10 +23,8 @@ namespace Rts2D.Building.View
         public string DisplayName => Data.DisplayName;
         public Sprite Icon => Data.Icon;
         public IReadOnlyList<IProduct> Producibles => Data.Producibles;
-
         public Vector2Int OriginCell { get; private set; }
         public Vector2Int Size => Data.Size;
-
         public Vector2Int MinCell => OriginCell;
         public Vector2Int MaxCell => OriginCell + Size - Vector2Int.one;
         public bool CanProduceSoldiers => Data.CanProduceSoldiers;

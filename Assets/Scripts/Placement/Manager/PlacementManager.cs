@@ -4,73 +4,59 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using Zenject;
 using Rts2D.Building.DataSO;
-using Rts2D.Building.Manager;
 using Rts2D.Building.View;
-using Rts2D.GameConfig.DataSO;
 using Rts2D.Grid.Manager;
 using Rts2D.InputHandling.Service;
+using Rts2D.Placement.Service;
 using Rts2D.ProductionMenu.Manager;
+using Rts2D.Selection.Manager;
 using Rts2D.Shared.Contracts;
-using Rts2D.Shared.Selection;
 
 namespace Rts2D.Placement.Manager
 {
+    /// <summary>
+    /// Runs the placement flow: starts it when a building is picked from the menu,
+    /// reads cancel / place input, and turns the ghost into a real building.
+    /// </summary>
     public class PlacementManager : ITickable, IInitializable, IDisposable
     {
-        private readonly ProductSelectionService _service;
-        private readonly GameConfigSO _gameConfigSo;
-        private readonly GridManager _gridManager;
-        private readonly MouseInputService _mouseInputService;
+        private readonly ProductSelectionService _productSelection;
+        private readonly GhostBuildingManager _ghost;
+        private readonly SpawnCellResolver _spawnCellResolver;
+        private readonly GridManager _grid;
         private readonly IDamageableTracker _tracker;
-        private readonly BuildingPoolManager _poolManager;
         private readonly InteractionService _interaction;
         private readonly SelectionService _selection;
-        
-        private BuildingSO _current;
-        private BuildingView _ghostBuilding;
-        private Vector2Int _currentOriginCell;
-        private bool _canPlace;
 
-        public bool IsPlacing => _ghostBuilding != null;
-
-        public PlacementManager(GridManager gridManager, MouseInputService mouseInputService,
-            GameConfigSO gameConfigSo, ProductSelectionService service,
-            IDamageableTracker tracker, BuildingPoolManager poolManager, InteractionService interaction,
-            SelectionService selection)
+        public PlacementManager(ProductSelectionService productSelection, GhostBuildingManager ghost,
+            SpawnCellResolver spawnCellResolver, GridManager grid, IDamageableTracker tracker,
+            InteractionService interaction, SelectionService selection)
         {
-            _gridManager = gridManager;
-            _mouseInputService = mouseInputService;
-            _gameConfigSo = gameConfigSo;
-            _service = service;
+            _productSelection = productSelection;
+            _ghost = ghost;
+            _spawnCellResolver = spawnCellResolver;
+            _grid = grid;
             _tracker = tracker;
-            _poolManager = poolManager;
             _interaction = interaction;
             _selection = selection;
         }
 
-        public void Initialize()
-        {
-            _service.ProductSelected += StartPlacement;
-        }
+        public void Initialize() => _productSelection.ProductSelected += StartPlacement;
 
-        public void Dispose()
-        {
-            _service.ProductSelected -= StartPlacement;
-            _ghostBuilding = null; // the scene is closing, nothing to return to the pool
-        }
+        public void Dispose() => _productSelection.ProductSelected -= StartPlacement;
 
         public void Tick()
         {
-            if (!IsPlacing || Keyboard.current == null || Mouse.current == null) return;
+            if (!_ghost.IsActive || Keyboard.current == null || Mouse.current == null) return;
 
             if (WasCancelPressed())
             {
                 _interaction.ConsumeClick(); // the cancelling right click must not become a move order
-                DestroyGhost();
+                CancelPlacement();
                 return;
             }
 
-            UpdateGhost();
+            _ghost.FollowCursor();
 
             if (Mouse.current.leftButton.wasPressedThisFrame && !IsPointerOverUI())
             {
@@ -81,87 +67,37 @@ namespace Rts2D.Placement.Manager
 
         private void StartPlacement(BuildingSO data)
         {
-            DestroyGhost();
-
-            _current = data;
-            _ghostBuilding = _poolManager.Spawn(data);
+            _ghost.Show(data);
             _interaction.SetMode(InteractionMode.Placing);
-            UpdateGhost(); // snap to the cursor right away, avoids a frame at the old position
         }
 
-        private void DestroyGhost()
+        private void CancelPlacement()
         {
-            if (_ghostBuilding == null) return;
-
-            _poolManager.Despawn(_ghostBuilding);
-            _ghostBuilding = null;
+            _ghost.Hide();
             _interaction.SetMode(InteractionMode.Idle);
-        }
-
-        private void UpdateGhost()
-        {
-            Vector2Int size = _current.Size;
-
-            _currentOriginCell = _gridManager.GetBuildingOrigin(_mouseInputService.GetWorldPosition(), size);
-            _canPlace = _gridManager.IsAreaFree(_currentOriginCell, size);
-
-            _ghostBuilding.transform.position = _gridManager.GetBuildingCenter(_currentOriginCell, size);
-            _ghostBuilding.SetTint(_canPlace ? _gameConfigSo.ValidPlacementColor : _gameConfigSo.InvalidPlacementColor);
         }
 
         private void TryPlace()
         {
-            if (!_canPlace) return;
+            if (!_ghost.CanPlace) return;
 
-            BuildingView view = _ghostBuilding;
-            Vector2Int spawnCell = ResolveSpawnCell(_currentOriginCell, _current);
-            view.Initialize(_currentOriginCell, spawnCell, _gridManager.GetCellCenter(spawnCell));
-            view.SetTint(Color.white);
+            Vector2Int originCell = _ghost.OriginCell;
+            Vector2Int spawnCell = _spawnCellResolver.Resolve(originCell, _ghost.Data);
+            BuildingView building = _ghost.Release();
 
-            _gridManager.PlaceOccupant(view);
-            _tracker.Track(view);
+            building.Initialize(originCell, spawnCell, _grid.GetCellCenter(spawnCell));
+            _grid.PlaceOccupant(building);
+            _tracker.Track(building);
 
-            _ghostBuilding = null;
             _interaction.SetMode(InteractionMode.Idle);
-
-            _selection.Select(view); // show the new building right away (e.g. Barracks production buttons)
-        }
-        
-        /// <summary>
-        /// The designated spawn cell (origin + SpawnOffset). If it falls outside the grid, it is moved
-        /// to the middle of another side of the building so the spawn point is always on the board.
-        /// </summary>
-        private Vector2Int ResolveSpawnCell(Vector2Int origin, BuildingSO data)
-        {
-            Vector2Int preferred = origin + data.SpawnOffset;
-            if (_gridManager.InBounds(preferred.x, preferred.y)) return preferred;
-
-            Vector2Int size = data.Size;
-            int midX = origin.x + size.x / 2;
-            int midY = origin.y + size.y / 2;
-
-            Vector2Int[] fallbacks =
-            {
-                new Vector2Int(midX, origin.y + size.y), // above
-                new Vector2Int(midX, origin.y - 1),      // below
-                new Vector2Int(origin.x - 1, midY),      // left
-                new Vector2Int(origin.x + size.x, midY)  // right
-            };
-
-            foreach (Vector2Int cell in fallbacks)
-            {
-                if (_gridManager.InBounds(cell.x, cell.y))
-                    return cell;
-            }
-
-            return preferred; // no side is on the board; the spawn search still finds the nearest free cell
+            _selection.Select(building); // show the new building right away (e.g. Barracks production buttons)
         }
 
-        private bool WasCancelPressed()
+        private static bool WasCancelPressed()
             => Keyboard.current.escapeKey.wasPressedThisFrame
             || Mouse.current.rightButton.wasPressedThisFrame;
 
-        private bool IsPointerOverUI()
+        private static bool IsPointerOverUI()
             => EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
     }
 }

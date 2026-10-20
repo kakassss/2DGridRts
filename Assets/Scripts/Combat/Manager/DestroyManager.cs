@@ -1,23 +1,24 @@
+using System;
 using System.Collections.Generic;
 using Rts2D.Grid.Manager;
 using Rts2D.Shared.Contracts;
-using Rts2D.Shared.Selection;
 
 namespace Rts2D.Combat.Manager
 {
     public class DestroyManager : IDamageableTracker
     {
+        /// <summary>Raised when a tracked building or unit dies, before it leaves the grid.</summary>
+        public event Action<IDamageable> Destroyed;
+
         private readonly GridManager _grid;
         private readonly AttackManager _attack;
-        private readonly SelectionService _selection;
         private readonly List<IDespawnHandler> _despawners;
 
         public DestroyManager(GridManager grid, AttackManager attack,
-            SelectionService selection, List<IDespawnHandler> despawners)
+            List<IDespawnHandler> despawners)
         {
             _grid = grid;
             _attack = attack;
-            _selection = selection;
             _despawners = despawners;
         }
 
@@ -33,8 +34,7 @@ namespace Rts2D.Combat.Manager
             _attack.CancelTargeting(dead);
             if (dead is IMovable movable) _attack.Cancel(movable);
 
-            if (_selection.Current == dead)
-                _selection.Clear();
+            Destroyed?.Invoke(dead); // e.g. selection clears itself if the dead one was selected
 
             _grid.RemoveOccupant(dead);
 

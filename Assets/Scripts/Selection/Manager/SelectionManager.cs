@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -7,11 +8,10 @@ using Rts2D.Grid.Manager;
 using Rts2D.InputHandling.Service;
 using Rts2D.Move.Manager;
 using Rts2D.Shared.Contracts;
-using Rts2D.Shared.Selection;
 
 namespace Rts2D.Selection.Manager
 {
-    public class SelectionManager : ITickable
+    public class SelectionManager : ITickable, IInitializable, IDisposable
     {
         private readonly GridManager _gridManager;
         private readonly MouseInputService _mouseInputService;
@@ -19,10 +19,11 @@ namespace Rts2D.Selection.Manager
         private readonly InteractionService _interaction;
         private readonly MoveManager _move;
         private readonly AttackManager _attack;
+        private readonly DestroyManager _destroy;
 
         public SelectionManager(GridManager gridManager, MouseInputService mouseInputService,
             SelectionService selectionService, InteractionService interaction,
-            MoveManager move, AttackManager attack)
+            MoveManager move, AttackManager attack, DestroyManager destroy)
         {
             _gridManager = gridManager;
             _mouseInputService = mouseInputService;
@@ -30,7 +31,12 @@ namespace Rts2D.Selection.Manager
             _interaction = interaction;
             _move = move;
             _attack = attack;
+            _destroy = destroy;
         }
+
+        public void Initialize() => _destroy.Destroyed += HandleDestroyed;
+
+        public void Dispose() => _destroy.Destroyed -= HandleDestroyed;
 
         public void Tick()
         {
@@ -71,6 +77,13 @@ namespace Rts2D.Selection.Manager
                 _attack.Cancel(movable); // a new move order cancels the attack
                 _move.MoveTo(movable, new Vector2Int(x, y));
             }
+        }
+
+        // A dead building or unit can't stay selected
+        private void HandleDestroyed(IDamageable dead)
+        {
+            if (_selectionService.Current == dead)
+                _selectionService.Clear();
         }
 
         private void GetClickedCell(out int x, out int y)
