@@ -1,190 +1,218 @@
 using System.Collections.Generic;
-using Rts2D.Pooling;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
 using Rts2D.Building.DataSO;
+using Rts2D.Pooling;
 
 namespace Rts2D.ProductionMenu.View
 {
+    /// <summary>
+    /// Endless vertical list of buildings. Only enough items to fill the viewport are taken from the pool;
+    /// an item that scrolls off the top comes back at the bottom.
+    /// </summary>
     [RequireComponent(typeof(RectTransform))]
     public class ProductionInfiniteScrollView : MonoBehaviour, IScrollHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        #region Fields
+        // Extra rows kept outside the viewport (one above, one below) so no gap shows while wrapping
+        private const int SpareRowCount = 2;
 
-        [Header("Settings")]
-        [SerializeField, Min(1)] private int columns = 2;
-        [SerializeField] private float spacing = 10f;
-        [SerializeField] private float itemAspect = 1f;
-        [SerializeField] private float wheelSpeed = 600f;
-        [SerializeField] private float damping = 5f;
+        // Below this speed (pixels per second) the inertia slide stops
+        private const float StopVelocity = 0.5f;
 
-        [Header("References")]
-        [SerializeField] private RectTransform rectTransform;
-        [SerializeField] private Canvas canvas;
+        // How much a new drag sample replaces the previous velocity (0 = ignore, 1 = replace)
+        private const float DragVelocitySmoothing = 0.5f;
 
-        private ObjectPool<ProductItemView> _pool;
-        private BuildingCatalogSO _productList;
+        // Guards against dividing by zero on a frame with no elapsed time
+        private const float MinDeltaTime = 0.0001f;
 
-        private Vector2 _lastSize;
-        private float _offset;
-        private float _velocity;
-        private bool _dragging;
+        // Items are anchored and pivoted at their top-left corner
+        private static readonly Vector2 TopLeft = new Vector2(0f, 1f);
 
-        private readonly List<ProductItemView> _views = new List<ProductItemView>();
-        private readonly List<RectTransform> _rects = new List<RectTransform>();
+        [Header("Layout")]
+        [SerializeField, Min(1)] private int columnCount = 2;
+        [SerializeField] private float itemSpacing = 10f;
+        [Tooltip("Item height as a multiple of its width (1 = square).")]
+        [SerializeField] private float itemHeightRatio = 1f;
 
-        #endregion
+        [Header("Scrolling")]
+        [SerializeField] private float wheelScrollSpeed = 600f;
+        [SerializeField] private float inertiaDamping = 5f;
 
-        #region Lifecycle
+        private readonly List<ProductItemView> _spawnedItems = new List<ProductItemView>();
+
+        private ObjectPool<ProductItemView> _itemPool;
+        private BuildingCatalogSO _buildingCatalog;
+        private RectTransform _viewport;
+        private Canvas _rootCanvas;
+
+        private float _scrollOffset;        // how far the list is scrolled, in pixels
+        private float _scrollVelocity;      // pixels per second, used for the inertia slide
+        private bool _isDragging;
+
+        private float _itemWidth;
+        private float _itemHeight;
+        private float _rowStep;             // item height + spacing: distance from one row to the next
+        private float _contentHeight;       // height of all rows; scrolling wraps after this
+        private Vector2 _lastViewportSize;
 
         [Inject]
-        private void Construct(ObjectPool<ProductItemView> pool, BuildingCatalogSO productList)
+        private void Construct(ObjectPool<ProductItemView> itemPool, BuildingCatalogSO buildingCatalog)
         {
-            _pool = pool;
-            _productList = productList;
+            _itemPool = itemPool;
+            _buildingCatalog = buildingCatalog;
         }
 
-        private void Start()
+        private void Awake()
         {
-            rectTransform = (RectTransform)transform;
-            canvas = canvas.rootCanvas;
-
-            RebuildItems();
-            Layout();
+            _viewport = (RectTransform)transform;
+            _rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
         }
 
         private void LateUpdate()
         {
-            bool dirty = false;
-
-            if (rectTransform.rect.size != _lastSize)
+            // First frame, and every time the window is resized
+            if (_viewport.rect.size != _lastViewportSize)
             {
-                RebuildItems();
-                dirty = true;
+                FillViewportWithItems();
+                PositionItems();
             }
 
-            if (!_dragging && Mathf.Abs(_velocity) > 0.5f)
-            {
-                _offset += _velocity * Time.unscaledDeltaTime;
-                _velocity = Mathf.Lerp(_velocity, 0f, 1f - Mathf.Exp(-damping * Time.unscaledDeltaTime));
-                dirty = true;
-            }
-
-            if (dirty)
-                Layout();
+            if (!_isDragging && Mathf.Abs(_scrollVelocity) > StopVelocity)
+                ApplyInertia();
         }
 
         private void OnDestroy()
         {
-            foreach (ProductItemView view in _views)
-                if (view != null) _pool.Despawn(view);
+            foreach (ProductItemView item in _spawnedItems)
+                if (item != null) _itemPool.Despawn(item);
         }
 
-        #endregion
-        
         public void OnScroll(PointerEventData eventData)
         {
-            _velocity -= eventData.scrollDelta.y * wheelSpeed;
+            _scrollVelocity -= eventData.scrollDelta.y * wheelScrollSpeed;
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            _dragging = true;
-            _velocity = 0f;
+            _isDragging = true;
+            _scrollVelocity = 0f;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            float delta = eventData.delta.y / canvas.scaleFactor;
-            _offset += delta;
+            float dragPixels = eventData.delta.y / _rootCanvas.scaleFactor;
+            ScrollBy(dragPixels);
 
-            float instant = delta / Mathf.Max(Time.unscaledDeltaTime, 0.0001f);
-            _velocity = Mathf.Lerp(_velocity, instant, 0.5f);
-
-            Layout();
+            // Remember how fast the pointer moves so the list keeps sliding after release
+            float pointerVelocity = dragPixels / Mathf.Max(Time.unscaledDeltaTime, MinDeltaTime);
+            _scrollVelocity = Mathf.Lerp(_scrollVelocity, pointerVelocity, DragVelocitySmoothing);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            _dragging = false;
+            _isDragging = false;
         }
-        
-        #region Internals
 
-        /// <summary>
-        /// Spawns enough items (from the pool) to fill the area. Data comes from the ScriptableObject list
-        /// and is bound cyclically: with 3 products, 12 slots show A B C A B C ...
-        /// </summary>
-        private void RebuildItems()
+        /// <summary>Keeps sliding after a flick or a wheel turn and slows down over time.</summary>
+        private void ApplyInertia()
         {
-            var products = _productList.Buildings;
-            if (products.Count == 0) return;
+            float deltaTime = Time.unscaledDeltaTime;
+            ScrollBy(_scrollVelocity * deltaTime);
 
-            Vector2 area = rectTransform.rect.size;
-            float itemWidth = (area.x - spacing * (columns + 1)) / columns;
-            float rowHeight = itemWidth * itemAspect + spacing;
+            // Exponential decay, so the slow down feels the same at any frame rate
+            float decay = 1f - Mathf.Exp(-inertiaDamping * deltaTime);
+            _scrollVelocity = Mathf.Lerp(_scrollVelocity, 0f, decay);
+        }
 
-            int neededRows = Mathf.CeilToInt(area.y / rowHeight) + 2;
-            int total = neededRows * columns;
+        private void ScrollBy(float pixels)
+        {
+            _scrollOffset += pixels;
+            PositionItems();
+        }
 
-            // Keep the cycle order intact: round up to a multiple of the product count
-            total = Mathf.CeilToInt(total / (float)products.Count) * products.Count;
+        /// <summary>Takes just enough items from the pool to fill the viewport and binds buildings to them in order.</summary>
+        private void FillViewportWithItems()
+        {
+            IReadOnlyList<BuildingSO> buildings = _buildingCatalog.Buildings;
+            if (buildings.Count == 0) return;
 
-            while (_views.Count < total)
+            Vector2 viewportSize = _viewport.rect.size;
+            _lastViewportSize = viewportSize;
+
+            _itemWidth = (viewportSize.x - itemSpacing * (columnCount + 1)) / columnCount;
+            _itemHeight = _itemWidth * itemHeightRatio;
+            _rowStep = _itemHeight + itemSpacing;
+
+            int visibleRowCount = Mathf.CeilToInt(viewportSize.y / _rowStep);
+            int itemCount = (visibleRowCount + SpareRowCount) * columnCount;
+
+            // Round up so every row is full and the A B C A B C order continues across the wrap
+            int cycleLength = LeastCommonMultiple(buildings.Count, columnCount);
+            itemCount = Mathf.CeilToInt(itemCount / (float)cycleLength) * cycleLength;
+
+            while (_spawnedItems.Count < itemCount)
+                _spawnedItems.Add(SpawnItem());
+
+            while (_spawnedItems.Count > itemCount)
             {
-                ProductItemView view = _pool.Spawn(transform);
-                RectTransform rt = (RectTransform)view.transform;
-                rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0f, 1f);
-
-                _views.Add(view);
-                _rects.Add(rt);
+                int lastIndex = _spawnedItems.Count - 1;
+                _itemPool.Despawn(_spawnedItems[lastIndex]);
+                _spawnedItems.RemoveAt(lastIndex);
             }
 
-            // Fazlaysa havuza geri ver
-            while (_views.Count > total)
-            {
-                int last = _views.Count - 1;
-                _pool.Despawn(_views[last]);
-                _views.RemoveAt(last);
-                _rects.RemoveAt(last);
-            }
+            for (int i = 0; i < _spawnedItems.Count; i++)
+                _spawnedItems[i].Bind(buildings[i % buildings.Count]);
 
-            for (int i = 0; i < _views.Count; i++)
-                _views[i].Bind(products[i % products.Count]);
+            int rowCount = _spawnedItems.Count / columnCount;
+            _contentHeight = rowCount * _rowStep;
         }
 
-        private void Layout()
+        /// <summary>Puts every item at its row and column, shifted by the scroll offset.</summary>
+        private void PositionItems()
         {
-            if (_rects.Count == 0) return;
+            if (_spawnedItems.Count == 0) return;
 
-            Vector2 area = rectTransform.rect.size;
-            _lastSize = area;
+            // Keep the offset inside one content height so it never grows forever
+            _scrollOffset = Mathf.Repeat(_scrollOffset, _contentHeight);
 
-            float itemWidth = (area.x - spacing * (columns + 1)) / columns;
-            float itemHeight = itemWidth * itemAspect;
-            float rowHeight = itemHeight + spacing;
-
-            int rows = Mathf.CeilToInt(_rects.Count / (float)columns);
-            float loopHeight = Mathf.Max(rows * rowHeight, area.y + rowHeight);
-
-            for (int i = 0; i < _rects.Count; i++)
+            for (int i = 0; i < _spawnedItems.Count; i++)
             {
-                int row = i / columns;
-                int col = i % columns;
+                int row = i / columnCount;
+                int column = i % columnCount;
 
-                float y = Mod(row * rowHeight - _offset + rowHeight, loopHeight) - rowHeight;
+                // Distance from the top of the viewport down to the top of this row
+                float rowTop = row * _rowStep - _scrollOffset;
+                if (rowTop < -_rowStep)
+                    rowTop += _contentHeight; // scrolled off the top: move it to the bottom
 
-                _rects[i].sizeDelta = new Vector2(itemWidth, itemHeight);
-                _rects[i].anchoredPosition = new Vector2(spacing + col * (itemWidth + spacing), -y - spacing);
+                float left = itemSpacing + column * (_itemWidth + itemSpacing);
+                float top = rowTop + itemSpacing;
+
+                var itemRect = (RectTransform)_spawnedItems[i].transform;
+                itemRect.sizeDelta = new Vector2(_itemWidth, _itemHeight);
+                itemRect.anchoredPosition = new Vector2(left, -top); // UI y grows upwards, so "down" is negative
             }
         }
 
-        private static float Mod(float value, float modulus)
+        private ProductItemView SpawnItem()
         {
-            return ((value % modulus) + modulus) % modulus;
+            ProductItemView item = _itemPool.Spawn(transform);
+            var itemRect = (RectTransform)item.transform;
+            itemRect.anchorMin = itemRect.anchorMax = itemRect.pivot = TopLeft;
+            return item;
         }
 
-        #endregion
+        private static int LeastCommonMultiple(int a, int b)
+        {
+            return a / GreatestCommonDivisor(a, b) * b;
+        }
+
+        private static int GreatestCommonDivisor(int a, int b)
+        {
+            while (b != 0)
+                (a, b) = (b, a % b);
+            return a;
+        }
     }
 }

@@ -3,9 +3,14 @@ using UnityEngine;
 
 namespace Rts2D.Grid.Manager
 {
+    /// <summary>A* pathfinding on the grid. Units move only in 4 directions, so the heuristic is Manhattan distance.</summary>
     public class GridPathfinderManager
     {
-        private static readonly Vector2Int[] Directions =
+        // Cost of moving one cell; every step costs the same on this grid
+        private const int StepCost = 1;
+
+        // Right, left, up, down (no diagonal movement)
+        private static readonly Vector2Int[] NeighborOffsets =
         {
             new Vector2Int(1, 0), new Vector2Int(-1, 0),
             new Vector2Int(0, 1), new Vector2Int(0, -1)
@@ -19,48 +24,75 @@ namespace Rts2D.Grid.Manager
         public List<Vector2Int> FindPath(Vector2Int start, Vector2Int target)
         {
             if (start == target) return new List<Vector2Int>();
-            if (!_grid.InBounds(target.x, target.y) || _grid.IsOccupied(target.x, target.y))
-                return null;
+            if (!IsWalkable(target)) return null;
 
-            var open = new List<Vector2Int> { start };
-            var cameFrom = new Dictionary<Vector2Int, Vector2Int>();
-            var g = new Dictionary<Vector2Int, int> { [start] = 0 };
+            // Cells found but not yet expanded
+            var cellsToVisit = new List<Vector2Int> { start };
+            // For each reached cell, the cell we came from (used to rebuild the path)
+            var previousCell = new Dictionary<Vector2Int, Vector2Int>();
+            // Cheapest known number of steps from start to each cell (A* "g" cost)
+            var costFromStart = new Dictionary<Vector2Int, int> { [start] = 0 };
 
-            while (open.Count > 0)
+            while (cellsToVisit.Count > 0)
             {
-                Vector2Int current = open[0];
-                foreach (Vector2Int cell in open)
-                    if (g[cell] + H(cell, target) < g[current] + H(current, target))
-                        current = cell;
+                Vector2Int current = FindMostPromisingCell(cellsToVisit, costFromStart, target);
 
                 if (current == target)
-                    return Reconstruct(cameFrom, start, target);
+                    return BuildPath(previousCell, start, target);
 
-                open.Remove(current);
+                cellsToVisit.Remove(current);
 
-                foreach (Vector2Int dir in Directions)
+                foreach (Vector2Int offset in NeighborOffsets)
                 {
-                    Vector2Int next = current + dir;
-                    if (!_grid.InBounds(next.x, next.y) || _grid.IsOccupied(next.x, next.y))
-                        continue;
+                    Vector2Int neighbor = current + offset;
+                    if (!IsWalkable(neighbor)) continue;
 
-                    int newG = g[current] + 1;
-                    if (g.TryGetValue(next, out int old) && newG >= old) continue;
+                    int newCost = costFromStart[current] + StepCost;
+                    if (costFromStart.TryGetValue(neighbor, out int knownCost) && newCost >= knownCost)
+                        continue; // already reached this cell by an equal or shorter route
 
-                    g[next] = newG;
-                    cameFrom[next] = current;
-                    if (!open.Contains(next)) open.Add(next);
+                    costFromStart[neighbor] = newCost;
+                    previousCell[neighbor] = current;
+                    if (!cellsToVisit.Contains(neighbor)) cellsToVisit.Add(neighbor);
                 }
             }
             return null;
         }
 
-        private static int H(Vector2Int a, Vector2Int b) => Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
+        /// <summary>Picks the cell with the lowest estimated total cost (steps so far + remaining estimate).</summary>
+        private Vector2Int FindMostPromisingCell(
+            List<Vector2Int> cells, Dictionary<Vector2Int, int> costFromStart, Vector2Int target)
+        {
+            Vector2Int best = cells[0];
+            int bestTotalCost = costFromStart[best] + EstimateRemainingCost(best, target);
 
-        private static List<Vector2Int> Reconstruct(Dictionary<Vector2Int, Vector2Int> cameFrom, Vector2Int start, Vector2Int end)
+            foreach (Vector2Int cell in cells)
+            {
+                int totalCost = costFromStart[cell] + EstimateRemainingCost(cell, target);
+                if (totalCost < bestTotalCost)
+                {
+                    best = cell;
+                    bestTotalCost = totalCost;
+                }
+            }
+            return best;
+        }
+
+        private bool IsWalkable(Vector2Int cell)
+            => _grid.InBounds(cell.x, cell.y) && !_grid.IsOccupied(cell.x, cell.y);
+
+        /// <summary>Manhattan distance: the minimum number of steps when only 4-direction moves are allowed.</summary>
+        private int EstimateRemainingCost(Vector2Int from, Vector2Int to)
+            => (Mathf.Abs(from.x - to.x) + Mathf.Abs(from.y - to.y)) * StepCost;
+
+        /// <summary>Walks back from target to start through previousCell, then reverses to get start→target order.</summary>
+        private List<Vector2Int> BuildPath(
+            Dictionary<Vector2Int, Vector2Int> previousCell, Vector2Int start, Vector2Int target)
         {
             var path = new List<Vector2Int>();
-            for (Vector2Int c = end; c != start; c = cameFrom[c]) path.Add(c);
+            for (Vector2Int cell = target; cell != start; cell = previousCell[cell])
+                path.Add(cell);
+
             path.Reverse();
             return path;
         }

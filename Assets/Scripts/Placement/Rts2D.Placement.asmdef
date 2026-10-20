@@ -6,6 +6,7 @@
         "Rts2D.Building",
         "Rts2D.ProductionMenu",
         "Rts2D.Grid",
+        "Rts2D.Selection",
         "Rts2D.InputHandling",
         "Rts2D.GameConfig",
         "Zenject",

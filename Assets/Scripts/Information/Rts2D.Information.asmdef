@@ -4,6 +4,7 @@
     "references": [
         "Rts2D.Shared",
         "Rts2D.Unit",
+        "Rts2D.Selection",
         "Zenject",
         "Unity.TextMeshPro",
         "UnityEngine.UI"
