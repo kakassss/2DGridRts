@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: -4874329105853553207, guid: 16ebcd83e46374948bc4ab008bf328df, type: 3}
   m_Color: {r: 0.4433962, g: 0.006274463, b: 0.006274463, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -175,7 +175,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: -4874329105853553207, guid: 16ebcd83e46374948bc4ab008bf328df, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -200,7 +200,6 @@ MonoBehaviour:
   _spriteRenderer: {fileID: 7492034063236311726}
   _healthBar: {fileID: 2657886321397018632}
   _spawnMarker: {fileID: 4422880342224610895}
-  buildingDataSO: {fileID: 11400000, guid: 74379068da3bdc7419d581aa8e7b8f59, type: 2}
 --- !u!1001 &91434152273152255
 PrefabInstance:
   m_ObjectHideFlags: 0
