@@ -56,7 +56,11 @@ namespace Rts2D.Information.View
 
             root.SetActive(true);
             iconImage.sprite = selectable.Icon;
-            nameText.text = selectable.DisplayName;
+            // With several units selected the panel shows the first one and how many more there are
+            int selectedCount = _selectionService.SelectedItems.Count;
+            nameText.text = selectedCount > 1
+                ? $"{selectable.DisplayName} (+{selectedCount - 1})"
+                : selectable.DisplayName;
 
             // Buildings like Barracks list what they can produce; everything else shows no buttons
             IReadOnlyList<IProduct> producibles = NoProducibles;

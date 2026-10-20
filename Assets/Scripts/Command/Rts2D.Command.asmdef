@@ -8,6 +8,7 @@
         "Rts2D.Selection",
         "Rts2D.Combat",
         "Rts2D.Move",
+        "Rts2D.Utils",
         "Zenject",
         "Unity.InputSystem",
         "UnityEngine.UI"
