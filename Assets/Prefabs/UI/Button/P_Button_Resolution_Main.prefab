@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 5288423046656530275}
   - component: {fileID: 5086807730354144009}
   m_Layer: 0
-  m_Name: Resolution_Text
+  m_Name: Text_Resolution
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

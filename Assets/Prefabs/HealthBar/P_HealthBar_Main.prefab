@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3624683095251387402}
   - component: {fileID: 5991465974771090327}
   m_Layer: 0
-  m_Name: Fill_SpriteRenderer
+  m_Name: SpriteRenderer_Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 9223298202866396926}
   - component: {fileID: 4773517481275233567}
   m_Layer: 0
-  m_Name: Background_SpriteRenderer
+  m_Name: SpriteRenderer_Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

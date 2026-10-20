@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4422880342224610895}
   - component: {fileID: 1275028539705284477}
   m_Layer: 0
-  m_Name: SpawnPoint
+  m_Name: Transform_SpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -197,9 +197,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d32ac4c658fce4587d02682a2e402b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuildingView
-  _spriteRenderer: {fileID: 7492034063236311726}
-  _healthBar: {fileID: 2657886321397018632}
-  _spawnMarker: {fileID: 4422880342224610895}
+  spriteRenderer: {fileID: 7492034063236311726}
+  healthBar: {fileID: 2657886321397018632}
+  spawnMarker: {fileID: 4422880342224610895}
 --- !u!1001 &91434152273152255
 PrefabInstance:
   m_ObjectHideFlags: 0
