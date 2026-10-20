@@ -7,7 +7,6 @@ namespace Rts2D.Combat.Manager
 {
     public class DestroyManager : IDamageableTracker
     {
-        /// <summary>Raised when a tracked building or unit dies, before it leaves the grid.</summary>
         public event Action<IDamageable> Destroyed;
 
         private readonly GridManager _grid;

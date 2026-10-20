@@ -37,11 +37,14 @@ namespace Rts2D.Move.Manager
             _pathfinder = pathfinder;
         }
 
-        /// <summary>Finds a path to the target cell and starts moving. Does nothing if no path exists.</summary>
-        public void MoveTo(IMovable unit, Vector2Int targetCell)
+        /// <summary>
+        /// Finds a path to the target cell and starts moving.
+        /// Returns false and changes nothing if the cell cannot be reached.
+        /// </summary>
+        public bool MoveTo(IMovable unit, Vector2Int targetCell)
         {
             List<Vector2Int> path = _pathfinder.FindPath(unit.Cell, targetCell);
-            if (path == null || path.Count == 0) return;
+            if (path == null || path.Count == 0) return false;
 
             Route route = GetRoute(unit);
             route.Cells.Clear();
@@ -50,6 +53,7 @@ namespace Rts2D.Move.Manager
             route.Destination = targetCell;
 
             StartTracking(unit);
+            return true;
         }
 
         /// <summary>Drops the remaining path but lets the unit finish walking onto its current cell center.</summary>
