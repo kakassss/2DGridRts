@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Rts2D.Building.DataSO
+namespace Rts2D.Building.SO
 {
     [CreateAssetMenu(menuName = "Rts2D/BuildingCatalogSO", fileName = "BuildingCatalogSO")]
     public class BuildingCatalogSO : ScriptableObject

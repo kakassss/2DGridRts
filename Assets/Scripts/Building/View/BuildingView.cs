@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Rts2D.Building.DataSO;
+using Rts2D.Building.SO;
 using Rts2D.Health.Model;
 using Rts2D.Health.View;
 using UnityEngine;

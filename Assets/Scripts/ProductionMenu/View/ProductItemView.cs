@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
-using Rts2D.Building.DataSO;
+using Rts2D.Building.SO;
 using Rts2D.ProductionMenu.Manager;
 
 namespace Rts2D.ProductionMenu.View

@@ -1,7 +1,7 @@
 using UnityEngine;
 using Rts2D.Shared.Contracts;
 
-namespace Rts2D.Shared.Data
+namespace Rts2D.Shared.SO
 {
     /// <summary>Base for every ScriptableObject that can be listed as a product (buildings, soldiers).</summary>
     public abstract class ProductSO : ScriptableObject, IProduct

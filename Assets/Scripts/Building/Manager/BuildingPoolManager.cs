@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-using Rts2D.Building.DataSO;
+using Rts2D.Building.SO;
 using Rts2D.Building.View;
-using Rts2D.Pooling;
+using Rts2D.Pooling.Manager;
 
 namespace Rts2D.Building.Manager
 {

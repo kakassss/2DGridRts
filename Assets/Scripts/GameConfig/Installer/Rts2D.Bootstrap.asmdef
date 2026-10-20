@@ -1,6 +1,6 @@
 {
     "name": "Rts2D.Bootstrap",
-    "rootNamespace": "Rts2D.GameConfig",
+    "rootNamespace": "Rts2D.GameConfig.Installer",
     "references": [
         "Rts2D.GameConfig",
         "Rts2D.GameCamera",

@@ -1,4 +1,4 @@
-using Rts2D.Shared.Data;
+using Rts2D.Shared.SO;
 using UnityEngine;
 using Rts2D.Unit.Soldier.View;
 

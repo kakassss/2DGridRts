@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Rts2D.InputHandling.Service
+namespace Rts2D.InputHandling.Manager
 {
     /// <summary>Provides the mouse position in world space.</summary>
     public class MouseInputService

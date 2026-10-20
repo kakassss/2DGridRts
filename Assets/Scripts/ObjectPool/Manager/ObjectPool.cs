@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-namespace Rts2D.Pooling
+namespace Rts2D.Pooling.Manager
 {
     public class ObjectPool<T> where T : Component
     {

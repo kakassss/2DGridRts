@@ -2,7 +2,7 @@ using UnityEngine;
 using Rts2D.Grid.Manager;
 using Rts2D.Shared.Contracts;
 
-namespace Rts2D.Grid.Util
+namespace Rts2D.Utils
 {
     /// <summary>Finds the nearest free cell around an occupant or around a single cell.</summary>
     public class SurroundingCellFinder

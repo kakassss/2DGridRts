@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Rts2D.Building.View;
 using Rts2D.Shared.Contracts;
-using Rts2D.Shared.Data;
+using Rts2D.Shared.SO;
 
-namespace Rts2D.Building.DataSO
+namespace Rts2D.Building.SO
 {
     [CreateAssetMenu(menuName = "Rts2D/BuildingSO", fileName = "BuildingSO")]
     public class BuildingSO : ProductSO

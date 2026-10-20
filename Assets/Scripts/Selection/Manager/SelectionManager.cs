@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using Zenject;
 using Rts2D.Combat.Manager;
 using Rts2D.Grid.Manager;
-using Rts2D.InputHandling.Service;
+using Rts2D.InputHandling.Manager;
 using Rts2D.Move.Manager;
 using Rts2D.Shared.Contracts;
 

@@ -1,5 +1,5 @@
 using UnityEngine;
-using Rts2D.GameConfig.DataSO;
+using Rts2D.GameConfig.SO;
 using Rts2D.Shared.Contracts;
 
 namespace Rts2D.Grid.Manager

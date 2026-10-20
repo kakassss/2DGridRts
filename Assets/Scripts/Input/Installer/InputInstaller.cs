@@ -1,7 +1,7 @@
-using Rts2D.InputHandling.Service;
+using Rts2D.InputHandling.Manager;
 using Zenject;
 
-namespace Rts2D.InputHandling
+namespace Rts2D.InputHandling.Installer
 {
     public class InputInstaller : MonoInstaller
     {

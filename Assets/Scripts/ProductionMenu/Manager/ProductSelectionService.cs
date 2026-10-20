@@ -1,5 +1,5 @@
 using System;
-using Rts2D.Building.DataSO;
+using Rts2D.Building.SO;
 
 namespace Rts2D.ProductionMenu.Manager
 {

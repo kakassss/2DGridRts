@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
-using Rts2D.Building.DataSO;
+using Rts2D.Building.SO;
 using Rts2D.Building.Manager;
 using Rts2D.Building.View;
-using Rts2D.GameConfig.DataSO;
+using Rts2D.GameConfig.SO;
 using Rts2D.Grid.Manager;
-using Rts2D.InputHandling.Service;
+using Rts2D.InputHandling.Manager;
 
 namespace Rts2D.Placement.Manager
 {

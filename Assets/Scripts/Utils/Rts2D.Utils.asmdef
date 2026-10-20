@@ -1,6 +1,6 @@
 {
     "name": "Rts2D.Utils",
-    "rootNamespace": "Rts2D.Grid.Util",
+    "rootNamespace": "Rts2D.Utils",
     "references": [
         "Rts2D.Shared",
         "Rts2D.Grid",

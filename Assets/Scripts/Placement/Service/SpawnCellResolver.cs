@@ -1,5 +1,5 @@
 using UnityEngine;
-using Rts2D.Building.DataSO;
+using Rts2D.Building.SO;
 using Rts2D.Grid.Manager;
 
 namespace Rts2D.Placement.Service

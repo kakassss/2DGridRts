@@ -1,6 +1,6 @@
 using UnityEngine;
 using Zenject;
-using Rts2D.GameConfig.DataSO;
+using Rts2D.GameConfig.SO;
 
 namespace Rts2D.GameCamera.Manager
 {

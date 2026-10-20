@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-using Rts2D.Grid.Util;
+using Rts2D.Utils;
 using Rts2D.Move.Manager;
 using Rts2D.Shared.Contracts;
 

@@ -1,6 +1,6 @@
 using Zenject;
 
-namespace Rts2D.Grid.Util
+namespace Rts2D.Utils
 {
     public class UtilsInstaller : MonoInstaller
     {

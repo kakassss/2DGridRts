@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Rts2D.GameConfig.DataSO
+namespace Rts2D.GameConfig.SO
 {
     [CreateAssetMenu(menuName = "GameConfig", fileName = "Data/GameConfig")]
     public class GameConfigSO : ScriptableObject

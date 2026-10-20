@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Zenject;
 using Rts2D.Grid.Manager;
-using Rts2D.Grid.Util;
+using Rts2D.Utils;
 using Rts2D.Shared.Contracts;
 using Rts2D.Unit.Soldier.SO;
 using Rts2D.Unit.Soldier.View;

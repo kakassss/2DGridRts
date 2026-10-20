@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Rts2D.InputHandling.Service
+namespace Rts2D.InputHandling.Manager
 {
     public enum InteractionMode
     {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-using Rts2D.Pooling;
+using Rts2D.Pooling.Manager;
 using Rts2D.Unit.Soldier.SO;
 using Rts2D.Unit.Soldier.View;
 

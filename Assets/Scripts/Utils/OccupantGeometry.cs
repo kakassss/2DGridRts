@@ -1,7 +1,7 @@
 using UnityEngine;
 using Rts2D.Shared.Contracts;
 
-namespace Rts2D.Grid.Util
+namespace Rts2D.Utils
 {
     public static class OccupantGeometry
     {
