@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 1343392821636285665}
   - component: {fileID: 7837416235962540797}
   - component: {fileID: 5181473720455865762}
+  - component: {fileID: 561286700350669496}
   - component: {fileID: 7037155306081387555}
   - component: {fileID: 8825808969659127325}
   - component: {fileID: 7471854002816149345}
@@ -69,6 +70,7 @@ MonoBehaviour:
   - {fileID: 5181473720455865762}
   - {fileID: 7037155306081387555}
   - {fileID: 7842177058465411005}
+  - {fileID: 561286700350669496}
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -170,6 +172,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10b23c4a5d5743647aebf5009e092937, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputInstaller
+--- !u!114 &561286700350669496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5406229268966065452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a91a126954724424cbf37b942cd12ae3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Rts2D.Move::Rts2D.Move.Installer.MoveInstaller
 --- !u!114 &7037155306081387555
 MonoBehaviour:
   m_ObjectHideFlags: 0
