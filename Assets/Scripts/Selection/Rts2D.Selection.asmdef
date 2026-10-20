@@ -5,8 +5,6 @@
         "Rts2D.Shared",
         "Rts2D.Grid",
         "Rts2D.InputHandling",
-        "Rts2D.Combat",
-        "Rts2D.Move",
         "Zenject",
         "Unity.InputSystem",
         "UnityEngine.UI"

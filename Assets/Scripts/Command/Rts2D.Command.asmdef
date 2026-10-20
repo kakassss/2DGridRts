@@ -1,0 +1,24 @@
+{
+    "name": "Rts2D.Command",
+    "rootNamespace": "Rts2D.Command",
+    "references": [
+        "Rts2D.Shared",
+        "Rts2D.Grid",
+        "Rts2D.InputHandling",
+        "Rts2D.Selection",
+        "Rts2D.Combat",
+        "Rts2D.Move",
+        "Zenject",
+        "Unity.InputSystem",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
