@@ -36,7 +36,7 @@ namespace Rts2D.ProductionMenu.View
         {
             _data = data;
             iconImage.sprite = data.Icon;
-            nameText.text = data.DisplayName;
+            nameText.text = $"{data.DisplayName} ({data.Size.x}x{data.Size.y})"; // e.g. "Barrack (4x4)", size in cells
         }
 
         private void HandleClick()
