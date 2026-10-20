@@ -7,8 +7,6 @@ namespace Rts2D.Grid.Util
     /// <summary>Finds the nearest free cell around an occupant or around a single cell.</summary>
     public class SurroundingCellFinder
     {
-        private const int MaxDistance = 5;
-
         private readonly GridManager _grid;
 
         public SurroundingCellFinder(GridManager grid) => _grid = grid;
@@ -23,7 +21,10 @@ namespace Rts2D.Grid.Util
 
         private bool TryFindRing(Vector2Int min, Vector2Int max, int startDistance, out Vector2Int result)
         {
-            for (int d = startDistance; d <= MaxDistance; d++)
+            // No fixed radius: rings grow until they cover the whole grid
+            int maxDistance = Mathf.Max(_grid.Width, _grid.Height);
+
+            for (int d = startDistance; d <= maxDistance; d++)
             {
                 for (int x = min.x - d; x <= max.x + d; x++)
                 {

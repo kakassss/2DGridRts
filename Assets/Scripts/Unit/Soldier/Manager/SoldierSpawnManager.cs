@@ -42,11 +42,7 @@ namespace Rts2D.Unit.Soldier.Manager
             if (product is not SoldierSO data) return;
             if (producer is not ISoldierProducer { CanProduceSoldiers: true } building) return;
 
-            if (!_cellFinder.TryFindNear(building.SpawnCell, out Vector2Int cell))
-            {
-                Debug.LogWarning("No free cell near the spawn point.");
-                return;
-            }
+            if (!_cellFinder.TryFindNear(building.SpawnCell, out Vector2Int cell)) return;
 
             SoldierView soldier = _pools.Spawn(data);
             soldier.Initialize(data, cell, _grid.GetCellCenter(cell));

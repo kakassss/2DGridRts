@@ -17,6 +17,9 @@ namespace Rts2D.Grid.Manager
 
         private float CellSize => _gameConfigSo.CellSize;
 
+        public int Width => _gameConfigSo.GridWidth;
+        public int Height => _gameConfigSo.GridHeight;
+
         public GridManager(GameConfigSO gameConfigSo)
         {
             _gameConfigSo = gameConfigSo;
