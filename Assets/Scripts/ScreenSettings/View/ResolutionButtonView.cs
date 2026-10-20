@@ -12,8 +12,8 @@ namespace Rts2D.ScreenSettings.View
     /// </summary>
     public class ResolutionButtonView : MonoBehaviour
     {
-        [SerializeField] private Button _button;
-        [SerializeField] private TMP_Text _label;
+        [SerializeField] private Button button;
+        [SerializeField] private TMP_Text label;
 
         private ResolutionManager _resolution;
 
@@ -22,23 +22,17 @@ namespace Rts2D.ScreenSettings.View
 
         private void Start()
         {
-            _label.text = _resolution.CurrentLabel;
-            _button.onClick.AddListener(_resolution.ApplyNextPreset);
+            label.text = _resolution.CurrentLabel;
+            button.onClick.AddListener(_resolution.ApplyNextPreset);
             _resolution.LabelChanged += SetLabel;
         }
 
         private void OnDestroy()
         {
-            _button.onClick.RemoveListener(_resolution.ApplyNextPreset);
+            button.onClick.RemoveListener(_resolution.ApplyNextPreset);
             _resolution.LabelChanged -= SetLabel;
         }
 
-        private void SetLabel(string text) => _label.text = text;
-
-        private void Reset()
-        {
-            _button = GetComponent<Button>();
-            _label = GetComponentInChildren<TMP_Text>();
-        }
+        private void SetLabel(string text) => label.text = text;
     }
 }

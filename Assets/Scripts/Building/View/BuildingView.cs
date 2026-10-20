@@ -10,9 +10,9 @@ namespace Rts2D.Building.View
 {
     public class BuildingView : MonoBehaviour, ISoldierProducer, IDamageable
     {
-        [SerializeField] private SpriteRenderer _spriteRenderer;
-        [SerializeField] private HealthBarView _healthBar;
-        [SerializeField] private Transform _spawnMarker;
+        [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private HealthBarView healthBar;
+        [SerializeField] private Transform spawnMarker;
 
         private readonly HealthModel _health = new HealthModel();
 
@@ -38,10 +38,10 @@ namespace Rts2D.Building.View
         public void Prepare(BuildingSO data)
         {
             Data = data;
-            _healthBar.gameObject.SetActive(false);
+            healthBar.gameObject.SetActive(false);
 
-            if (_spawnMarker != null)
-                _spawnMarker.gameObject.SetActive(false);
+            if (spawnMarker != null)
+                spawnMarker.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -54,15 +54,15 @@ namespace Rts2D.Building.View
             SpawnCell = spawnCell;
             _health.Reset(Data.MaxHealth);
 
-            _healthBar.Setup(Data.Size.x * 0.8f, Data.Size.y);
-            _healthBar.SetHealth(_health.Current, _health.Max);
+            healthBar.Setup(Data.Size.x * 0.8f, Data.Size.y);
+            healthBar.SetHealth(_health.Current, _health.Max);
             PlaceSpawnMarker(spawnCellCenter);
         }
 
         public void TakeDamage(int amount)
         {
             bool died = _health.Take(amount);
-            _healthBar.SetHealth(_health.Current, _health.Max);
+            healthBar.SetHealth(_health.Current, _health.Max);
 
             if (died)
                 Died?.Invoke(this);
@@ -71,18 +71,18 @@ namespace Rts2D.Building.View
         /// <summary>Moves the optional marker onto the spawn cell.</summary>
         private void PlaceSpawnMarker(Vector3 spawnCellCenter)
         {
-            if (_spawnMarker == null) return;
+            if (spawnMarker == null) return;
 
-            _spawnMarker.gameObject.SetActive(CanProduceSoldiers);
+            spawnMarker.gameObject.SetActive(CanProduceSoldiers);
             if (!CanProduceSoldiers) return;
 
-            _spawnMarker.position = new Vector3(spawnCellCenter.x, spawnCellCenter.y, _spawnMarker.position.z);
+            spawnMarker.position = new Vector3(spawnCellCenter.x, spawnCellCenter.y, spawnMarker.position.z);
         }
 
         /// <summary>Tints the sprite (used by the placement preview to show valid / invalid).</summary>
         public void SetTint(Color color)
         {
-            _spriteRenderer.color = color;
+            spriteRenderer.color = color;
         }
     }
 }

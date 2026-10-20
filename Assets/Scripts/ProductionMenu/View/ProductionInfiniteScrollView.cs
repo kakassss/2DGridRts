@@ -13,11 +13,11 @@ namespace Rts2D.ProductionMenu.View
         #region Fields
 
         [Header("Settings")]
-        [SerializeField, Min(1)] private int _columns = 2;
-        [SerializeField] private float _spacing = 10f;
-        [SerializeField] private float _itemAspect = 1f;
-        [SerializeField] private float _wheelSpeed = 600f;
-        [SerializeField] private float _damping = 5f;
+        [SerializeField, Min(1)] private int columns = 2;
+        [SerializeField] private float spacing = 10f;
+        [SerializeField] private float itemAspect = 1f;
+        [SerializeField] private float wheelSpeed = 600f;
+        [SerializeField] private float damping = 5f;
 
         [Header("References")]
         [SerializeField] private RectTransform rectTransform;
@@ -67,7 +67,7 @@ namespace Rts2D.ProductionMenu.View
             if (!_dragging && Mathf.Abs(_velocity) > 0.5f)
             {
                 _offset += _velocity * Time.unscaledDeltaTime;
-                _velocity = Mathf.Lerp(_velocity, 0f, 1f - Mathf.Exp(-_damping * Time.unscaledDeltaTime));
+                _velocity = Mathf.Lerp(_velocity, 0f, 1f - Mathf.Exp(-damping * Time.unscaledDeltaTime));
                 dirty = true;
             }
 
@@ -85,7 +85,7 @@ namespace Rts2D.ProductionMenu.View
         
         public void OnScroll(PointerEventData eventData)
         {
-            _velocity -= eventData.scrollDelta.y * _wheelSpeed;
+            _velocity -= eventData.scrollDelta.y * wheelSpeed;
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -122,11 +122,11 @@ namespace Rts2D.ProductionMenu.View
             if (products.Count == 0) return;
 
             Vector2 area = rectTransform.rect.size;
-            float itemWidth = (area.x - _spacing * (_columns + 1)) / _columns;
-            float rowHeight = itemWidth * _itemAspect + _spacing;
+            float itemWidth = (area.x - spacing * (columns + 1)) / columns;
+            float rowHeight = itemWidth * itemAspect + spacing;
 
             int neededRows = Mathf.CeilToInt(area.y / rowHeight) + 2;
-            int total = neededRows * _columns;
+            int total = neededRows * columns;
 
             // Keep the cycle order intact: round up to a multiple of the product count
             total = Mathf.CeilToInt(total / (float)products.Count) * products.Count;
@@ -161,22 +161,22 @@ namespace Rts2D.ProductionMenu.View
             Vector2 area = rectTransform.rect.size;
             _lastSize = area;
 
-            float itemWidth = (area.x - _spacing * (_columns + 1)) / _columns;
-            float itemHeight = itemWidth * _itemAspect;
-            float rowHeight = itemHeight + _spacing;
+            float itemWidth = (area.x - spacing * (columns + 1)) / columns;
+            float itemHeight = itemWidth * itemAspect;
+            float rowHeight = itemHeight + spacing;
 
-            int rows = Mathf.CeilToInt(_rects.Count / (float)_columns);
+            int rows = Mathf.CeilToInt(_rects.Count / (float)columns);
             float loopHeight = Mathf.Max(rows * rowHeight, area.y + rowHeight);
 
             for (int i = 0; i < _rects.Count; i++)
             {
-                int row = i / _columns;
-                int col = i % _columns;
+                int row = i / columns;
+                int col = i % columns;
 
                 float y = Mod(row * rowHeight - _offset + rowHeight, loopHeight) - rowHeight;
 
                 _rects[i].sizeDelta = new Vector2(itemWidth, itemHeight);
-                _rects[i].anchoredPosition = new Vector2(_spacing + col * (itemWidth + _spacing), -y - _spacing);
+                _rects[i].anchoredPosition = new Vector2(spacing + col * (itemWidth + spacing), -y - spacing);
             }
         }
 

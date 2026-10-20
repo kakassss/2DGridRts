@@ -11,10 +11,10 @@ namespace Rts2D.Information.View
 {
     public class InformationPanelView : MonoBehaviour
     {
-        [SerializeField] private GameObject _root;
-        [SerializeField] private Image _iconImage;
-        [SerializeField] private TextMeshProUGUI _nameText;
-        [SerializeField] private Transform _productionContainer;
+        [SerializeField] private GameObject root;
+        [SerializeField] private Image iconImage;
+        [SerializeField] private TextMeshProUGUI nameText;
+        [SerializeField] private Transform productionContainer;
         [SerializeField] private ProductionUnitView productionUnitViewPrefab;
 
         private SelectionService _selectionService;
@@ -23,7 +23,7 @@ namespace Rts2D.Information.View
 
         private ISelectable _current;
         private readonly List<ProductionUnitView> _buttons = new List<ProductionUnitView>();
-
+        
         [Inject]
         private void Construct(SelectionService selectionService,
             SoldierProductionService soldierService,
@@ -51,9 +51,9 @@ namespace Rts2D.Information.View
         {
             _current = selectable; // the producer building that is sent along with the request
 
-            _root.SetActive(true);
-            _iconImage.sprite = selectable.Icon;
-            _nameText.text = selectable.DisplayName;
+            root.SetActive(true);
+            iconImage.sprite = selectable.Icon;
+            nameText.text = selectable.DisplayName;
 
             IReadOnlyList<IProduct> producibles = selectable.Producibles;
 
@@ -62,7 +62,7 @@ namespace Rts2D.Information.View
             {
                 ProductionUnitView unitView = _instantiator
                     .InstantiatePrefabForComponent<ProductionUnitView>(
-                        productionUnitViewPrefab.gameObject, _productionContainer);
+                        productionUnitViewPrefab.gameObject, productionContainer);
                 _buttons.Add(unitView);
             }
 
@@ -80,7 +80,7 @@ namespace Rts2D.Information.View
         private void Hide()
         {
             _current = null;
-            _root.SetActive(false);
+            root.SetActive(false);
         }
 
         // Runs when a button is clicked; this is where Request is called
