@@ -168,7 +168,7 @@ namespace Rts2D.Move.Manager
             return route;
         }
 
-        private static void EnqueuePath(Route route, List<Vector2Int> path)
+        private void EnqueuePath(Route route, List<Vector2Int> path)
         {
             foreach (Vector2Int cell in path)
                 route.Cells.Enqueue(cell);

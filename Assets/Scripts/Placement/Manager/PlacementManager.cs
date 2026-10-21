@@ -89,7 +89,7 @@ namespace Rts2D.Placement.Manager
             _selection.Select(building); // show it right away (e.g. Barracks buttons)
         }
 
-        private static bool WasCancelPressed()
+        private bool WasCancelPressed()
             => Keyboard.current.escapeKey.wasPressedThisFrame
             || Mouse.current.rightButton.wasPressedThisFrame;
     }

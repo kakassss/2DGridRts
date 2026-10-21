@@ -200,12 +200,12 @@ namespace Rts2D.ProductionMenu.View
             return item;
         }
 
-        private static int LeastCommonMultiple(int a, int b)
+        private int LeastCommonMultiple(int a, int b)
         {
             return a / GreatestCommonDivisor(a, b) * b;
         }
 
-        private static int GreatestCommonDivisor(int a, int b)
+        private int GreatestCommonDivisor(int a, int b)
         {
             while (b != 0)
                 (a, b) = (b, a % b);
