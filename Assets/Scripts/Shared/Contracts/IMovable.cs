@@ -2,10 +2,7 @@ using UnityEngine;
 
 namespace Rts2D.Shared.Contracts
 {
-    /// <summary>
-    /// Something MoveManager can walk across the grid. Path and destination are kept by
-    /// MoveManager itself, so a mover only has to expose where it is and how fast it goes.
-    /// </summary>
+    /// <summary>Something MoveManager can walk; MoveManager keeps its path.</summary>
     public interface IMovable : ISelectable, IOccupant
     {
         GameObject GameObject { get; }   // for the active check and the transform

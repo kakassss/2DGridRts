@@ -51,18 +51,18 @@ namespace Rts2D.Information.View
 
         private void Show(ISelectable selectable)
         {
-            // Only producers (e.g. Barracks) get production buttons; it is sent along with the request
+            // Only producers get production buttons
             _currentProducer = selectable as IProducer;
 
             root.SetActive(true);
             iconImage.sprite = selectable.Icon;
-            // With several units selected the panel shows the first one and how many more there are
+            // Several selected: show the first and the count
             int selectedCount = _selectionService.SelectedItems.Count;
             nameText.text = selectedCount > 1
                 ? $"{selectable.DisplayName} (+{selectedCount - 1})"
                 : selectable.DisplayName;
 
-            // Buildings like Barracks list what they can produce; everything else shows no buttons
+            // Non-producers get an empty list
             IReadOnlyList<IProduct> producibles = NoProducibles;
             if (_currentProducer != null)
                 producibles = _currentProducer.Producibles;
@@ -93,7 +93,7 @@ namespace Rts2D.Information.View
             root.SetActive(false);
         }
 
-        // Runs when a button is clicked; this is where Request is called
+        // Sends the production request for the clicked soldier
         private void OnProduceClicked(IProduct soldier)
         {
             if (_currentProducer == null) return;

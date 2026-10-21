@@ -6,8 +6,8 @@ namespace Rts2D.Utils
     {
         public override void InstallBindings()
         {
-            Container.Bind<ApproachCellFinderService>().AsSingle().NonLazy();
-            Container.Bind<SurroundingCellFinder>().AsSingle().NonLazy();
+            Container.Bind<ApproachCellFinder>().AsSingle().NonLazy();
+            Container.Bind<FreeCellFinder>().AsSingle().NonLazy();
         }
     }
 }

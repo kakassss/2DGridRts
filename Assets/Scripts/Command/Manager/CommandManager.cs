@@ -12,10 +12,7 @@ using Rts2D.Utils;
 
 namespace Rts2D.Command.Manager
 {
-    /// <summary>
-    /// Turns a right click into an order for the selected units: attack what was clicked, or walk there.
-    /// New kinds of orders (gather, rally point...) are added here, without touching selection.
-    /// </summary>
+    /// <summary>Turns a right click into attack or move orders for the selected units.</summary>
     public class CommandManager : ITickable
     {
         private readonly GridManager _grid;
@@ -24,14 +21,14 @@ namespace Rts2D.Command.Manager
         private readonly SelectionService _selection;
         private readonly MoveManager _move;
         private readonly AttackManager _attack;
-        private readonly SurroundingCellFinder _cellFinder;
+        private readonly FreeCellFinder _cellFinder;
 
-        // Reused buffers, so issuing an order does not allocate
+        // Reused buffers, so orders do not allocate
         private readonly List<IMovable> _units = new List<IMovable>();
         private readonly List<Vector2Int> _destinations = new List<Vector2Int>();
 
         public CommandManager(GridManager grid, MouseInputService mouseInput, InteractionService interaction,
-            SelectionService selection, MoveManager move, AttackManager attack, SurroundingCellFinder cellFinder)
+            SelectionService selection, MoveManager move, AttackManager attack, FreeCellFinder cellFinder)
         {
             _grid = grid;
             _mouseInput = mouseInput;
@@ -45,7 +42,7 @@ namespace Rts2D.Command.Manager
         public void Tick()
         {
             if (Mouse.current == null || !Mouse.current.rightButton.wasPressedThisFrame) return;
-            if (!_interaction.CanUseWorldClick()) return; // e.g. over the UI, or the click cancelled a placement
+            if (!_interaction.CanUseWorldClick()) return; // over UI, or the click cancelled a placement
 
             CollectSelectedUnits();
             if (_units.Count == 0) return; // only units take orders
@@ -54,7 +51,7 @@ namespace Rts2D.Command.Manager
             IssueOrder(new Vector2Int(x, y));
         }
 
-        /// <summary>All selected units attack whatever damageable stands on the cell, otherwise they walk there.</summary>
+        /// <summary>Attacks the damageable on the cell, otherwise moves there.</summary>
         private void IssueOrder(Vector2Int cell)
         {
             IOccupant clicked = _grid.GetOccupant(cell.x, cell.y);
@@ -70,17 +67,17 @@ namespace Rts2D.Command.Manager
                 foreach (IMovable unit in _units)
                     _attack.Attack(unit, target);
             }
-            // Clicking one of the selected units themselves gives no order
+            // Clicking a selected unit gives no order
         }
 
-        /// <summary>Sends each unit to its own free cell: the clicked cell first, then the nearest ones around it.</summary>
+        /// <summary>Gives each unit its own free cell near the clicked one.</summary>
         private void MoveGroup(Vector2Int cell)
         {
             _cellFinder.FindFreeCellsNear(cell, _units.Count, _destinations);
 
             for (int i = 0; i < _units.Count && i < _destinations.Count; i++)
             {
-                _attack.Cancel(_units[i]); // a new move order cancels the attack
+                _attack.Cancel(_units[i]); // a move order cancels the attack
                 _move.MoveTo(_units[i], _destinations[i]);
             }
         }

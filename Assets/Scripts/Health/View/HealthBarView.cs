@@ -23,7 +23,7 @@ namespace Rts2D.Health.View
         private float _width;
         private bool _built;
 
-        /// <summary>Sizes the bar to its owner's size and places it just above the owner.</summary>
+        /// <summary>Sizes the bar to its owner and places it above.</summary>
         public void Setup(Vector2 ownerSize)
         {
             _width = ownerSize.x * widthRatio;

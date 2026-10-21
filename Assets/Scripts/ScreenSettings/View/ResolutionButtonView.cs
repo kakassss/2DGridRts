@@ -6,10 +6,7 @@ using Rts2D.ScreenSettings.Manager;
 
 namespace Rts2D.ScreenSettings.View
 {
-    /// <summary>
-    /// Put this on a scene button. Each click switches to the next resolution preset
-    /// and the label shows the current one.
-    /// </summary>
+    /// <summary>Button that switches to the next resolution preset and shows it.</summary>
     public class ResolutionButtonView : MonoBehaviour
     {
         [SerializeField] private Button button;

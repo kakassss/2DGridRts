@@ -12,7 +12,7 @@ namespace Rts2D.Building.Installer
 
         public override void InstallBindings()
         {
-            Container.BindInstance(buildingCatalog); // the production menu uses it too
+            Container.BindInstance(buildingCatalog); // also used by the production menu
 
             Container.BindInterfacesAndSelfTo<BuildingPoolManager>().AsSingle()
                 .WithArguments(buildingPoolParent);

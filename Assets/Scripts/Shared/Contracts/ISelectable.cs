@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rts2D.Shared.Contracts
 {
-    /// <summary>Anything the player can click to select and see in the information panel.</summary>
+    /// <summary>Anything the player can select and see in the panel.</summary>
     public interface ISelectable
     {
         string DisplayName { get; }

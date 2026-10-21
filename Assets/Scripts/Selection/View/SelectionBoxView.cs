@@ -3,10 +3,7 @@ using UnityEngine.UI;
 
 namespace Rts2D.Selection.View
 {
-    /// <summary>
-    /// The rectangle drawn while the player drags to select units. Put it on a UI Image that is a direct
-    /// child of the root canvas, so it can cover the whole screen.
-    /// </summary>
+    /// <summary>Drag-selection box. Put it on a UI Image directly under the root canvas.</summary>
     [RequireComponent(typeof(RectTransform), typeof(Image))]
     public class SelectionBoxView : MonoBehaviour
     {
@@ -22,12 +19,11 @@ namespace Rts2D.Selection.View
             _image = GetComponent<Image>();
             _rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
 
-            // Anchor at the parent's origin and pivot at the bottom-left corner,
-            // so anchoredPosition is the box corner in the parent's local space
+            // Anchor at the parent origin, pivot bottom-left: anchoredPosition = box corner
             _rect.anchorMin = _rect.anchorMax = _parentRect.pivot;
             _rect.pivot = Vector2.zero;
 
-            _image.raycastTarget = false; // the box must never block clicks
+            _image.raycastTarget = false; // never block clicks
             Hide();
         }
 
@@ -46,7 +42,7 @@ namespace Rts2D.Selection.View
 
         private Vector2 ScreenToLocal(Vector2 screenPosition)
         {
-            // Overlay canvases need no camera; the other modes use the canvas camera
+            // Overlay canvases need no camera
             Camera canvasCamera = _rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _rootCanvas.worldCamera;
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(

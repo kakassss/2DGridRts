@@ -13,10 +13,7 @@ using Rts2D.Shared.Contracts;
 
 namespace Rts2D.Placement.Manager
 {
-    /// <summary>
-    /// Runs the placement flow: starts it when a building is picked from the menu,
-    /// reads cancel / place input, and turns the ghost into a real building.
-    /// </summary>
+    /// <summary>Runs the placement flow and turns the ghost into a real building.</summary>
     public class PlacementManager : ITickable, IInitializable, IDisposable
     {
         private readonly ProductSelectionService _productSelection;
@@ -50,7 +47,7 @@ namespace Rts2D.Placement.Manager
 
             if (WasCancelPressed())
             {
-                _interaction.ConsumeClick(); // the cancelling right click must not become a move order
+                _interaction.ConsumeClick(); // the cancel click must not become a move order
                 CancelPlacement();
                 return;
             }
@@ -89,7 +86,7 @@ namespace Rts2D.Placement.Manager
             _tracker.Track(building);
 
             _interaction.SetMode(InteractionMode.Idle);
-            _selection.Select(building); // show the new building right away (e.g. Barracks production buttons)
+            _selection.Select(building); // show it right away (e.g. Barracks buttons)
         }
 
         private static bool WasCancelPressed()

@@ -30,7 +30,7 @@ namespace Rts2D.Grid.Manager
                     _cells[x, y] = new GridCell();
         }
 
-        // ---------- Registration (place / remove / move) ----------
+        // ---------- Registration ----------
 
         /// <summary>Writes the occupant into every cell it covers.</summary>
         public void PlaceOccupant(IOccupant occupant)
@@ -40,7 +40,7 @@ namespace Rts2D.Grid.Manager
                     SetOccupant(x, y, occupant);
         }
 
-        /// <summary>Frees the cells the occupant covers. Only removes its own entries.</summary>
+        /// <summary>Frees the cells the occupant covers (only its own entries).</summary>
         public void RemoveOccupant(IOccupant occupant)
         {
             for (int x = occupant.MinCell.x; x <= occupant.MaxCell.x; x++)
@@ -48,7 +48,7 @@ namespace Rts2D.Grid.Manager
                     ClearOccupant(x, y, occupant);
         }
 
-        /// <summary>Returns false and changes nothing if the target cell is occupied.</summary>
+        /// <summary>Returns false if the target cell is occupied.</summary>
         public bool TryMoveOccupant(Vector2Int from, Vector2Int to, IOccupant occupant)
         {
             if (IsOccupied(to.x, to.y))
@@ -71,7 +71,7 @@ namespace Rts2D.Grid.Manager
         public bool IsOccupied(int x, int y)
             => !InBounds(x, y) || _cells[x, y].IsOccupied;
 
-        /// <summary>Are all cells of the given rectangle free and inside the grid?</summary>
+        /// <summary>True if the whole rectangle is free and inside the grid.</summary>
         public bool IsAreaFree(Vector2Int origin, Vector2Int size)
         {
             for (int x = origin.x; x < origin.x + size.x; x++)
@@ -94,10 +94,7 @@ namespace Rts2D.Grid.Manager
         public Vector3 GetCellCenter(Vector2Int cell)
             => new Vector3((cell.x + 0.5f) * CellSize, (cell.y + 0.5f) * CellSize, 0f);
 
-        /// <summary>
-        /// Returns the bottom-left cell so that the mouse sits at the middle of the building.
-        /// The center snaps to a cell middle (odd size) or to a cell corner (even size).
-        /// </summary>
+        /// <summary>Bottom-left cell that centers the building on the mouse.</summary>
         public Vector2Int GetBuildingOrigin(Vector3 worldPosition, Vector2Int size)
         {
             int x = Mathf.FloorToInt(worldPosition.x / CellSize - size.x / 2f + 0.5f);
@@ -105,14 +102,14 @@ namespace Rts2D.Grid.Manager
             return new Vector2Int(x, y);
         }
 
-        /// <summary>World-space center of the footprint (assuming a Center sprite pivot).</summary>
+        /// <summary>World-space center of the footprint.</summary>
         public Vector3 GetBuildingCenter(Vector2Int origin, Vector2Int size)
             => new Vector3(
                 (origin.x + size.x / 2f) * CellSize,
                 (origin.y + size.y / 2f) * CellSize,
                 0f);
 
-        // ---------- Internal writes (not exposed) ----------
+        // ---------- Internal writes ----------
 
         private void SetOccupant(int x, int y, IOccupant occupant)
         {

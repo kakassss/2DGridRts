@@ -7,23 +7,20 @@ using Rts2D.Pooling.Manager;
 
 namespace Rts2D.ProductionMenu.View
 {
-    /// <summary>
-    /// Endless vertical list of buildings. Only enough items to fill the viewport are taken from the pool;
-    /// an item that scrolls off the top comes back at the bottom.
-    /// </summary>
+    /// <summary>Endless building list; items that scroll off one end come back at the other.</summary>
     [RequireComponent(typeof(RectTransform))]
     public class ProductionInfiniteScrollView : MonoBehaviour, IScrollHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        // Extra rows kept outside the viewport (one above, one below) so no gap shows while wrapping
+        // Spare rows outside the viewport, so wrapping shows no gap
         private const int SpareRowCount = 2;
 
-        // Below this speed (pixels per second) the inertia slide stops
+        // Inertia stops below this speed (pixels per second)
         private const float StopVelocity = 0.5f;
 
-        // How much a new drag sample replaces the previous velocity (0 = ignore, 1 = replace)
+        // How much a new drag sample replaces the velocity (0-1)
         private const float DragVelocitySmoothing = 0.5f;
 
-        // Guards against dividing by zero on a frame with no elapsed time
+        // Avoids dividing by zero on a zero-length frame
         private const float MinDeltaTime = 0.0001f;
 
         // Items are anchored and pivoted at their top-left corner
@@ -46,14 +43,14 @@ namespace Rts2D.ProductionMenu.View
         private RectTransform _viewport;
         private Canvas _rootCanvas;
 
-        private float _scrollOffset;        // how far the list is scrolled, in pixels
-        private float _scrollVelocity;      // pixels per second, used for the inertia slide
+        private float _scrollOffset;        // in pixels
+        private float _scrollVelocity;      // pixels per second, for inertia
         private bool _isDragging;
 
         private float _itemWidth;
         private float _itemHeight;
-        private float _rowStep;             // item height + spacing: distance from one row to the next
-        private float _contentHeight;       // height of all rows; scrolling wraps after this
+        private float _rowStep;             // item height + spacing
+        private float _contentHeight;       // all rows; scrolling wraps after this
         private Vector2 _lastViewportSize;
 
         [Inject]
@@ -71,7 +68,7 @@ namespace Rts2D.ProductionMenu.View
 
         private void LateUpdate()
         {
-            // First frame, and every time the window is resized
+            // First frame and on every resize
             if (_viewport.rect.size != _lastViewportSize)
             {
                 FillViewportWithItems();
@@ -104,7 +101,7 @@ namespace Rts2D.ProductionMenu.View
             float dragPixels = eventData.delta.y / _rootCanvas.scaleFactor;
             ScrollBy(dragPixels);
 
-            // Remember how fast the pointer moves so the list keeps sliding after release
+            // Track pointer speed so the list keeps sliding after release
             float pointerVelocity = dragPixels / Mathf.Max(Time.unscaledDeltaTime, MinDeltaTime);
             _scrollVelocity = Mathf.Lerp(_scrollVelocity, pointerVelocity, DragVelocitySmoothing);
         }
@@ -114,13 +111,13 @@ namespace Rts2D.ProductionMenu.View
             _isDragging = false;
         }
 
-        /// <summary>Keeps sliding after a flick or a wheel turn and slows down over time.</summary>
+        /// <summary>Keeps sliding after a flick and slows down.</summary>
         private void ApplyInertia()
         {
             float deltaTime = Time.unscaledDeltaTime;
             ScrollBy(_scrollVelocity * deltaTime);
 
-            // Exponential decay, so the slow down feels the same at any frame rate
+            // Exponential decay: same feel at any frame rate
             float decay = 1f - Mathf.Exp(-inertiaDamping * deltaTime);
             _scrollVelocity = Mathf.Lerp(_scrollVelocity, 0f, decay);
         }
@@ -131,7 +128,7 @@ namespace Rts2D.ProductionMenu.View
             PositionItems();
         }
 
-        /// <summary>Takes just enough items from the pool to fill the viewport and binds buildings to them in order.</summary>
+        /// <summary>Takes just enough pooled items to fill the viewport and binds them.</summary>
         private void FillViewportWithItems()
         {
             IReadOnlyList<BuildingSO> buildings = _buildingCatalog.Buildings;
@@ -147,7 +144,7 @@ namespace Rts2D.ProductionMenu.View
             int visibleRowCount = Mathf.CeilToInt(viewportSize.y / _rowStep);
             int itemCount = (visibleRowCount + SpareRowCount) * columnCount;
 
-            // Round up so every row is full and the A B C A B C order continues across the wrap
+            // Round up so rows stay full and the order repeats cleanly
             int cycleLength = LeastCommonMultiple(buildings.Count, columnCount);
             itemCount = Mathf.CeilToInt(itemCount / (float)cycleLength) * cycleLength;
 
@@ -168,12 +165,12 @@ namespace Rts2D.ProductionMenu.View
             _contentHeight = rowCount * _rowStep;
         }
 
-        /// <summary>Puts every item at its row and column, shifted by the scroll offset.</summary>
+        /// <summary>Places every item, shifted by the scroll offset.</summary>
         private void PositionItems()
         {
             if (_spawnedItems.Count == 0) return;
 
-            // Keep the offset inside one content height so it never grows forever
+            // Keep the offset within one content height
             _scrollOffset = Mathf.Repeat(_scrollOffset, _contentHeight);
 
             for (int i = 0; i < _spawnedItems.Count; i++)
@@ -181,17 +178,17 @@ namespace Rts2D.ProductionMenu.View
                 int row = i / columnCount;
                 int column = i % columnCount;
 
-                // Distance from the top of the viewport down to the top of this row
+                // Top of this row, measured down from the viewport top
                 float rowTop = row * _rowStep - _scrollOffset;
                 if (rowTop < -_rowStep)
-                    rowTop += _contentHeight; // scrolled off the top: move it to the bottom
+                    rowTop += _contentHeight; // scrolled off the top: wrap to the bottom
 
                 float left = itemSpacing + column * (_itemWidth + itemSpacing);
                 float top = rowTop + itemSpacing;
 
                 var itemRect = (RectTransform)_spawnedItems[i].transform;
                 itemRect.sizeDelta = new Vector2(_itemWidth, _itemHeight);
-                itemRect.anchoredPosition = new Vector2(left, -top); // UI y grows upwards, so "down" is negative
+                itemRect.anchoredPosition = new Vector2(left, -top); // UI y grows upwards
             }
         }
 

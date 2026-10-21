@@ -34,7 +34,7 @@ namespace Rts2D.Building.Manager
                 pool = CreatePool(data, 0);
 
             BuildingView view = pool.Spawn();
-            view.Prepare(data); // Data is always set before anyone can despawn it
+            view.Prepare(data); // Data is set before anyone can despawn it
             return view;
         }
 

@@ -5,14 +5,14 @@ using Rts2D.Shared.Contracts;
 
 namespace Rts2D.Utils
 {
-    /// <summary>Finds the nearest free cell around an occupant or around a single cell.</summary>
-    public class SurroundingCellFinder
+    /// <summary>Finds the nearest free cells around an occupant or a cell.</summary>
+    public class FreeCellFinder
     {
         private readonly GridManager _grid;
 
-        public SurroundingCellFinder(GridManager grid) => _grid = grid;
+        public FreeCellFinder(GridManager grid) => _grid = grid;
 
-        /// <summary>Nearest free cell in the rings around the occupant's footprint.</summary>
+        /// <summary>Nearest free cell around the occupant's footprint.</summary>
         public bool TryFind(IOccupant target, out Vector2Int result)
             => TryFindRing(target.MinCell, target.MaxCell, 1, out result);
 
@@ -20,15 +20,12 @@ namespace Rts2D.Utils
         public bool TryFindNear(Vector2Int cell, out Vector2Int result)
             => TryFindRing(cell, cell, 0, out result);
 
-        /// <summary>
-        /// Fills result with up to "count" different free cells: the cell itself if free, then the nearest
-        /// free cells around it. Used to give every unit of a group its own destination.
-        /// </summary>
+        /// <summary>Up to "count" distinct free cells, nearest first (one per unit of a group).</summary>
         public void FindFreeCellsNear(Vector2Int cell, int count, List<Vector2Int> result)
         {
             result.Clear();
 
-            // No fixed radius: rings grow until enough cells are found or the whole grid is covered
+            // Rings grow until enough cells are found or the grid is covered
             int maxDistance = Mathf.Max(_grid.Width, _grid.Height);
 
             for (int d = 0; d <= maxDistance; d++)
@@ -49,7 +46,7 @@ namespace Rts2D.Utils
 
         private bool TryFindRing(Vector2Int min, Vector2Int max, int startDistance, out Vector2Int result)
         {
-            // No fixed radius: rings grow until they cover the whole grid
+            // Rings grow until they cover the whole grid
             int maxDistance = Mathf.Max(_grid.Width, _grid.Height);
 
             for (int d = startDistance; d <= maxDistance; d++)

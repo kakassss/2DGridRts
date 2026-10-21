@@ -3,9 +3,7 @@ using UnityEngine;
 
 namespace Rts2D.ScreenSettings.Manager
 {
-    /// <summary>
-    /// Cycles the game window through a list of resolution presets, one preset per call.
-    /// </summary>
+    /// <summary>Cycles the window through resolution presets.</summary>
     public class ResolutionManager
     {
         private readonly struct Preset
@@ -34,15 +32,15 @@ namespace Rts2D.ScreenSettings.Manager
             new Preset(720, 1280, "9:16"),
         };
 
-        // Share of the desktop a window may fill, so the title bar and taskbar stay reachable
+        // Max share of the desktop, so the title bar and taskbar stay visible
         private const float MaxDesktopFill = 0.92f;
 
         private int _index = -1;
 
-        /// <summary>Raised with the new label text after a preset has been applied.</summary>
+        /// <summary>Raised with the new label after a preset is applied.</summary>
         public event Action<string> LabelChanged;
 
-        /// <summary>Label of the current window size, shown before any preset is applied.</summary>
+        /// <summary>Current window size, shown before any preset is applied.</summary>
         public string CurrentLabel => $"{Screen.width}x{Screen.height}";
 
         public void ApplyNextPreset()
@@ -56,7 +54,7 @@ namespace Rts2D.ScreenSettings.Manager
             LabelChanged?.Invoke($"{size.x}x{size.y}  ({preset.Ratio})");
         }
 
-        /// <summary>Scales the size down (keeping its aspect ratio) when it would not fit on the desktop.</summary>
+        /// <summary>Shrinks the size (same aspect) if it does not fit the desktop.</summary>
         private Vector2Int FitToDesktop(int width, int height)
         {
             Resolution desktop = Screen.currentResolution;

@@ -4,17 +4,14 @@ using Rts2D.Grid.Manager;
 
 namespace Rts2D.Placement.Service
 {
-    /// <summary>Decides which cell a building's units come out of.</summary>
+    /// <summary>Decides where a building's units appear.</summary>
     public class SpawnCellResolver
     {
         private readonly GridManager _grid;
 
         public SpawnCellResolver(GridManager grid) => _grid = grid;
 
-        /// <summary>
-        /// The designated spawn cell (origin + SpawnOffset). If it falls outside the grid, it is moved
-        /// to the middle of another side of the building so the spawn point is always on the board.
-        /// </summary>
+        /// <summary>Origin + SpawnOffset; moved to another side if it is off the board.</summary>
         public Vector2Int Resolve(Vector2Int origin, BuildingSO data)
         {
             Vector2Int preferred = origin + data.SpawnOffset;
@@ -38,7 +35,7 @@ namespace Rts2D.Placement.Service
                     return cell;
             }
 
-            return preferred; // no side is on the board; the spawn search still finds the nearest free cell
+            return preferred; // no side fits; spawning still finds the nearest free cell
         }
     }
 }

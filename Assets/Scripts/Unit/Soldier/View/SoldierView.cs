@@ -35,7 +35,7 @@ namespace Rts2D.Unit.Soldier.View
             Cell = cell;
             transform.position = worldPosition;
 
-            healthBar.Setup(Vector2.one); // a soldier fills exactly one cell
+            healthBar.Setup(Vector2.one); // one cell
             healthBar.SetHealth(_health.Current, _health.Max);
         }
 

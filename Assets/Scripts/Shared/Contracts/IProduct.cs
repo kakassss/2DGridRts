@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Rts2D.Shared.Contracts
 {
-    //Something that can be shown as an item in a product list (menu / information panel)
+    /// <summary>Something listed in the production menu or information panel.</summary>
     public interface IProduct
     {
         string DisplayName { get; }

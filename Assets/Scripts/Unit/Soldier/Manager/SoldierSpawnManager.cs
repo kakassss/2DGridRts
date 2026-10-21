@@ -15,11 +15,11 @@ namespace Rts2D.Unit.Soldier.Manager
         private readonly SoldierProductionService _service;
         private readonly SoldierPoolManager _pools;
         private readonly GridManager _grid;
-        private readonly SurroundingCellFinder _cellFinder;
+        private readonly FreeCellFinder _cellFinder;
         private readonly IDamageableTracker _tracker;
 
         public SoldierSpawnManager(SoldierProductionService service, SoldierPoolManager pools,
-            GridManager grid, SurroundingCellFinder cellFinder, IDamageableTracker tracker)
+            GridManager grid, FreeCellFinder cellFinder, IDamageableTracker tracker)
         {
             _service = service;
             _pools = pools;
@@ -41,7 +41,7 @@ namespace Rts2D.Unit.Soldier.Manager
         private void OnProduceRequested(IProduct product, IProducer producer)
         {
             if (product is not SoldierSO data) return;
-            if (!producer.Producibles.Contains(product)) return; // this producer does not make that soldier
+            if (!producer.Producibles.Contains(product)) return; // not in this producer's list
 
             if (!_cellFinder.TryFindNear(producer.SpawnCell, out Vector2Int cell)) return;
 

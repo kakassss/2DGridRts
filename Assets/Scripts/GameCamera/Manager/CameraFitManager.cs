@@ -4,10 +4,7 @@ using Rts2D.GameConfig.SO;
 
 namespace Rts2D.GameCamera.Manager
 {
-    /// <summary>
-    /// Keeps the whole game board visible at any resolution / aspect ratio
-    /// by fitting the orthographic size to the grid and centering the camera on it.
-    /// </summary>
+    /// <summary>Fits the orthographic camera to the grid at any aspect ratio.</summary>
     public class CameraFitManager : IInitializable, ITickable
     {
         private readonly Camera _camera;
@@ -37,7 +34,7 @@ namespace Rts2D.GameCamera.Manager
 
         private void Fit()
         {
-            // A minimized window reports a zero-sized screen; skip to avoid dividing by zero.
+            // A minimized window has zero size; avoid dividing by zero
             if (Screen.width <= 0 || Screen.height <= 0) return;
 
             _lastWidth = Screen.width;
@@ -49,10 +46,10 @@ namespace Rts2D.GameCamera.Manager
             float gridWidth = _config.GridWidth * cellSize + margin * 2f;
             float gridHeight = _config.GridHeight * cellSize + margin * 2f;
 
-            // Aspect ratio of the area the camera really draws (viewport rect included)
+            // Aspect ratio of the drawn area (viewport rect included)
             float aspect = (Screen.width * _camera.rect.width) / (Screen.height * _camera.rect.height);
 
-            // Smallest orthographic size that fits both the width and the height
+            // Smallest size that fits both width and height
             float sizeByHeight = gridHeight / 2f;
             float sizeByWidth = gridWidth / (2f * aspect);
             _camera.orthographicSize = Mathf.Max(sizeByHeight, sizeByWidth);

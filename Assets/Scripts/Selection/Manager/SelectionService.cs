@@ -4,13 +4,10 @@ using Rts2D.Shared.Contracts;
 
 namespace Rts2D.Selection.Manager
 {
-    /// <summary>
-    /// Holds what the player has selected: one building, or one or more soldiers.
-    /// The first item is the one shown in the information panel.
-    /// </summary>
+    /// <summary>What the player has selected; the first item is shown in the panel.</summary>
     public class SelectionService
     {
-        /// <summary>Raised whenever the selection changes and is not empty; passes the item to show in the panel.</summary>
+        /// <summary>Raised when the selection changes and is not empty; passes the item to show.</summary>
         public event Action<ISelectable> Selected;
         public event Action Cleared;
 
@@ -18,7 +15,7 @@ namespace Rts2D.Selection.Manager
 
         public IReadOnlyList<ISelectable> SelectedItems => _selectedItems;
 
-        /// <summary>The item shown in the information panel (the first selected one), or null.</summary>
+        /// <summary>The item shown in the panel, or null.</summary>
         public ISelectable Current => _selectedItems.Count > 0 ? _selectedItems[0] : null;
 
         public void Select(ISelectable selectable)
@@ -28,7 +25,7 @@ namespace Rts2D.Selection.Manager
             Selected?.Invoke(selectable);
         }
 
-        /// <summary>Replaces the selection with the given items (e.g. the soldiers inside a drag box).</summary>
+        /// <summary>Replaces the selection (e.g. the soldiers in a drag box).</summary>
         public void SelectMany(IReadOnlyList<ISelectable> selectables)
         {
             if (selectables.Count == 0)
@@ -42,7 +39,7 @@ namespace Rts2D.Selection.Manager
             Selected?.Invoke(_selectedItems[0]);
         }
 
-        /// <summary>Removes one item (e.g. when it dies). Clears the selection if nothing is left.</summary>
+        /// <summary>Removes one item; clears the selection if none is left.</summary>
         public void Deselect(ISelectable selectable)
         {
             if (!_selectedItems.Remove(selectable)) return;
@@ -50,7 +47,7 @@ namespace Rts2D.Selection.Manager
             if (_selectedItems.Count == 0)
                 Cleared?.Invoke();
             else
-                Selected?.Invoke(_selectedItems[0]); // lets the panel refresh the count
+                Selected?.Invoke(_selectedItems[0]); // refreshes the panel count
         }
 
         public void Clear()

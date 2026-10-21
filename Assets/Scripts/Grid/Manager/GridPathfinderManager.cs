@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Rts2D.Grid.Manager
 {
-    /// <summary>A* pathfinding on the grid. Units move only in 4 directions, so the heuristic is Manhattan distance.</summary>
+    /// <summary>A* on the grid (4 directions, Manhattan heuristic).</summary>
     public class GridPathfinderManager
     {
-        // Cost of moving one cell; every step costs the same on this grid
+        // Every step costs the same
         private const int StepCost = 1;
 
         // Right, left, up, down (no diagonal movement)
@@ -20,17 +20,17 @@ namespace Rts2D.Grid.Manager
 
         public GridPathfinderManager(GridManager grid) => _grid = grid;
 
-        /// <summary>Cells from start (exclusive) to target (inclusive). Null if there is no path.</summary>
+        /// <summary>Path from start (exclusive) to target (inclusive); null if none.</summary>
         public List<Vector2Int> FindPath(Vector2Int start, Vector2Int target)
         {
             if (start == target) return new List<Vector2Int>();
             if (!IsWalkable(target)) return null;
 
-            // Cells found but not yet expanded
+            // Found but not yet expanded
             var cellsToVisit = new List<Vector2Int> { start };
-            // For each reached cell, the cell we came from (used to rebuild the path)
+            // Where each cell was reached from (to rebuild the path)
             var previousCell = new Dictionary<Vector2Int, Vector2Int>();
-            // Cheapest known number of steps from start to each cell (A* "g" cost)
+            // Cheapest known steps from start (A* g cost)
             var costFromStart = new Dictionary<Vector2Int, int> { [start] = 0 };
 
             while (cellsToVisit.Count > 0)
@@ -49,7 +49,7 @@ namespace Rts2D.Grid.Manager
 
                     int newCost = costFromStart[current] + StepCost;
                     if (costFromStart.TryGetValue(neighbor, out int knownCost) && newCost >= knownCost)
-                        continue; // already reached this cell by an equal or shorter route
+                        continue; // already reached by an equal or shorter route
 
                     costFromStart[neighbor] = newCost;
                     previousCell[neighbor] = current;
@@ -59,7 +59,7 @@ namespace Rts2D.Grid.Manager
             return null;
         }
 
-        /// <summary>Picks the cell with the lowest estimated total cost (steps so far + remaining estimate).</summary>
+        /// <summary>Cell with the lowest estimated total cost.</summary>
         private Vector2Int FindMostPromisingCell(
             List<Vector2Int> cells, Dictionary<Vector2Int, int> costFromStart, Vector2Int target)
         {
@@ -81,11 +81,11 @@ namespace Rts2D.Grid.Manager
         private bool IsWalkable(Vector2Int cell)
             => _grid.InBounds(cell.x, cell.y) && !_grid.IsOccupied(cell.x, cell.y);
 
-        /// <summary>Manhattan distance: the minimum number of steps when only 4-direction moves are allowed.</summary>
+        /// <summary>Manhattan distance: minimum steps with 4-direction moves.</summary>
         private int EstimateRemainingCost(Vector2Int from, Vector2Int to)
             => (Mathf.Abs(from.x - to.x) + Mathf.Abs(from.y - to.y)) * StepCost;
 
-        /// <summary>Walks back from target to start through previousCell, then reverses to get start→target order.</summary>
+        /// <summary>Rebuilds the path from target back to start, then reverses it.</summary>
         private List<Vector2Int> BuildPath(
             Dictionary<Vector2Int, Vector2Int> previousCell, Vector2Int start, Vector2Int target)
         {

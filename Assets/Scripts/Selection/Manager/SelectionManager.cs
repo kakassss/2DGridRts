@@ -10,13 +10,10 @@ using Rts2D.Shared.Contracts;
 
 namespace Rts2D.Selection.Manager
 {
-    /// <summary>
-    /// Left click selects the building or soldier under the cursor (or clears the selection on an empty cell).
-    /// Left drag draws a box and selects every soldier inside it.
-    /// </summary>
+    /// <summary>Click selects one building or soldier; drag selects every soldier in the box.</summary>
     public class SelectionManager : ITickable, IInitializable, IDisposable
     {
-        // The mouse must move this far (screen pixels) while held before a click becomes a drag
+        // Pixels the mouse must move before a click becomes a drag
         private const float DragThresholdPixels = 10f;
 
         private readonly GridManager _gridManager;
@@ -26,7 +23,7 @@ namespace Rts2D.Selection.Manager
         private readonly IDamageableTracker _damageableTracker;
         private readonly SelectionBoxView _selectionBox;
 
-        // Reused buffer for the soldiers found inside the box
+        // Reused buffer for the soldiers in the box
         private readonly List<ISelectable> _unitsInBox = new List<ISelectable>();
 
         private bool _isPressing;
@@ -65,8 +62,8 @@ namespace Rts2D.Selection.Manager
 
         private void BeginPress(Mouse mouse)
         {
-            ResetPress(); // a new press always starts fresh, even if the last release was missed
-            if (!_interaction.CanUseWorldClick()) return; // e.g. over the UI, or the click placed a building
+            ResetPress(); // start fresh, even if a release was missed
+            if (!_interaction.CanUseWorldClick()) return; // over UI, or the click placed a building
 
             _isPressing = true;
             _pressScreenPosition = mouse.position.ReadValue();
@@ -119,7 +116,7 @@ namespace Rts2D.Selection.Manager
             else _selectionService.Clear();
         }
 
-        // Drag: every soldier whose cell is inside the box (buildings are left out, as in most RTS games)
+        // Drag: every soldier in the box (buildings are skipped)
         private void SelectUnitsInBox(Vector3 cornerA, Vector3 cornerB)
         {
             _gridManager.GetXYPosition(cornerA, out int ax, out int ay);

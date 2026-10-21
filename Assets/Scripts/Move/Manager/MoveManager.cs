@@ -6,18 +6,13 @@ using Rts2D.Shared.Contracts;
 
 namespace Rts2D.Move.Manager
 {
-    /// <summary>
-    /// Moves units cell by cell along A* paths. A unit reserves the next cell on the grid
-    /// before it starts walking there, so two units can never head into the same cell.
-    /// Each unit's path and destination are kept here, so no other system can change them.
-    /// </summary>
+    /// <summary>Moves units cell by cell along A* paths and keeps their routes.</summary>
     public class MoveManager : ITickable
     {
-        // Squared distance (world units) under which a unit counts as standing on a cell center.
-        // Squared so we can skip the square root; 0.0001 = 0.01 units.
+        // Squared distance (0.01 units) at which a unit is on the cell center
         private const float ArrivalSqrDistance = 0.0001f;
 
-        /// <summary>Where a unit is going and the cells left on the way there.</summary>
+        /// <summary>Destination and the cells left to walk.</summary>
         private class Route
         {
             public readonly Queue<Vector2Int> Cells = new Queue<Vector2Int>();
@@ -28,7 +23,7 @@ namespace Rts2D.Move.Manager
         private readonly GridPathfinderManager _pathfinder;
         private readonly List<IMovable> _movingUnits = new List<IMovable>();
 
-        // One route per unit, created on its first move and reused afterwards (soldiers are pooled)
+        // One route per unit, reused (soldiers are pooled)
         private readonly Dictionary<IMovable, Route> _routes = new Dictionary<IMovable, Route>();
 
         public MoveManager(GridManager grid, GridPathfinderManager pathfinder)
@@ -37,10 +32,7 @@ namespace Rts2D.Move.Manager
             _pathfinder = pathfinder;
         }
 
-        /// <summary>
-        /// Finds a path to the target cell and starts moving.
-        /// Returns false and changes nothing if the cell cannot be reached.
-        /// </summary>
+        /// <summary>Starts moving to the cell. Returns false if it cannot be reached.</summary>
         public bool MoveTo(IMovable unit, Vector2Int targetCell)
         {
             List<Vector2Int> path = _pathfinder.FindPath(unit.Cell, targetCell);
@@ -48,7 +40,7 @@ namespace Rts2D.Move.Manager
 
             Route route = GetRoute(unit);
             route.Cells.Clear();
-            EnqueueCurrentCellIfOffCenter(unit, route); // finish the half-completed step first
+            EnqueueCurrentCellIfOffCenter(unit, route); // finish the half step first
             EnqueuePath(route, path);
             route.Destination = targetCell;
 
@@ -56,7 +48,7 @@ namespace Rts2D.Move.Manager
             return true;
         }
 
-        /// <summary>Drops the remaining path but lets the unit finish walking onto its current cell center.</summary>
+        /// <summary>Drops the path but lets the unit reach its cell center.</summary>
         public void Stop(IMovable unit)
         {
             Route route = GetRoute(unit);
@@ -69,7 +61,7 @@ namespace Rts2D.Move.Manager
                 StartTracking(unit);
         }
 
-        /// <summary>Drops the unit from movement right away (used when it despawns).</summary>
+        /// <summary>Removes the unit right away (on despawn).</summary>
         public void Remove(IMovable unit)
         {
             if (_routes.TryGetValue(unit, out Route route))
@@ -82,13 +74,13 @@ namespace Rts2D.Move.Manager
         public bool IsMoving(IMovable unit)
             => _routes.TryGetValue(unit, out Route route) && route.Cells.Count > 0;
 
-        /// <summary>True when the unit has no pending path and stands exactly on its cell center.</summary>
+        /// <summary>True when the unit has no path and stands on its cell center.</summary>
         public bool IsSettled(IMovable unit)
             => !IsMoving(unit) && IsAtCellCenter(unit);
 
         public void Tick()
         {
-            // Iterate backwards so units can be removed while looping
+            // Backwards, so units can be removed while looping
             for (int i = _movingUnits.Count - 1; i >= 0; i--)
             {
                 IMovable unit = _movingUnits[i];
@@ -112,13 +104,10 @@ namespace Rts2D.Move.Manager
             }
         }
 
-        /// <summary>
-        /// Moves the unit's grid occupancy to the next cell before it visually gets there.
-        /// Returns false if another occupant already holds that cell.
-        /// </summary>
+        /// <summary>Reserves the next cell before walking there. False if it is taken.</summary>
         private bool TryReserveCell(IMovable unit, Vector2Int nextCell)
         {
-            if (nextCell == unit.Cell) return true; // already owns its own cell
+            if (nextCell == unit.Cell) return true; // already owns it
 
             if (!_grid.TryMoveOccupant(unit.Cell, nextCell, unit)) return false;
 
@@ -126,7 +115,7 @@ namespace Rts2D.Move.Manager
             return true;
         }
 
-        /// <summary>Moves the unit toward the cell center and pops the cell from the route once reached.</summary>
+        /// <summary>Steps toward the cell center; pops the cell once reached.</summary>
         private void StepTowards(IMovable unit, Route route, Vector2Int cell)
         {
             Transform unitTransform = unit.GameObject.transform;
@@ -139,7 +128,7 @@ namespace Rts2D.Move.Manager
                 route.Cells.Dequeue();
         }
 
-        /// <summary>Called when the next cell got blocked: searches a new path to the same destination.</summary>
+        /// <summary>Next cell got blocked: searches a new path to the destination.</summary>
         private void RecalculatePath(IMovable unit, Route route, int movingIndex)
         {
             List<Vector2Int> path = _pathfinder.FindPath(unit.Cell, route.Destination);
@@ -148,7 +137,7 @@ namespace Rts2D.Move.Manager
 
             if (path == null || path.Count == 0)
             {
-                // No way through: stop, but only once it stands on its cell center
+                // No way through: stop once on the cell center
                 if (route.Cells.Count == 0) _movingUnits.RemoveAt(movingIndex);
                 return;
             }
@@ -156,7 +145,7 @@ namespace Rts2D.Move.Manager
             EnqueuePath(route, path);
         }
 
-        /// <summary>If the unit is not at the center of its own cell, queues that cell first so it gets there.</summary>
+        /// <summary>Queues the unit's own cell first if it is off its center.</summary>
         private void EnqueueCurrentCellIfOffCenter(IMovable unit, Route route)
         {
             if (!IsAtCellCenter(unit))

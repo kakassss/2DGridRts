@@ -8,10 +8,7 @@ using Rts2D.Shared.Contracts;
 
 namespace Rts2D.Combat.Manager
 {
-    /// <summary>
-    /// Runs attack orders: the unit walks into attack range of its target, then hits it every attack interval
-    /// until the target dies, the order is cancelled, or the target can no longer be reached.
-    /// </summary>
+    /// <summary>Walks units into range of their target and hits it every attack interval.</summary>
     public class AttackManager : ITickable, IInitializable, IDisposable
     {
         private enum OrderStatus
@@ -22,31 +19,31 @@ namespace Rts2D.Combat.Manager
 
         private class AttackOrder
         {
-            // Placeholder so the first update always searches for a path
+            // Forces a path search on the first update
             public static readonly Vector2Int NoCell = new Vector2Int(int.MinValue, int.MinValue);
 
-            // Unit and Attacker are the same soldier, seen as something that moves and something that hits
+            // Same soldier, seen as a mover and as an attacker
             public IMovable Unit;
             public IAttacker Attacker;
             public IDamageable Target;
 
             public float NextAttackTime;
-            public Vector2Int LastTargetCell = NoCell; // where the target was at the last path search
+            public Vector2Int LastTargetCell = NoCell; // target cell at the last path search
         }
 
         private readonly MoveManager _move;
-        private readonly ApproachCellFinderService _cellFinder;
+        private readonly ApproachCellFinder _cellFinder;
         private readonly IDamageableTracker _damageableTracker;
         private readonly List<AttackOrder> _orders = new List<AttackOrder>();
 
-        // Reused buffer for the free cells around a target, so chasing does not allocate
+        // Reused buffer, so chasing does not allocate
         private readonly List<Vector2Int> _approachCells = new List<Vector2Int>();
 
-        // Hits collected during the loop; applied once the loop has finished
+        // Hits are applied after the loop
         private readonly List<(IDamageable target, int damage)> _pendingHits
             = new List<(IDamageable, int)>();
 
-        public AttackManager(MoveManager move, ApproachCellFinderService cellFinder,
+        public AttackManager(MoveManager move, ApproachCellFinder cellFinder,
             IDamageableTracker damageableTracker)
         {
             _move = move;
@@ -60,7 +57,7 @@ namespace Rts2D.Combat.Manager
 
         // ---------- Orders ----------
 
-        /// <summary>Gives the unit a new attack order, replacing any order it already has.</summary>
+        /// <summary>Gives the unit a new attack order, replacing its current one.</summary>
         public void Attack(IMovable unit, IDamageable target)
         {
             if (unit is not IAttacker attacker || target == null || target.IsDead) return;
@@ -71,20 +68,20 @@ namespace Rts2D.Combat.Manager
 
         public void Cancel(IMovable unit) => _orders.RemoveAll(order => order.Unit == unit);
 
-        /// <summary>A dead target ends every order chasing it; a dead unit's own order ends too.</summary>
+        /// <summary>Ends orders on the dead target and the dead unit's own order.</summary>
         private void HandleDestroyed(IDamageable dead)
             => _orders.RemoveAll(order => order.Target == dead || ReferenceEquals(order.Unit, dead));
 
         public void Tick()
         {
-            // Iterate backwards so finished orders can be removed while looping
+            // Backwards, so finished orders can be removed
             for (int i = _orders.Count - 1; i >= 0; i--)
             {
                 if (UpdateOrder(_orders[i]) == OrderStatus.Finished)
                     _orders.RemoveAt(i);
             }
 
-            ApplyPendingHits(); // loop finished, so the death chain can safely run
+            ApplyPendingHits(); // safe to run the death chain now
         }
 
         private OrderStatus UpdateOrder(AttackOrder order)
@@ -103,10 +100,10 @@ namespace Rts2D.Combat.Manager
 
         // ---------- Hitting ----------
 
-        /// <summary>Hits the target once the unit has settled on its cell and the attack interval has passed.</summary>
+        /// <summary>Hits once the unit is settled and the attack interval has passed.</summary>
         private void HitWhenReady(AttackOrder order)
         {
-            // Never attack mid-movement: finish the current step first
+            // Never attack mid-step
             if (!_move.IsSettled(order.Unit))
             {
                 _move.Stop(order.Unit);
@@ -131,16 +128,13 @@ namespace Rts2D.Combat.Manager
 
         // ---------- Chasing ----------
 
-        /// <summary>
-        /// Walks into attack range. Searches for a path only when the target changed cell or the unit stopped,
-        /// so an unchanged situation costs nothing. Finishes the order if the target cannot be reached.
-        /// </summary>
+        /// <summary>Walks into attack range. Finishes the order if the target cannot be reached.</summary>
         private OrderStatus ChaseTarget(AttackOrder order)
         {
             bool targetChangedCell = order.Target.MinCell != order.LastTargetCell;
             bool isInRange = IsInRange(order);
 
-            // Nothing changed since the last search: keep walking, or keep waiting for a passing target in range
+            // Nothing changed: keep walking, or wait for a passing target
             if (!targetChangedCell && (_move.IsMoving(order.Unit) || isInRange))
                 return OrderStatus.Active;
 
@@ -149,16 +143,16 @@ namespace Rts2D.Combat.Manager
             if (TryWalkIntoRange(order))
                 return OrderStatus.Active;
 
-            // Already in range of a target that is still walking: wait for it to stop
+            // In range of a walking target: wait for it to stop
             if (isInRange)
                 return OrderStatus.Active;
 
-            // No free cell in range of the target can be reached: give up instead of searching every frame
+            // Nothing in range is reachable: give up
             _move.Stop(order.Unit);
             return OrderStatus.Finished;
         }
 
-        /// <summary>Tries the free cells in range of the target, nearest first, and walks to the first reachable one.</summary>
+        /// <summary>Walks to the nearest reachable free cell in range.</summary>
         private bool TryWalkIntoRange(AttackOrder order)
         {
             _cellFinder.FindCells(order.Unit.Cell, order.Target, order.Attacker.AttackRange, _approachCells);

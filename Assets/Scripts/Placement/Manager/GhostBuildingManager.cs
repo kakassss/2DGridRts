@@ -9,10 +9,7 @@ using Rts2D.InputHandling.Manager;
 
 namespace Rts2D.Placement.Manager
 {
-    /// <summary>
-    /// Manages the see-through preview building that follows the cursor while placing.
-    /// Knows where it snaps on the grid and whether that area is free, but not when to place it.
-    /// </summary>
+    /// <summary>The see-through preview building that follows the cursor while placing.</summary>
     public class GhostBuildingManager : IDisposable
     {
         private readonly GridManager _grid;
@@ -36,14 +33,14 @@ namespace Rts2D.Placement.Manager
             _gameConfig = gameConfig;
         }
 
-        /// <summary>Takes a building of the given type from the pool and snaps it to the cursor.</summary>
+        /// <summary>Takes the building from the pool and snaps it to the cursor.</summary>
         public void Show(BuildingSO data)
         {
             Hide();
 
             Data = data;
             _view = _pool.Spawn(data);
-            FollowCursor(); // snap to the cursor right away, avoids a frame at the old position
+            FollowCursor(); // avoids one frame at the old position
         }
 
         /// <summary>Returns the ghost to the pool (placement cancelled).</summary>
@@ -55,7 +52,7 @@ namespace Rts2D.Placement.Manager
             _view = null;
         }
 
-        /// <summary>Snaps the ghost to the grid under the cursor and tints it by whether the area is free.</summary>
+        /// <summary>Snaps to the grid under the cursor; green if free, red if not.</summary>
         public void FollowCursor()
         {
             Vector2Int size = Data.Size;
@@ -67,7 +64,7 @@ namespace Rts2D.Placement.Manager
             _view.SetTint(CanPlace ? _gameConfig.ValidPlacementColor : _gameConfig.InvalidPlacementColor);
         }
 
-        /// <summary>Hands the ghost over as a real building: clears the tint and stops tracking it.</summary>
+        /// <summary>Hands the ghost over as a real building.</summary>
         public BuildingView Release()
         {
             BuildingView view = _view;
@@ -78,7 +75,7 @@ namespace Rts2D.Placement.Manager
 
         public void Dispose()
         {
-            _view = null; // the scene is closing, nothing to return to the pool
+            _view = null; // scene is closing, nothing to pool
         }
     }
 }

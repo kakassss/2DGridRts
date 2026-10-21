@@ -31,7 +31,7 @@ namespace Rts2D.Building.View
 
         public bool IsDead => _health.IsDead;
 
-        /// <summary>Called when the building is taken from the pool; it is a ghost until Initialize runs.</summary>
+        /// <summary>Called when taken from the pool; a ghost until Initialize runs.</summary>
         public void Prepare(BuildingSO data)
         {
             Data = data;
@@ -41,10 +41,7 @@ namespace Rts2D.Building.View
                 spawnMarker.gameObject.SetActive(false);
         }
 
-        /// <summary>
-        /// Called when the ghost is actually placed on the grid. The spawn cell is resolved by the
-        /// placement code because only the grid knows its bounds.
-        /// </summary>
+        /// <summary>Called when the building is placed on the grid.</summary>
         public void Initialize(Vector2Int originCell, Vector2Int spawnCell, Vector3 spawnCellCenter)
         {
             OriginCell = originCell;
@@ -77,7 +74,7 @@ namespace Rts2D.Building.View
             spawnMarker.position = new Vector3(spawnCellCenter.x, spawnCellCenter.y, spawnMarker.position.z);
         }
 
-        /// <summary>Tints the sprite (used by the placement preview to show valid / invalid).</summary>
+        /// <summary>Tints the sprite (placement preview).</summary>
         public void SetTint(Color color)
         {
             spriteRenderer.color = color;

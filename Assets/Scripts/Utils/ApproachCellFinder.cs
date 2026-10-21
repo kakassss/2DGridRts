@@ -5,18 +5,14 @@ using Rts2D.Shared.Contracts;
 
 namespace Rts2D.Utils
 {
-    /// <summary>Lists the free cells within attack range of a target, so a unit can walk there.</summary>
-    public class ApproachCellFinderService
+    /// <summary>Lists free cells within attack range of a target.</summary>
+    public class ApproachCellFinder
     {
         private readonly GridManager _grid;
 
-        public ApproachCellFinderService(GridManager grid) => _grid = grid;
+        public ApproachCellFinder(GridManager grid) => _grid = grid;
 
-        /// <summary>
-        /// Fills result with every free cell at most "range" cells from the target, nearest to "from" first.
-        /// Range 1 means the cells right next to the target.
-        /// The list is cleared first so the caller can reuse it without allocating.
-        /// </summary>
+        /// <summary>Free cells within range of the target, nearest to "from" first.</summary>
         public void FindCells(Vector2Int from, IOccupant target, int range, List<Vector2Int> result)
         {
             result.Clear();
@@ -34,7 +30,7 @@ namespace Rts2D.Utils
             }
         }
 
-        // Keeps the list sorted by distance; equal distances stay in the order they were found
+        // Keeps the list sorted by distance (ties keep their order)
         private void InsertByDistance(List<Vector2Int> cells, Vector2Int cell, Vector2Int from)
         {
             int distance = ManhattanDistance(cell, from);

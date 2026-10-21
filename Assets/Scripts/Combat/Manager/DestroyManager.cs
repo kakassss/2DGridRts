@@ -27,7 +27,7 @@ namespace Rts2D.Combat.Manager
         {
             dead.Died -= OnDied;
 
-            // Attack orders and the selection let go of it here, before it leaves the grid
+            // Listeners react before it leaves the grid
             Destroyed?.Invoke(dead);
 
             _grid.RemoveOccupant(dead);
